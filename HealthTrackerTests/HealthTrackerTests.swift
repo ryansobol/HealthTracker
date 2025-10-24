@@ -1,17 +1,8 @@
-//
-//  HealthTrackerTests.swift
-//  HealthTrackerTests
-//
-//  Created by Ryan Sobol on 10/24/25.
-//
-
-import Testing
 @testable import HealthTracker
+import Testing
 
 struct HealthTrackerTests {
-
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-    }
-
+	@Test func example() async throws {
+		// Write your test here and use APIs like `#expect(...)` to check expected conditions.
+	}
 }

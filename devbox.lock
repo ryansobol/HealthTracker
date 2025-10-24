@@ -1,0 +1,53 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "swiftformat@0.58.2": {
+      "last_modified": "2025-10-12T08:13:11Z",
+      "resolved": "github:NixOS/nixpkgs/832e3b6db48508ae436c2c7bfc0cf914eac6938e#swiftformat",
+      "source": "devbox-search",
+      "version": "0.58.2",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/pysn0g5hwk6z4yi7nl3sw2xw5lpnlf5l-swiftformat-0.58.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/pysn0g5hwk6z4yi7nl3sw2xw5lpnlf5l-swiftformat-0.58.2"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/40i7qc3zi36j6dh91bv7by8pg39v526p-swiftformat-0.58.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/40i7qc3zi36j6dh91bv7by8pg39v526p-swiftformat-0.58.2"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/8almqiqb5rgvkja5w61j0fxizn18fgxi-swiftformat-0.58.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/8almqiqb5rgvkja5w61j0fxizn18fgxi-swiftformat-0.58.2"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/xrx0vsizdd7h6jw2gmrmzsf0icmm3h6l-swiftformat-0.58.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/xrx0vsizdd7h6jw2gmrmzsf0icmm3h6l-swiftformat-0.58.2"
+        }
+      }
+    }
+  }
+}

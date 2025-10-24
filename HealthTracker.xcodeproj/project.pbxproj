@@ -27,6 +27,9 @@
 		1DC7CE8D2EAC08CC00068BDD /* HealthTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HealthTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DC7CE9A2EAC08CD00068BDD /* HealthTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HealthTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DC7CEA42EAC08CD00068BDD /* HealthTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HealthTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DC7CEB72EAC0AD400068BDD /* devbox.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = devbox.json; sourceTree = "<group>"; };
+		1DC7CEB82EAC0B5900068BDD /* .editorconfig */ = {isa = PBXFileReference; lastKnownFileType = text; path = .editorconfig; sourceTree = "<group>"; };
+		1DC7CEB92EAC102F00068BDD /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,6 +82,9 @@
 				1DC7CE9D2EAC08CD00068BDD /* HealthTrackerTests */,
 				1DC7CEA72EAC08CD00068BDD /* HealthTrackerUITests */,
 				1DC7CE8E2EAC08CC00068BDD /* Products */,
+				1DC7CEB72EAC0AD400068BDD /* devbox.json */,
+				1DC7CEB82EAC0B5900068BDD /* .editorconfig */,
+				1DC7CEB92EAC102F00068BDD /* .swiftformat */,
 			);
 			sourceTree = "<group>";
 		};

@@ -1,0 +1,18 @@
+--swiftversion 6.2
+
+--disable andOperator
+--disable preferKeyPath
+--disable redundantReturn
+--disable redundantVoidReturnType
+
+--elseposition next-line
+--indent tab
+--indentstrings true
+--header strip
+--maxwidth 100
+--self insert
+--stripunusedargs unnamed-only
+--wraparguments before-first
+--wrapcollections before-first
+--wrapconditions after-first
+--wrapparameters before-first
