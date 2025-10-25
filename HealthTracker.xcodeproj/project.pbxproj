@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1D2A48DA2EAD1F4E00AAA276 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1D2A48D82EAD1F4700AAA276 /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		1DC7CE9B2EAC08CD00068BDD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1D2A48D82EAD1F4700AAA276 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1DC7CE8D2EAC08CC00068BDD /* HealthTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HealthTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DC7CE9A2EAC08CD00068BDD /* HealthTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HealthTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DC7CEA42EAC08CD00068BDD /* HealthTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HealthTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,6 +90,7 @@
 				1DC7CEB72EAC0AD400068BDD /* devbox.json */,
 				1DC7CEB82EAC0B5900068BDD /* .editorconfig */,
 				1DC7CEB92EAC102F00068BDD /* .swiftformat */,
+				1D2A48D82EAD1F4700AAA276 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -218,6 +224,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D2A48DA2EAD1F4E00AAA276 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
