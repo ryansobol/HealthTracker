@@ -1,7 +1,7 @@
 import Algorithms
 
-struct ChartMath {
-	func averageWeekdayCount(for metrics: [HealthMetric]) -> [WeekdayChartData] {
+enum ChartMath {
+	static func averageWeekdayCount(for metrics: [HealthMetric]) -> [WeekdayChartData] {
 		let sortedByWeekday = metrics.sorted { $0.date.weekdayInt < $1.date.weekdayInt }
 		let weekdayArray = sortedByWeekday.chunked { $0.date.weekdayInt == $1.date.weekdayInt }
 
