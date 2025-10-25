@@ -24,6 +24,9 @@ enum HealthMetricContext: CaseIterable, Identifiable {
 }
 
 struct DashboardView: View {
+	@Environment(HealthKitManager.self) private var healthKitManager
+
+	@State private var isShowingPermissionPrimingSheet = false
 	@State private var selectedStat = HealthMetricContext.steps
 
 	var body: some View {
@@ -96,9 +99,24 @@ struct DashboardView: View {
 			}
 		}
 		.tint(self.selectedStat.tint)
+		.fullScreenCover(isPresented: self.$isShowingPermissionPrimingSheet, onDismiss: {
+			// TODO:
+		}, content: {
+			HealthKitPermissionPrimingView()
+		})
+		.task {
+			do {
+				self.isShowingPermissionPrimingSheet =
+					try await self.healthKitManager.shouldRequestAuthorization()
+			}
+			catch {
+				print(error)
+			}
+		}
 	}
 }
 
 #Preview {
 	DashboardView()
+		.environment(HealthKitManager())
 }
