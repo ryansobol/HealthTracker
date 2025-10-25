@@ -9,6 +9,14 @@ final class HealthKitManager {
 	var stepData = [HealthMetric]()
 	var weightData = [HealthMetric]()
 
+	var averageStepCount: Double {
+		guard !self.stepData.isEmpty else {
+			return 0
+		}
+
+		return self.stepData.reduce(0) { $0 + $1.value } / Double(self.stepData.count)
+	}
+
 	var shouldRequestAuthorization: Bool {
 		get async throws {
 			let result = try await self.store.statusForAuthorizationRequest(

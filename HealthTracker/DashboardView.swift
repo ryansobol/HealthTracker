@@ -52,7 +52,7 @@ struct DashboardView: View {
 										.font(.title3.bold())
 										.foregroundStyle(.pink)
 
-									Text("Avg: 10K steps")
+									Text("Avg: \(Int(self.healthKitManager.averageStepCount)) steps")
 										.font(.caption)
 								}
 
@@ -65,14 +65,35 @@ struct DashboardView: View {
 						.padding(.bottom, 12)
 
 						Chart {
+							RuleMark(y: .value("Average", self.healthKitManager.averageStepCount))
+								.foregroundStyle(.secondary)
+								.lineStyle(.init(lineWidth: 1, dash: [5]))
+
 							ForEach(self.healthKitManager.stepData) { steps in
 								BarMark(
 									x: .value("Date", steps.data, unit: .day),
 									y: .value("Steps", steps.value),
 								)
+								.foregroundStyle(.pink.gradient)
 							}
 						}
 						.frame(height: 150)
+						.chartXAxis {
+							AxisMarks { _ in
+								AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
+							}
+						}
+						.chartYAxis {
+							AxisMarks { value in
+								AxisGridLine()
+									.foregroundStyle(.gray.opacity(0.3))
+
+								AxisValueLabel(
+									(value.as(Double.self) ?? 0)
+										.formatted(.number.notation(.compactName)),
+								)
+							}
+						}
 					}
 					.padding()
 					.background {
