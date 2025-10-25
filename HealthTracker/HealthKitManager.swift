@@ -72,7 +72,7 @@ final class HealthKitManager {
 
 		self.stepData = statisticsCollection.statistics().map { statistic in
 			.init(
-				data: statistic.startDate,
+				date: statistic.startDate,
 				value: statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0,
 			)
 		}
@@ -106,7 +106,7 @@ final class HealthKitManager {
 
 		self.weightData = statisticsCollection.statistics().map { statistic in
 			.init(
-				data: statistic.startDate,
+				date: statistic.startDate,
 				value: statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0,
 			)
 		}
