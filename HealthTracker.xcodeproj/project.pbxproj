@@ -83,14 +83,14 @@
 		1DC7CE842EAC08CC00068BDD = {
 			isa = PBXGroup;
 			children = (
+				1DC7CEB82EAC0B5900068BDD /* .editorconfig */,
+				1D2A48D82EAD1F4700AAA276 /* .gitignore */,
+				1DC7CEB92EAC102F00068BDD /* .swiftformat */,
+				1DC7CEB72EAC0AD400068BDD /* devbox.json */,
 				1DC7CE8F2EAC08CC00068BDD /* HealthTracker */,
 				1DC7CE9D2EAC08CD00068BDD /* HealthTrackerTests */,
 				1DC7CEA72EAC08CD00068BDD /* HealthTrackerUITests */,
 				1DC7CE8E2EAC08CC00068BDD /* Products */,
-				1DC7CEB72EAC0AD400068BDD /* devbox.json */,
-				1DC7CEB82EAC0B5900068BDD /* .editorconfig */,
-				1DC7CEB92EAC102F00068BDD /* .swiftformat */,
-				1D2A48D82EAD1F4700AAA276 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
