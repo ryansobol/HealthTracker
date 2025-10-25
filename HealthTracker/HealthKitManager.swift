@@ -6,6 +6,9 @@ final class HealthKitManager {
 	let store = HKHealthStore()
 	let types = Set([HKQuantityType(.stepCount), HKQuantityType(.bodyMass)])
 
+	var stepData = [HealthMetric]()
+	var weightData = [HealthMetric]()
+
 	var shouldRequestAuthorization: Bool {
 		get async throws {
 			let result = try await self.store.statusForAuthorizationRequest(
@@ -59,8 +62,11 @@ final class HealthKitManager {
 
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
 
-		for statistic in statisticsCollection.statistics() {
-			print(statistic.sumQuantity() ?? 0)
+		self.stepData = statisticsCollection.statistics().map { statistic in
+			.init(
+				data: statistic.startDate,
+				value: statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0,
+			)
 		}
 	}
 
@@ -90,8 +96,11 @@ final class HealthKitManager {
 
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
 
-		for statistic in statisticsCollection.statistics() {
-			print(statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0)
+		self.weightData = statisticsCollection.statistics().map { statistic in
+			.init(
+				data: statistic.startDate,
+				value: statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0,
+			)
 		}
 	}
 

@@ -1,3 +1,4 @@
+import Charts
 import OSLog
 import SwiftUI
 
@@ -63,9 +64,15 @@ struct DashboardView: View {
 						.foregroundStyle(.secondary)
 						.padding(.bottom, 12)
 
-						RoundedRectangle(cornerRadius: 12)
-							.foregroundStyle(.secondary)
-							.frame(height: 150)
+						Chart {
+							ForEach(self.healthKitManager.stepData) { steps in
+								BarMark(
+									x: .value("Date", steps.data, unit: .day),
+									y: .value("Steps", steps.value),
+								)
+							}
+						}
+						.frame(height: 150)
 					}
 					.padding()
 					.background {
