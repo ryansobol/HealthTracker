@@ -47,6 +47,14 @@ struct HealthKitPermissionPrimingView: View {
 			case .success:
 				Task {
 					await self.healthKitManager.addFakeDataToSimulatorData()
+
+					do {
+						try await self.healthKitManager.fetchStepCounts()
+						try await self.healthKitManager.fetchWeights()
+					}
+					catch {
+						print(error)
+					}
 				}
 
 				self.dismiss()

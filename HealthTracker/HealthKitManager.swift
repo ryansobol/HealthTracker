@@ -15,6 +15,68 @@ final class HealthKitManager {
 		return result == .shouldRequest
 	}
 
+	func fetchStepCounts() async throws -> Void {
+		guard try await !self.shouldRequestAuthorization() else {
+			return
+		}
+
+		let calendar = Calendar.current
+		let today = calendar.startOfDay(for: .now)
+		let endDate = calendar.date(byAdding: .day, value: 1, to: today)!
+		let startDate = calendar.date(byAdding: .day, value: -28, to: endDate)
+
+		let queryPredicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate)
+
+		let samplePredicate = HKSamplePredicate.quantitySample(
+			type: HKQuantityType(.stepCount),
+			predicate: queryPredicate,
+		)
+
+		let statisticsCollectionQuery = HKStatisticsCollectionQueryDescriptor(
+			predicate: samplePredicate,
+			options: .cumulativeSum,
+			anchorDate: endDate,
+			intervalComponents: .init(day: 1),
+		)
+
+		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
+
+		for statistic in statisticsCollection.statistics() {
+			print(statistic.sumQuantity() ?? 0)
+		}
+	}
+
+	func fetchWeights() async throws -> Void {
+		guard try await !self.shouldRequestAuthorization() else {
+			return
+		}
+
+		let calendar = Calendar.current
+		let today = calendar.startOfDay(for: .now)
+		let endDate = calendar.date(byAdding: .day, value: 1, to: today)!
+		let startDate = calendar.date(byAdding: .day, value: -28, to: endDate)
+
+		let queryPredicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate)
+
+		let samplePredicate = HKSamplePredicate.quantitySample(
+			type: HKQuantityType(.bodyMass),
+			predicate: queryPredicate,
+		)
+
+		let statisticsCollectionQuery = HKStatisticsCollectionQueryDescriptor(
+			predicate: samplePredicate,
+			options: .mostRecent,
+			anchorDate: endDate,
+			intervalComponents: .init(day: 1),
+		)
+
+		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
+
+		for statistic in statisticsCollection.statistics() {
+			print(statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0)
+		}
+	}
+
 	func addFakeDataToSimulatorData() async -> Void {
 		#if targetEnvironment(simulator)
 			var fakeSamples = [HKQuantitySample]()

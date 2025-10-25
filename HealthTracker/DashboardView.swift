@@ -113,6 +113,15 @@ struct DashboardView: View {
 				print(error)
 			}
 		}
+		.task {
+			do {
+				try await self.healthKitManager.fetchStepCounts()
+				try await self.healthKitManager.fetchWeights()
+			}
+			catch {
+				print(error)
+			}
+		}
 	}
 }
 
