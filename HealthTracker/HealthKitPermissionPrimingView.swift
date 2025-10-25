@@ -1,11 +1,5 @@
 import HealthKitUI
-import OSLog
 import SwiftUI
-
-private let logger = Logger(
-	subsystem: Bundle.main.bundleIdentifier!,
-	category: "HealthKitPermissionPrimingView",
-)
 
 struct HealthKitPermissionPrimingView: View {
 	@Environment(\.dismiss) private var dismiss
@@ -52,17 +46,10 @@ struct HealthKitPermissionPrimingView: View {
 			Task { @MainActor in
 				switch result {
 				case .success:
-					do {
-						try await self.healthKitManager.addFakeDataToSimulatorData()
-						try await self.healthKitManager.fetchData()
-					}
-					catch {
-						logger.error("\(error)")
-					}
-
 					self.dismiss()
 
 				case .failure:
+					// FIXME: Try again
 					self.dismiss()
 				}
 			}

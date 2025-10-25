@@ -103,7 +103,15 @@ struct DashboardView: View {
 		}
 		.tint(self.selectedStat.tint)
 		.fullScreenCover(isPresented: self.$isShowingPermissionPrimingSheet, onDismiss: {
-			// TODO:
+			Task {
+				do {
+					try await self.healthKitManager.addFakeDataToSimulatorData()
+					try await self.healthKitManager.fetchData()
+				}
+				catch {
+					logger.error("\(error)")
+				}
+			}
 		}, content: {
 			HealthKitPermissionPrimingView()
 		})
@@ -113,7 +121,7 @@ struct DashboardView: View {
 					try await self.healthKitManager.shouldRequestAuthorization
 			}
 			catch {
-				print(error)
+				logger.error("\(error)")
 			}
 		}
 		.task {
