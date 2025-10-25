@@ -14,4 +14,40 @@ final class HealthKitManager {
 
 		return result == .shouldRequest
 	}
+
+	func addFakeDataToSimulatorData() async -> Void {
+		#if targetEnvironment(simulator)
+			var fakeSamples = [HKQuantitySample]()
+
+			for i in 0 ..< 28 {
+				let startDate = Calendar.current.date(byAdding: .day, value: -i, to: .now)!
+				let endDate = Calendar.current.date(byAdding: .second, value: i, to: startDate)!
+
+				let stepSample = HKQuantitySample(
+					type: HKQuantityType(.stepCount),
+					quantity: HKQuantity(unit: .count(), doubleValue: .random(in: 4000 ... 20000)),
+					start: startDate,
+					end: endDate,
+				)
+
+				fakeSamples.append(stepSample)
+
+				let weightSample = HKQuantitySample(
+					type: HKQuantityType(.bodyMass),
+					quantity: HKQuantity(
+						unit: .pound(),
+						doubleValue: .random(in: 160 + Double(i / 3) ... 165 + Double(i / 3)),
+					),
+					start: startDate,
+					end: endDate,
+				)
+
+				fakeSamples.append(weightSample)
+			}
+
+			try! await self.store.save(fakeSamples)
+
+			print("--> Fake health data added to simulator")
+		#endif
+	}
 }

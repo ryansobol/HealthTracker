@@ -45,6 +45,10 @@ struct HealthKitPermissionPrimingView: View {
 		) { result in
 			switch result {
 			case .success:
+				Task {
+					await self.healthKitManager.addFakeDataToSimulatorData()
+				}
+
 				self.dismiss()
 
 			case .failure:
