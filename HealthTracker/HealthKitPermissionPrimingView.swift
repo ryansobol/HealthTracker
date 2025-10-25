@@ -1,5 +1,11 @@
 import HealthKitUI
+import OSLog
 import SwiftUI
+
+private let logger = Logger(
+	subsystem: Bundle.main.bundleIdentifier!,
+	category: "HealthKitPermissionPrimingView",
+)
 
 struct HealthKitPermissionPrimingView: View {
 	@Environment(\.dismiss) private var dismiss
@@ -43,24 +49,22 @@ struct HealthKitPermissionPrimingView: View {
 			readTypes: self.healthKitManager.types,
 			trigger: self.isShowingHealthKitPermissions,
 		) { result in
-			switch result {
-			case .success:
-				Task {
-					await self.healthKitManager.addFakeDataToSimulatorData()
-
+			Task { @MainActor in
+				switch result {
+				case .success:
 					do {
-						try await self.healthKitManager.fetchStepCounts()
-						try await self.healthKitManager.fetchWeights()
+						try await self.healthKitManager.addFakeDataToSimulatorData()
+						try await self.healthKitManager.fetchData()
 					}
 					catch {
-						print(error)
+						logger.error("\(error)")
 					}
+
+					self.dismiss()
+
+				case .failure:
+					self.dismiss()
 				}
-
-				self.dismiss()
-
-			case .failure:
-				self.dismiss()
 			}
 		}
 	}

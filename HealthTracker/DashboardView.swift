@@ -1,4 +1,7 @@
+import OSLog
 import SwiftUI
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "DashboardView")
 
 enum HealthMetricContext: CaseIterable, Identifiable {
 	case steps
@@ -107,7 +110,7 @@ struct DashboardView: View {
 		.task {
 			do {
 				self.isShowingPermissionPrimingSheet =
-					try await self.healthKitManager.shouldRequestAuthorization()
+					try await self.healthKitManager.shouldRequestAuthorization
 			}
 			catch {
 				print(error)
@@ -115,11 +118,10 @@ struct DashboardView: View {
 		}
 		.task {
 			do {
-				try await self.healthKitManager.fetchStepCounts()
-				try await self.healthKitManager.fetchWeights()
+				try await self.healthKitManager.fetchData()
 			}
 			catch {
-				print(error)
+				logger.error("\(error)")
 			}
 		}
 	}

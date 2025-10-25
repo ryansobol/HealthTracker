@@ -6,17 +6,35 @@ final class HealthKitManager {
 	let store = HKHealthStore()
 	let types = Set([HKQuantityType(.stepCount), HKQuantityType(.bodyMass)])
 
-	func shouldRequestAuthorization() async throws -> Bool {
-		let result = try await self.store.statusForAuthorizationRequest(
-			toShare: self.types,
-			read: self.types,
-		)
+	var shouldRequestAuthorization: Bool {
+		get async throws {
+			let result = try await self.store.statusForAuthorizationRequest(
+				toShare: self.types,
+				read: self.types,
+			)
 
-		return result == .shouldRequest
+			return result == .shouldRequest
+		}
+	}
+
+	var isAuthorizationRequestUnnecessary: Bool {
+		get async throws {
+			let result = try await self.store.statusForAuthorizationRequest(
+				toShare: self.types,
+				read: self.types,
+			)
+
+			return result == .unnecessary
+		}
+	}
+
+	func fetchData() async throws -> Void {
+		try await self.fetchStepCounts()
+		try await self.fetchWeights()
 	}
 
 	func fetchStepCounts() async throws -> Void {
-		guard try await !self.shouldRequestAuthorization() else {
+		guard try await self.isAuthorizationRequestUnnecessary else {
 			return
 		}
 
@@ -47,7 +65,7 @@ final class HealthKitManager {
 	}
 
 	func fetchWeights() async throws -> Void {
-		guard try await !self.shouldRequestAuthorization() else {
+		guard try await self.isAuthorizationRequestUnnecessary else {
 			return
 		}
 
@@ -77,39 +95,45 @@ final class HealthKitManager {
 		}
 	}
 
-	func addFakeDataToSimulatorData() async -> Void {
-		#if targetEnvironment(simulator)
-			var fakeSamples = [HKQuantitySample]()
-
-			for i in 0 ..< 28 {
-				let startDate = Calendar.current.date(byAdding: .day, value: -i, to: .now)!
-				let endDate = Calendar.current.date(byAdding: .second, value: i, to: startDate)!
-
-				let stepSample = HKQuantitySample(
-					type: HKQuantityType(.stepCount),
-					quantity: HKQuantity(unit: .count(), doubleValue: .random(in: 4000 ... 20000)),
-					start: startDate,
-					end: endDate,
-				)
-
-				fakeSamples.append(stepSample)
-
-				let weightSample = HKQuantitySample(
-					type: HKQuantityType(.bodyMass),
-					quantity: HKQuantity(
-						unit: .pound(),
-						doubleValue: .random(in: 160 + Double(i / 3) ... 165 + Double(i / 3)),
-					),
-					start: startDate,
-					end: endDate,
-				)
-
-				fakeSamples.append(weightSample)
-			}
-
-			try! await self.store.save(fakeSamples)
-
-			print("--> Fake health data added to simulator")
+	func addFakeDataToSimulatorData() async throws -> Void {
+		#if !targetEnvironment(simulator)
+			return
 		#endif
+
+		guard try await self.isAuthorizationRequestUnnecessary else {
+			return
+		}
+
+		var fakeSamples = [HKQuantitySample]()
+
+		for i in 0 ..< 28 {
+			let startDate = Calendar.current.date(byAdding: .day, value: -i, to: .now)!
+			let endDate = Calendar.current.date(byAdding: .second, value: i, to: startDate)!
+
+			let stepSample = HKQuantitySample(
+				type: HKQuantityType(.stepCount),
+				quantity: HKQuantity(unit: .count(), doubleValue: .random(in: 4000 ... 20000)),
+				start: startDate,
+				end: endDate,
+			)
+
+			fakeSamples.append(stepSample)
+
+			let weightSample = HKQuantitySample(
+				type: HKQuantityType(.bodyMass),
+				quantity: HKQuantity(
+					unit: .pound(),
+					doubleValue: .random(in: 160 + Double(i / 3) ... 165 + Double(i / 3)),
+				),
+				start: startDate,
+				end: endDate,
+			)
+
+			fakeSamples.append(weightSample)
+		}
+
+		try! await self.store.save(fakeSamples)
+
+		print("--> Fake health data added to simulator")
 	}
 }
