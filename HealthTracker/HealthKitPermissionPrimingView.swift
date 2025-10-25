@@ -1,6 +1,12 @@
+import HealthKitUI
 import SwiftUI
 
 struct HealthKitPermissionPrimingView: View {
+	@Environment(\.dismiss) private var dismiss
+	@Environment(HealthKitManager.self) private var healthKitManager
+
+	@State private var isShowingHealthKitPermissions = false
+
 	let description = """
 		This app displays your step and weight data in interactive charts.
 
@@ -25,15 +31,30 @@ struct HealthKitPermissionPrimingView: View {
 			}
 
 			Button("Connect Apple Health") {
-				// TODO:
+				self.isShowingHealthKitPermissions = true
 			}
 			.buttonStyle(.borderedProminent)
 			.tint(.pink)
 		}
 		.padding(30)
+		.healthDataAccessRequest(
+			store: self.healthKitManager.store,
+			shareTypes: self.healthKitManager.types,
+			readTypes: self.healthKitManager.types,
+			trigger: self.isShowingHealthKitPermissions,
+		) { result in
+			switch result {
+			case .success:
+				self.dismiss()
+
+			case .failure:
+				self.dismiss()
+			}
+		}
 	}
 }
 
 #Preview {
 	HealthKitPermissionPrimingView()
+		.environment(HealthKitManager())
 }

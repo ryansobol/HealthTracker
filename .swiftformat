@@ -5,11 +5,13 @@
 --disable redundantReturn
 --disable redundantVoidReturnType
 
+--blank-line-after-switch-case always
 --elseposition next-line
 --indent tab
 --indentstrings true
 --header strip
 --maxwidth 100
+--propertytypes inferred
 --self insert
 --stripunusedargs unnamed-only
 --wraparguments before-first
