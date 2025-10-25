@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 90;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -58,24 +58,18 @@
 /* Begin PBXFrameworksBuildPhase section */
 		1DC7CE8A2EAC08CC00068BDD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1DC7CE972EAC08CD00068BDD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1DC7CEA12EAC08CD00068BDD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -117,14 +111,10 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			fileSystemSynchronizedGroups = (
 				1DC7CE8F2EAC08CC00068BDD /* HealthTracker */,
 			);
 			name = HealthTracker;
-			packageProductDependencies = (
-			);
 			productName = HealthTracker;
 			productReference = 1DC7CE8D2EAC08CC00068BDD /* HealthTracker.app */;
 			productType = "com.apple.product-type.application";
@@ -146,8 +136,6 @@
 				1DC7CE9D2EAC08CD00068BDD /* HealthTrackerTests */,
 			);
 			name = HealthTrackerTests;
-			packageProductDependencies = (
-			);
 			productName = HealthTrackerTests;
 			productReference = 1DC7CE9A2EAC08CD00068BDD /* HealthTrackerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -169,8 +157,6 @@
 				1DC7CEA72EAC08CD00068BDD /* HealthTrackerUITests */,
 			);
 			name = HealthTrackerUITests;
-			packageProductDependencies = (
-			);
 			productName = HealthTrackerUITests;
 			productReference = 1DC7CEA42EAC08CD00068BDD /* HealthTrackerUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -207,7 +193,7 @@
 			);
 			mainGroup = 1DC7CE842EAC08CC00068BDD;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
+			preferredProjectObjectVersion = 90;
 			productRefGroup = 1DC7CE8E2EAC08CC00068BDD /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -222,49 +208,37 @@
 /* Begin PBXResourcesBuildPhase section */
 		1DC7CE8B2EAC08CC00068BDD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				1D2A48DA2EAD1F4E00AAA276 /* .gitignore in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1DC7CE982EAC08CD00068BDD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1DC7CEA22EAC08CD00068BDD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1DC7CE892EAC08CC00068BDD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1DC7CE962EAC08CD00068BDD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1DC7CEA02EAC08CD00068BDD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
@@ -282,7 +256,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		1DC7CEAC2EAC08CD00068BDD /* Debug */ = {
+		1DC7CEAC2EAC08CD00068BDD /* Debug configuration for PBXProject "HealthTracker" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -349,7 +323,7 @@
 			};
 			name = Debug;
 		};
-		1DC7CEAD2EAC08CD00068BDD /* Release */ = {
+		1DC7CEAD2EAC08CD00068BDD /* Release configuration for PBXProject "HealthTracker" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -409,7 +383,7 @@
 			};
 			name = Release;
 		};
-		1DC7CEAF2EAC08CD00068BDD /* Debug */ = {
+		1DC7CEAF2EAC08CD00068BDD /* Debug configuration for PBXNativeTarget "HealthTracker" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -441,7 +415,7 @@
 			};
 			name = Debug;
 		};
-		1DC7CEB02EAC08CD00068BDD /* Release */ = {
+		1DC7CEB02EAC08CD00068BDD /* Release configuration for PBXNativeTarget "HealthTracker" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -473,7 +447,7 @@
 			};
 			name = Release;
 		};
-		1DC7CEB22EAC08CD00068BDD /* Debug */ = {
+		1DC7CEB22EAC08CD00068BDD /* Debug configuration for PBXNativeTarget "HealthTrackerTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -495,7 +469,7 @@
 			};
 			name = Debug;
 		};
-		1DC7CEB32EAC08CD00068BDD /* Release */ = {
+		1DC7CEB32EAC08CD00068BDD /* Release configuration for PBXNativeTarget "HealthTrackerTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -517,7 +491,7 @@
 			};
 			name = Release;
 		};
-		1DC7CEB52EAC08CD00068BDD /* Debug */ = {
+		1DC7CEB52EAC08CD00068BDD /* Debug configuration for PBXNativeTarget "HealthTrackerUITests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -537,7 +511,7 @@
 			};
 			name = Debug;
 		};
-		1DC7CEB62EAC08CD00068BDD /* Release */ = {
+		1DC7CEB62EAC08CD00068BDD /* Release configuration for PBXNativeTarget "HealthTrackerUITests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -563,37 +537,33 @@
 		1DC7CE882EAC08CC00068BDD /* Build configuration list for PBXProject "HealthTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DC7CEAC2EAC08CD00068BDD /* Debug */,
-				1DC7CEAD2EAC08CD00068BDD /* Release */,
+				1DC7CEAC2EAC08CD00068BDD /* Debug configuration for PBXProject "HealthTracker" */,
+				1DC7CEAD2EAC08CD00068BDD /* Release configuration for PBXProject "HealthTracker" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		1DC7CEAE2EAC08CD00068BDD /* Build configuration list for PBXNativeTarget "HealthTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DC7CEAF2EAC08CD00068BDD /* Debug */,
-				1DC7CEB02EAC08CD00068BDD /* Release */,
+				1DC7CEAF2EAC08CD00068BDD /* Debug configuration for PBXNativeTarget "HealthTracker" */,
+				1DC7CEB02EAC08CD00068BDD /* Release configuration for PBXNativeTarget "HealthTracker" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		1DC7CEB12EAC08CD00068BDD /* Build configuration list for PBXNativeTarget "HealthTrackerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DC7CEB22EAC08CD00068BDD /* Debug */,
-				1DC7CEB32EAC08CD00068BDD /* Release */,
+				1DC7CEB22EAC08CD00068BDD /* Debug configuration for PBXNativeTarget "HealthTrackerTests" */,
+				1DC7CEB32EAC08CD00068BDD /* Release configuration for PBXNativeTarget "HealthTrackerTests" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		1DC7CEB42EAC08CD00068BDD /* Build configuration list for PBXNativeTarget "HealthTrackerUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DC7CEB52EAC08CD00068BDD /* Debug */,
-				1DC7CEB62EAC08CD00068BDD /* Release */,
+				1DC7CEB52EAC08CD00068BDD /* Debug configuration for PBXNativeTarget "HealthTrackerUITests" */,
+				1DC7CEB62EAC08CD00068BDD /* Release configuration for PBXNativeTarget "HealthTrackerUITests" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
