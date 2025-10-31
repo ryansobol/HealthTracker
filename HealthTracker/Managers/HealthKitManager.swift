@@ -20,6 +20,15 @@ final class HealthKitManager {
 		return self.stepData.reduce(0) { $0 + $1.value } / Double(self.stepData.count)
 	}
 
+	var averageWeightDifference: Double {
+		guard !self.weightAverageDiffMetrics.isEmpty else {
+			return 0
+		}
+
+		return self.weightAverageDiffMetrics
+			.reduce(0) { $0 + $1.value } / Double(self.weightAverageDiffMetrics.count)
+	}
+
 	var shouldRequestAuthorization: Bool {
 		get async throws {
 			let result = try await self.store.statusForAuthorizationRequest(

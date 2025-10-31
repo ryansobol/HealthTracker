@@ -4,10 +4,10 @@ import SwiftUI
 struct StepPieChart: View {
 	@Environment(HealthKitManager.self) private var healthKitManager
 
-	@State private var rawSelectedAverageValue: Double? = 0
+	@State private var rawSelectedAverageMetricValue: Double? = 0
 
 	var selectedAverageMetric: AverageMetric? {
-		guard let rawSelectedAverageValue = self.rawSelectedAverageValue else {
+		guard let rawSelectedAverageMetricValue = self.rawSelectedAverageMetricValue else {
 			return nil
 		}
 
@@ -16,7 +16,7 @@ struct StepPieChart: View {
 		return self.healthKitManager.stepAverageMetrics.first { stepAverageMetric in
 			total += stepAverageMetric.value
 
-			return rawSelectedAverageValue <= total
+			return rawSelectedAverageMetricValue <= total
 		}
 	}
 
@@ -46,11 +46,13 @@ struct StepPieChart: View {
 				}
 			}
 			.frame(height: 240)
-			.chartAngleSelection(value: self.$rawSelectedAverageValue.animation(.smooth(duration: 0.25)))
+			.chartAngleSelection(
+				value: self.$rawSelectedAverageMetricValue.animation(.smooth(duration: 0.25)),
+			)
 			.chartBackground { _ in
 				if let selectedStepChartMetric = self.selectedAverageMetric {
 					VStack {
-						Text(String(describing: selectedStepChartMetric.weekday))
+						Text(selectedStepChartMetric.weekday.symbol)
 							.font(.title2.bold())
 							.animation(.none, value: selectedStepChartMetric.weekday)
 

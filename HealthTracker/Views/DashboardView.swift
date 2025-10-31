@@ -52,6 +52,8 @@ struct DashboardView: View {
 
 					case .weight:
 						WeightLineChart(selectedStat: self.selectedStat)
+
+						WeightBarChart(selectedStat: self.selectedStat)
 					}
 				}
 			}
