@@ -4,12 +4,24 @@ import SwiftUI
 struct WeightLineChart: View {
 	@Environment(HealthKitManager.self) private var healthKitManager
 
+	@State private var rawSelectedDate: Date? = nil
+
 	let goal = 165
 
 	let selectedStat: HealthMetricContext
 
 	var minValue: Double {
-		return self.healthKitManager.weightData.map {$0.value }.min() ?? 0
+		return self.healthKitManager.weightData.map { $0.value }.min() ?? 0
+	}
+
+	var selectedHealthMetric: HealthMetric? {
+		guard let rawSelectedDate = self.rawSelectedDate else {
+			return nil
+		}
+
+		return self.healthKitManager.weightData.first { metric in
+			Calendar.current.isDate(rawSelectedDate, inSameDayAs: metric.date)
+		}
 	}
 
 	var body: some View {
@@ -34,6 +46,22 @@ struct WeightLineChart: View {
 			.padding(.bottom, 12)
 
 			Chart {
+				if let selectedHealthMetric = self.selectedHealthMetric {
+					RuleMark(x: .value("Selected Metric", selectedHealthMetric.date, unit: .day))
+						.foregroundStyle(.gray.opacity(0.3))
+						.offset(y: -10)
+						.annotation(
+							position: .top,
+							spacing: 0,
+							overflowResolution: .init(
+								x: .fit(to: .chart),
+								y: .disabled,
+							),
+						) {
+							self.annotationView(selectedHealthMetric)
+						}
+				}
+
 				RuleMark(y: .value("Goal", self.goal))
 					.foregroundStyle(.mint)
 					.lineStyle(.init(lineWidth: 1, dash: [5]))
@@ -56,6 +84,7 @@ struct WeightLineChart: View {
 				.interpolationMethod(.catmullRom)
 			}
 			.frame(height: 150)
+			.chartXSelection(value: self.$rawSelectedDate)
 			.chartYScale(domain: .automatic(includesZero: false))
 			.chartXAxis {
 				AxisMarks { _ in
@@ -63,7 +92,7 @@ struct WeightLineChart: View {
 				}
 			}
 			.chartYAxis {
-				AxisMarks { value in
+				AxisMarks { _ in
 					AxisGridLine()
 						.foregroundStyle(.gray.opacity(0.3))
 
@@ -75,6 +104,27 @@ struct WeightLineChart: View {
 		.background {
 			RoundedRectangle(cornerRadius: 12)
 				.fill(Color(.secondarySystemBackground))
+		}
+	}
+
+	func annotationView(_ selectedHealthMetric: HealthMetric) -> some View {
+		VStack(alignment: .leading) {
+			Text(
+				selectedHealthMetric.date,
+				format: .dateTime.weekday(.abbreviated).month(.abbreviated).day(),
+			)
+			.font(.footnote.bold())
+			.foregroundStyle(.secondary)
+
+			Text(selectedHealthMetric.value, format: .number.precision(.fractionLength(1)))
+				.fontWeight(.heavy)
+				.foregroundStyle(self.selectedStat.tint)
+		}
+		.padding(12)
+		.background {
+			RoundedRectangle(cornerRadius: 4)
+				.fill(Color(.secondarySystemBackground))
+				.shadow(color: .secondary.opacity(0.1), radius: 2, x: 2, y: 2)
 		}
 	}
 }

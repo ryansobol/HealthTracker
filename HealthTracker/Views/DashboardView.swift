@@ -44,9 +44,15 @@ struct DashboardView: View {
 					}
 					.pickerStyle(.segmented)
 
-					StepBarChart(selectedStat: self.selectedStat)
+					switch self.selectedStat {
+					case .steps:
+						StepBarChart(selectedStat: self.selectedStat)
 
-					StepPieChart()
+						StepPieChart()
+
+					case .weight:
+						WeightLineChart(selectedStat: self.selectedStat)
+					}
 				}
 			}
 			.padding()
