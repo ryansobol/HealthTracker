@@ -4,19 +4,19 @@ import SwiftUI
 struct StepPieChart: View {
 	@Environment(HealthKitManager.self) private var healthKitManager
 
-	@State private var rawSelectedChartValue: Double? = 0
+	@State private var rawSelectedAverageValue: Double? = 0
 
-	var selectedWeekday: WeekdayChartData? {
-		guard let rawSelectedChartValue = self.rawSelectedChartValue else {
+	var selectedAverageMetric: AverageMetric? {
+		guard let rawSelectedAverageValue = self.rawSelectedAverageValue else {
 			return nil
 		}
 
 		var total = 0.0
 
-		return ChartMath.averageWeekdayCount(for: self.healthKitManager.stepData).first { weekday in
-			total += weekday.value
+		return self.healthKitManager.stepAverageMetrics.first { stepAverageMetric in
+			total += stepAverageMetric.value
 
-			return rawSelectedChartValue <= total
+			return rawSelectedAverageValue <= total
 		}
 	}
 
@@ -33,28 +33,28 @@ struct StepPieChart: View {
 			}
 
 			Chart {
-				ForEach(ChartMath.averageWeekdayCount(for: self.healthKitManager.stepData)) { weekday in
+				ForEach(self.healthKitManager.stepAverageMetrics) { averageMetric in
 					SectorMark(
-						angle: .value("Average Steps", weekday.value),
+						angle: .value("Average Steps", averageMetric.value),
 						innerRadius: .ratio(0.618),
-						outerRadius: self.selectedWeekday?.date.weekdayInt == weekday.date.weekdayInt ? 140 : 110,
+						outerRadius: self.selectedAverageMetric?.weekday == averageMetric.weekday ? 140 : 110,
 						angularInset: 1,
 					)
 					.foregroundStyle(.pink.gradient)
 					.cornerRadius(6)
-					.opacity(self.selectedWeekday?.date.weekdayInt == weekday.date.weekdayInt ? 1 : 0.3)
+					.opacity(self.selectedAverageMetric?.weekday == averageMetric.weekday ? 1 : 0.3)
 				}
 			}
 			.frame(height: 240)
-			.chartAngleSelection(value: self.$rawSelectedChartValue.animation(.smooth(duration: 0.25)))
+			.chartAngleSelection(value: self.$rawSelectedAverageValue.animation(.smooth(duration: 0.25)))
 			.chartBackground { _ in
-				if let selectedWeekday = self.selectedWeekday {
+				if let selectedStepChartMetric = self.selectedAverageMetric {
 					VStack {
-						Text(selectedWeekday.date.weekdayTitle)
+						Text(String(describing: selectedStepChartMetric.weekday))
 							.font(.title2.bold())
-							.animation(.none, value: selectedWeekday.date.weekdayTitle)
+							.animation(.none, value: selectedStepChartMetric.weekday)
 
-						Text(selectedWeekday.value, format: .number.precision(.fractionLength(0)))
+						Text(selectedStepChartMetric.value, format: .number.precision(.fractionLength(0)))
 							.fontWeight(.medium)
 							.foregroundStyle(.secondary)
 							.contentTransition(.numericText())

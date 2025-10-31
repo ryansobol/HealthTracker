@@ -9,6 +9,9 @@ final class HealthKitManager {
 	var stepData = [HealthMetric]()
 	var weightData = [HealthMetric]()
 
+	var stepAverageMetrics = [AverageMetric]()
+	var weightAverageDiffMetrics = [AverageMetric]()
+
 	var averageStepCount: Double {
 		guard !self.stepData.isEmpty else {
 			return 0
@@ -42,6 +45,9 @@ final class HealthKitManager {
 	func fetchData() async throws -> Void {
 		try await self.fetchStepCounts()
 		try await self.fetchWeights()
+
+		self.stepAverageMetrics = AverageMetric.calculate(from: self.stepData)
+		self.weightAverageDiffMetrics = AverageMetric.calculateDifferences(from: self.weightData)
 	}
 
 	func fetchStepCounts() async throws -> Void {
