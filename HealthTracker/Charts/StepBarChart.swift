@@ -25,7 +25,7 @@ struct StepBarChart: View {
 					VStack(alignment: .leading) {
 						Label("Steps", systemImage: "figure.walk")
 							.font(.title3.bold())
-							.foregroundStyle(.pink)
+							.foregroundStyle(self.selectedStat.tint)
 
 						Text("Avg: \(Int(self.healthKitManager.averageStepCount)) steps")
 							.font(.caption)
@@ -65,7 +65,7 @@ struct StepBarChart: View {
 						x: .value("Date", steps.date, unit: .day),
 						y: .value("Steps", steps.value),
 					)
-					.foregroundStyle(.pink.gradient)
+					.foregroundStyle(self.selectedStat.tint.gradient)
 					.opacity(
 						self.rawSelectedDate == nil || steps.date == self.selectedHealthMetric?.date ? 1.0 : 0.3,
 					)
@@ -108,7 +108,7 @@ struct StepBarChart: View {
 
 			Text(selectedHealthMetric.value, format: .number.precision(.fractionLength(0)))
 				.fontWeight(.heavy)
-				.foregroundStyle(.pink)
+				.foregroundStyle(self.selectedStat.tint)
 		}
 		.padding(12)
 		.background {
