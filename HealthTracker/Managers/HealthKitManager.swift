@@ -191,6 +191,8 @@ final class HealthKitManager {
 
 		var fakeSamples = [HKQuantitySample]()
 
+		fakeSamples.reserveCapacity(28)
+
 		for i in 0 ..< 28 {
 			let startDate = Calendar.current.date(byAdding: .day, value: -i, to: .now)!
 			let endDate = Calendar.current.date(byAdding: .second, value: i, to: startDate)!
@@ -219,6 +221,6 @@ final class HealthKitManager {
 
 		try! await self.store.save(fakeSamples)
 
-		logger.debug("Fake discrete samples created in simulator")
+		logger.debug("Created fake discrete samples in simulator")
 	}
 }
