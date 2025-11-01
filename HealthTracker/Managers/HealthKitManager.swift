@@ -1,5 +1,8 @@
 import HealthKit
 import Observation
+import OSLog
+
+let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "HealthKitManager")
 
 @Observable
 final class HealthKitManager {
@@ -216,6 +219,6 @@ final class HealthKitManager {
 
 		try! await self.store.save(fakeSamples)
 
-		print("--> Fake discrete metrics added to simulator")
+		logger.debug("Fake discrete samples created in simulator")
 	}
 }
