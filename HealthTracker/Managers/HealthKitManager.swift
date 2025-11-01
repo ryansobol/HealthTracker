@@ -53,6 +53,10 @@ final class HealthKitManager {
 		return result == .unnecessary
 	}
 
+	private func isSharingAuthorized(for type: HKQuantityType) -> Bool {
+		return self.store.authorizationStatus(for: self.stepType) == .sharingAuthorized
+	}
+
 	// MARK: - Fetch Metrics
 
 	func fetchMetrics() async throws -> Void {
@@ -163,7 +167,7 @@ final class HealthKitManager {
 		date: Date,
 		value: Double,
 	) async throws -> Void {
-		guard self.store.authorizationStatus(for: self.stepType) == .sharingAuthorized else {
+		guard self.isSharingAuthorized(for: self.stepType) else {
 			throw AuthorizationError.sharingNotAuthorized(metricType: metricType)
 		}
 
@@ -178,7 +182,7 @@ final class HealthKitManager {
 		date: Date,
 		value: Double,
 	) async throws -> Void {
-		guard self.store.authorizationStatus(for: self.weightType) == .sharingAuthorized else {
+		guard self.isSharingAuthorized(for: self.weightType) else {
 			throw AuthorizationError.sharingNotAuthorized(metricType: metricType)
 		}
 
@@ -193,11 +197,11 @@ final class HealthKitManager {
 			return
 		#endif
 
-		guard self.store.authorizationStatus(for: self.stepType) == .sharingAuthorized else {
+		guard self.isSharingAuthorized(for: self.stepType) else {
 			throw AuthorizationError.sharingNotAuthorized(metricType: .steps)
 		}
 
-		guard self.store.authorizationStatus(for: self.weightType) == .sharingAuthorized else {
+		guard self.isSharingAuthorized(for: self.weightType) else {
 			throw AuthorizationError.sharingNotAuthorized(metricType: .weight)
 		}
 
