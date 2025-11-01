@@ -1,13 +1,18 @@
+import OSLog
 import SwiftUI
+
+private let logger = Logger.discreteMetricListView
 
 struct DiscreteMetricListView: View {
 	@Environment(HealthKitManager.self) private var healthKitManager
 
 	@State private var newDate = Date.now
 	@State private var newValue = ""
-	@State private var isPresentingForm = false
+	@State private var isAddDataFormPresented = false
 
 	let metricType: MetricType
+
+	@Binding var isPermissionPrimerPresented: Bool
 
 	var discreteMetrics: [DiscreteMetric] {
 		return switch self.metricType {
@@ -30,12 +35,12 @@ struct DiscreteMetricListView: View {
 			}
 		}
 		.navigationTitle(self.metricType.title)
-		.sheet(isPresented: self.$isPresentingForm) {
+		.sheet(isPresented: self.$isAddDataFormPresented) {
 			self.addDataView
 		}
 		.toolbar {
 			Button("Add Data", systemImage: "plus") {
-				self.isPresentingForm = true
+				self.isAddDataFormPresented = true
 			}
 		}
 	}
@@ -61,7 +66,7 @@ struct DiscreteMetricListView: View {
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
 					Button("Dismiss") {
-						self.isPresentingForm = false
+						self.isAddDataFormPresented = false
 					}
 				}
 
@@ -76,11 +81,17 @@ struct DiscreteMetricListView: View {
 									value: Double(self.newValue)!,
 								)
 							}
+							catch AuthorizationError.authorizationRequestNecessary {
+								self.isPermissionPrimerPresented = true
+							}
+							catch let AuthorizationError.sharingNotAuthorized(mediaType) {
+								logger.error("Sharing not authorized for \(mediaType)")
+							}
 							catch {
-								print(error)
+								logger.error("\(error)")
 							}
 
-							self.isPresentingForm = false
+							self.isAddDataFormPresented = false
 						}
 					}
 				}
@@ -93,7 +104,7 @@ struct DiscreteMetricListView: View {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
 	NavigationStack {
-		DiscreteMetricListView(metricType: .weight)
+		DiscreteMetricListView(metricType: .weight, isPermissionPrimerPresented: .constant(false))
 	}
 	.task {
 		try! await healthKitManager.fetchMetrics()

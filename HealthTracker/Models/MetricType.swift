@@ -8,17 +8,23 @@ enum MetricType: CaseIterable, Identifiable {
 		return self
 	}
 
-	var title: String {
+	var tint: Color {
+		return switch self {
+		case .steps: .pink
+		case .weight: .indigo
+		}
+	}
+}
+
+extension MetricType: CustomStringConvertible {
+	var description: String {
 		return switch self {
 		case .steps: "Steps"
 		case .weight: "Weight"
 		}
 	}
 
-	var tint: Color {
-		return switch self {
-		case .steps: .pink
-		case .weight: .indigo
-		}
+	var title: String {
+		return String(describing: self)
 	}
 }

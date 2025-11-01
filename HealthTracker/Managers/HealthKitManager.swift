@@ -2,7 +2,7 @@ import HealthKit
 import Observation
 import OSLog
 
-private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "HealthKitManager")
+private let logger = Logger.healthKitManager
 
 @Observable
 final class HealthKitManager {
