@@ -123,7 +123,7 @@ struct WeightBarChart: View {
 
 	WeightBarChart(selectedStat: .weight)
 		.task {
-			try! await healthKitManager.fetchData()
+			try! await healthKitManager.fetchMetrics()
 		}
 		.environment(healthKitManager)
 }

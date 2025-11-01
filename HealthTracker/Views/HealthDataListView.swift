@@ -1,30 +1,41 @@
 import SwiftUI
 
 struct HealthDataListView: View {
-	@State private var addDataDate = Date.now
-	@State private var isShowingAddData = false
-	@State private var valueToAdd = ""
+	@Environment(HealthKitManager.self) private var healthKitManager
+
+	@State private var newDate = Date.now
+	@State private var newValue = ""
+	@State private var isPresentingForm = false
 
 	let metric: HealthMetricContext
 
+	var healthMetrics: [HealthMetric] {
+		return switch self.metric {
+		case .steps: self.healthKitManager.stepData
+		case .weight: self.healthKitManager.weightData
+		}
+	}
+
 	var body: some View {
-		// Text(self.metric.title)
-		List(0 ..< 28) { _ in
+		List(self.healthMetrics.reversed()) { healthMetric in
 			HStack {
-				Text(Date(), format: .dateTime.month().day().year())
+				Text(healthMetric.date, format: .dateTime.month().day().year())
 
 				Spacer()
 
-				Text(10000, format: .number.precision(.fractionLength(self.metric == .steps ? 0 : 1)))
+				Text(
+					healthMetric.value,
+					format: .number.precision(.fractionLength(self.metric == .steps ? 0 : 1)),
+				)
 			}
 		}
 		.navigationTitle(self.metric.title)
-		.sheet(isPresented: self.$isShowingAddData) {
+		.sheet(isPresented: self.$isPresentingForm) {
 			self.addDataView
 		}
 		.toolbar {
 			Button("Add Data", systemImage: "plus") {
-				self.isShowingAddData = true
+				self.isPresentingForm = true
 			}
 		}
 	}
@@ -32,14 +43,14 @@ struct HealthDataListView: View {
 	var addDataView: some View {
 		NavigationStack {
 			Form {
-				DatePicker("Data", selection: self.$addDataDate, displayedComponents: .date)
+				DatePicker("Data", selection: self.$newDate, displayedComponents: .date)
 
 				HStack {
 					Text(self.metric.title)
 
 					Spacer()
 
-					TextField("Value", text: self.$valueToAdd)
+					TextField("Value", text: self.$newValue)
 						.multilineTextAlignment(.trailing)
 						.frame(width: 140)
 						.keyboardType(self.metric == .steps ? .numberPad : .decimalPad)
@@ -50,13 +61,27 @@ struct HealthDataListView: View {
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
 					Button("Dismiss") {
-						self.isShowingAddData = false
+						self.isPresentingForm = false
 					}
 				}
 
 				ToolbarItem(placement: .topBarTrailing) {
 					Button("Add Data") {
-						// TODO:
+						Task {
+							do {
+								try await self.healthKitManager.createSample(
+									for: self.metric,
+									date: self.newDate,
+									// TODO: Add validation
+									value: Double(self.newValue)!,
+								)
+							}
+							catch {
+								print(error)
+							}
+
+							self.isPresentingForm = false
+						}
 					}
 				}
 			}
@@ -65,7 +90,13 @@ struct HealthDataListView: View {
 }
 
 #Preview {
+	@Previewable @State var healthKitManager = HealthKitManager()
+
 	NavigationStack {
 		HealthDataListView(metric: .weight)
 	}
+	.task {
+		try! await healthKitManager.fetchMetrics()
+	}
+	.environment(healthKitManager)
 }

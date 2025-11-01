@@ -124,7 +124,7 @@ struct StepBarChart: View {
 
 	StepBarChart(selectedStat: .steps)
 		.task {
-			try! await healthKitManager.fetchData()
+			try! await healthKitManager.fetchMetrics()
 		}
 		.environment(healthKitManager)
 }

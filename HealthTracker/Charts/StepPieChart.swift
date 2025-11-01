@@ -77,7 +77,7 @@ struct StepPieChart: View {
 
 	StepPieChart()
 		.task {
-			try! await healthKitManager.fetchData()
+			try! await healthKitManager.fetchMetrics()
 		}
 		.environment(healthKitManager)
 }

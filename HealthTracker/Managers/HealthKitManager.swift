@@ -51,15 +51,14 @@ final class HealthKitManager {
 		}
 	}
 
-	func fetchData() async throws -> Void {
-		try await self.fetchStepCounts()
-		try await self.fetchWeights()
+	// MARK: - Fetch Metrics
 
-		self.stepAverageMetrics = AverageMetric.calculate(from: self.stepData)
-		self.weightAverageDiffMetrics = AverageMetric.calculateDifferences(from: self.weightData)
+	func fetchMetrics() async throws -> Void {
+		try await self.fetchStepMetrics()
+		try await self.fetchWeightMetrics()
 	}
 
-	func fetchStepCounts() async throws -> Void {
+	func fetchStepMetrics() async throws -> Void {
 		guard try await self.isAuthorizationRequestUnnecessary else {
 			return
 		}
@@ -91,9 +90,11 @@ final class HealthKitManager {
 				value: statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0,
 			)
 		}
+
+		self.stepAverageMetrics = AverageMetric.calculate(from: self.stepData)
 	}
 
-	func fetchWeights() async throws -> Void {
+	func fetchWeightMetrics() async throws -> Void {
 		guard try await self.isAuthorizationRequestUnnecessary else {
 			return
 		}
@@ -125,9 +126,58 @@ final class HealthKitManager {
 				value: statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0,
 			)
 		}
+
+		self.weightAverageDiffMetrics = AverageMetric.calculateDifferences(from: self.weightData)
 	}
 
-	func addFakeDataToSimulatorData() async throws -> Void {
+	// MARK: - Create Samples
+
+	func createSample(for metric: HealthMetricContext, date: Date, value: Double) async throws -> Void {
+		switch metric {
+		case .steps:
+			try await self.createStepSample(
+				date: date,
+				value: value,
+			)
+
+			try await self.fetchStepMetrics()
+
+		case .weight:
+			try await self.createWeightSample(
+				date: date,
+				value: value,
+			)
+
+			try await self.fetchWeightMetrics()
+		}
+	}
+
+	func createStepSample(date: Date, value: Double) async throws -> Void {
+		let sample = HKQuantitySample(
+			type: HKQuantityType(.stepCount),
+			quantity: HKQuantity(unit: .count(), doubleValue: value),
+			start: date,
+			end: date,
+		)
+
+		try await self.store.save(sample)
+	}
+
+	func createWeightSample(date: Date, value: Double) async throws -> Void {
+		let sample = HKQuantitySample(
+			type: HKQuantityType(.bodyMass),
+			quantity: HKQuantity(
+				unit: .pound(),
+				doubleValue: value,
+			),
+			start: date,
+			end: date,
+		)
+
+		try await self.store.save(sample)
+	}
+
+	func createFakeSamples() async throws -> Void {
 		#if !targetEnvironment(simulator)
 			return
 		#endif

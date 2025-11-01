@@ -67,8 +67,8 @@ struct DashboardView: View {
 		.fullScreenCover(isPresented: self.$isShowingPermissionPrimingSheet, onDismiss: {
 			Task {
 				do {
-					try await self.healthKitManager.addFakeDataToSimulatorData()
-					try await self.healthKitManager.fetchData()
+					try await self.healthKitManager.createFakeSamples()
+					try await self.healthKitManager.fetchMetrics()
 				}
 				catch {
 					logger.error("\(error)")
@@ -88,7 +88,7 @@ struct DashboardView: View {
 		}
 		.task {
 			do {
-				try await self.healthKitManager.fetchData()
+				try await self.healthKitManager.fetchMetrics()
 			}
 			catch {
 				logger.error("\(error)")

@@ -134,7 +134,7 @@ struct WeightLineChart: View {
 
 	WeightLineChart(selectedStat: .weight)
 		.task {
-			try! await healthKitManager.fetchData()
+			try! await healthKitManager.fetchMetrics()
 		}
 		.environment(healthKitManager)
 }
