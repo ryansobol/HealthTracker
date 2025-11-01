@@ -11,15 +11,15 @@ struct WeightLineChart: View {
 	let selectedStat: HealthMetricContext
 
 	var minValue: Double {
-		return self.healthKitManager.weightData.map { $0.value }.min() ?? 0
+		return self.healthKitManager.weightDiscreteMetrics.map { $0.value }.min() ?? 0
 	}
 
-	var selectedHealthMetric: HealthMetric? {
+	var selectedDiscreteMetric: DiscreteMetric? {
 		guard let rawSelectedDate = self.rawSelectedDate else {
 			return nil
 		}
 
-		return self.healthKitManager.weightData.first { metric in
+		return self.healthKitManager.weightDiscreteMetrics.first { metric in
 			Calendar.current.isDate(rawSelectedDate, inSameDayAs: metric.date)
 		}
 	}
@@ -46,8 +46,8 @@ struct WeightLineChart: View {
 			.padding(.bottom, 12)
 
 			Chart {
-				if let selectedHealthMetric = self.selectedHealthMetric {
-					RuleMark(x: .value("Selected Metric", selectedHealthMetric.date, unit: .day))
+				if let selectedDiscreteMetric = self.selectedDiscreteMetric {
+					RuleMark(x: .value("Selected Metric", selectedDiscreteMetric.date, unit: .day))
 						.foregroundStyle(.gray.opacity(0.3))
 						.offset(y: -10)
 						.annotation(
@@ -58,7 +58,7 @@ struct WeightLineChart: View {
 								y: .disabled,
 							),
 						) {
-							self.annotationView(selectedHealthMetric)
+							self.annotationView(selectedDiscreteMetric)
 						}
 				}
 
@@ -66,7 +66,7 @@ struct WeightLineChart: View {
 					.foregroundStyle(.mint)
 					.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-				ForEach(self.healthKitManager.weightData) { weight in
+				ForEach(self.healthKitManager.weightDiscreteMetrics) { weight in
 					AreaMark(
 						x: .value("Day", weight.date, unit: .day),
 						yStart: .value("Value", weight.value),
@@ -107,16 +107,16 @@ struct WeightLineChart: View {
 		}
 	}
 
-	func annotationView(_ selectedHealthMetric: HealthMetric) -> some View {
+	func annotationView(_ selectedDiscreteMetric: DiscreteMetric) -> some View {
 		VStack(alignment: .leading) {
 			Text(
-				selectedHealthMetric.date,
+				selectedDiscreteMetric.date,
 				format: .dateTime.weekday(.abbreviated).month(.abbreviated).day(),
 			)
 			.font(.footnote.bold())
 			.foregroundStyle(.secondary)
 
-			Text(selectedHealthMetric.value, format: .number.precision(.fractionLength(1)))
+			Text(selectedDiscreteMetric.value, format: .number.precision(.fractionLength(1)))
 				.fontWeight(.heavy)
 				.foregroundStyle(self.selectedStat.tint)
 		}

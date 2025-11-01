@@ -6,18 +6,18 @@ final class HealthKitManager {
 	let store = HKHealthStore()
 	let types = Set([HKQuantityType(.stepCount), HKQuantityType(.bodyMass)])
 
-	var stepData = [HealthMetric]()
-	var weightData = [HealthMetric]()
+	var stepDiscreteMetrics = [DiscreteMetric]()
+	var weightDiscreteMetrics = [DiscreteMetric]()
 
 	var stepAverageMetrics = [AverageMetric]()
 	var weightAverageDiffMetrics = [AverageMetric]()
 
 	var averageStepCount: Double {
-		guard !self.stepData.isEmpty else {
+		guard !self.stepDiscreteMetrics.isEmpty else {
 			return 0
 		}
 
-		return self.stepData.reduce(0) { $0 + $1.value } / Double(self.stepData.count)
+		return self.stepDiscreteMetrics.reduce(0) { $0 + $1.value } / Double(self.stepDiscreteMetrics.count)
 	}
 
 	var averageWeightDifference: Double {
@@ -84,14 +84,14 @@ final class HealthKitManager {
 
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
 
-		self.stepData = statisticsCollection.statistics().map { statistic in
+		self.stepDiscreteMetrics = statisticsCollection.statistics().map { statistic in
 			.init(
 				date: statistic.startDate,
 				value: statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0,
 			)
 		}
 
-		self.stepAverageMetrics = AverageMetric.calculate(from: self.stepData)
+		self.stepAverageMetrics = AverageMetric.calculate(from: self.stepDiscreteMetrics)
 	}
 
 	func fetchWeightMetrics() async throws -> Void {
@@ -120,14 +120,14 @@ final class HealthKitManager {
 
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
 
-		self.weightData = statisticsCollection.statistics().map { statistic in
+		self.weightDiscreteMetrics = statisticsCollection.statistics().map { statistic in
 			.init(
 				date: statistic.startDate,
 				value: statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0,
 			)
 		}
 
-		self.weightAverageDiffMetrics = AverageMetric.calculateDifferences(from: self.weightData)
+		self.weightAverageDiffMetrics = AverageMetric.calculateDifferences(from: self.weightDiscreteMetrics)
 	}
 
 	// MARK: - Create Samples
@@ -216,6 +216,6 @@ final class HealthKitManager {
 
 		try! await self.store.save(fakeSamples)
 
-		print("--> Fake health data added to simulator")
+		print("--> Fake discrete metrics added to simulator")
 	}
 }

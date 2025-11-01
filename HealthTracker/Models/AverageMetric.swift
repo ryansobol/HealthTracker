@@ -6,20 +6,20 @@ struct AverageMetric: Identifiable {
 	let weekday: Weekday
 	let value: Double
 
-	init(weekday: Weekday, healthMetrics: [HealthMetric]) {
+	init(weekday: Weekday, discreteMetrics: [DiscreteMetric]) {
 		self.weekday = weekday
-		self.value = healthMetrics.reduce(0) { $0 + $1.value } / Double(healthMetrics.count)
+		self.value = discreteMetrics.reduce(0) { $0 + $1.value } / Double(discreteMetrics.count)
 	}
 
-	static func calculate(from healthMetrics: [HealthMetric]) -> [Self] {
-		return Dictionary(grouping: healthMetrics) { $0.date.weekday }
-			.map { Self(weekday: $0, healthMetrics: $1) }
+	static func calculate(from discreteMetrics: [DiscreteMetric]) -> [Self] {
+		return Dictionary(grouping: discreteMetrics) { $0.date.weekday }
+			.map { Self(weekday: $0, discreteMetrics: $1) }
 			.sorted { $0.weekday < $1.weekday }
 	}
 
-	static func calculateDifferences(from healthMetrics: [HealthMetric]) -> [Self] {
-		let differences = zip(healthMetrics.dropFirst(), healthMetrics).map { current, previous in
-			HealthMetric(date: current.date, value: current.value - previous.value)
+	static func calculateDifferences(from discreteMetrics: [DiscreteMetric]) -> [Self] {
+		let differences = zip(discreteMetrics.dropFirst(), discreteMetrics).map { current, previous in
+			DiscreteMetric(date: current.date, value: current.value - previous.value)
 		}
 
 		return Self.calculate(from: differences)

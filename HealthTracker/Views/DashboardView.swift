@@ -60,7 +60,7 @@ struct DashboardView: View {
 			.padding()
 			.navigationTitle("Dashboard")
 			.navigationDestination(for: HealthMetricContext.self) { metric in
-				HealthDataListView(metric: metric)
+				DiscreteMetricListView(metric: metric)
 			}
 		}
 		.tint(self.selectedStat.tint)

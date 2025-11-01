@@ -1,6 +1,6 @@
 import Foundation
 
-struct HealthMetric: Identifiable {
+struct DiscreteMetric: Identifiable {
 	let id = UUID()
 
 	let date: Date

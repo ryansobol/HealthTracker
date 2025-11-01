@@ -8,12 +8,12 @@ struct StepBarChart: View {
 
 	let selectedStat: HealthMetricContext
 
-	var selectedHealthMetric: HealthMetric? {
+	var selectedDiscreteMetric: DiscreteMetric? {
 		guard let rawSelectedDate = self.rawSelectedDate else {
 			return nil
 		}
 
-		return self.healthKitManager.stepData.first { metric in
+		return self.healthKitManager.stepDiscreteMetrics.first { metric in
 			Calendar.current.isDate(rawSelectedDate, inSameDayAs: metric.date)
 		}
 	}
@@ -40,8 +40,8 @@ struct StepBarChart: View {
 			.padding(.bottom, 12)
 
 			Chart {
-				if let selectedHealthMetric = self.selectedHealthMetric {
-					RuleMark(x: .value("Selected Metric", selectedHealthMetric.date, unit: .day))
+				if let selectedDiscreteMetric = self.selectedDiscreteMetric {
+					RuleMark(x: .value("Selected Metric", selectedDiscreteMetric.date, unit: .day))
 						.foregroundStyle(.gray.opacity(0.3))
 						.offset(y: -10)
 						.annotation(
@@ -52,7 +52,7 @@ struct StepBarChart: View {
 								y: .disabled,
 							),
 						) {
-							self.annotationView(selectedHealthMetric)
+							self.annotationView(selectedDiscreteMetric)
 						}
 				}
 
@@ -60,14 +60,14 @@ struct StepBarChart: View {
 					.foregroundStyle(.secondary)
 					.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-				ForEach(self.healthKitManager.stepData) { steps in
+				ForEach(self.healthKitManager.stepDiscreteMetrics) { steps in
 					BarMark(
 						x: .value("Date", steps.date, unit: .day),
 						y: .value("Steps", steps.value),
 					)
 					.foregroundStyle(self.selectedStat.tint.gradient)
 					.opacity(
-						self.rawSelectedDate == nil || steps.date == self.selectedHealthMetric?.date ? 1.0 : 0.3,
+						self.rawSelectedDate == nil || steps.date == self.selectedDiscreteMetric?.date ? 1.0 : 0.3,
 					)
 				}
 			}
@@ -97,16 +97,16 @@ struct StepBarChart: View {
 		}
 	}
 
-	func annotationView(_ selectedHealthMetric: HealthMetric) -> some View {
+	func annotationView(_ selectedDiscreteMetric: DiscreteMetric) -> some View {
 		VStack(alignment: .leading) {
 			Text(
-				selectedHealthMetric.date,
+				selectedDiscreteMetric.date,
 				format: .dateTime.weekday(.abbreviated).month(.abbreviated).day(),
 			)
 			.font(.footnote.bold())
 			.foregroundStyle(.secondary)
 
-			Text(selectedHealthMetric.value, format: .number.precision(.fractionLength(0)))
+			Text(selectedDiscreteMetric.value, format: .number.precision(.fractionLength(0)))
 				.fontWeight(.heavy)
 				.foregroundStyle(self.selectedStat.tint)
 		}

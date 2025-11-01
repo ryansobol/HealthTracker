@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HealthDataListView: View {
+struct DiscreteMetricListView: View {
 	@Environment(HealthKitManager.self) private var healthKitManager
 
 	@State private var newDate = Date.now
@@ -9,15 +9,15 @@ struct HealthDataListView: View {
 
 	let metric: HealthMetricContext
 
-	var healthMetrics: [HealthMetric] {
+	var discreteMetrics: [DiscreteMetric] {
 		return switch self.metric {
-		case .steps: self.healthKitManager.stepData
-		case .weight: self.healthKitManager.weightData
+		case .steps: self.healthKitManager.stepDiscreteMetrics
+		case .weight: self.healthKitManager.weightDiscreteMetrics
 		}
 	}
 
 	var body: some View {
-		List(self.healthMetrics.reversed()) { healthMetric in
+		List(self.discreteMetrics.reversed()) { healthMetric in
 			HStack {
 				Text(healthMetric.date, format: .dateTime.month().day().year())
 
@@ -93,7 +93,7 @@ struct HealthDataListView: View {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
 	NavigationStack {
-		HealthDataListView(metric: .weight)
+		DiscreteMetricListView(metric: .weight)
 	}
 	.task {
 		try! await healthKitManager.fetchMetrics()
