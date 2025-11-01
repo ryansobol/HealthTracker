@@ -60,8 +60,12 @@ final class HealthKitManager {
 	// MARK: - Fetch Metrics
 
 	func fetchMetrics() async throws -> Void {
-		try await self.fetchStepMetrics()
-		try await self.fetchWeightMetrics()
+		try await withThrowingTaskGroup { group in
+			group.addTask { try await self.fetchStepMetrics() }
+			group.addTask { try await self.fetchWeightMetrics() }
+
+			try await group.waitForAll()
+		}
 	}
 
 	private func fetchStepMetrics() async throws -> Void {
