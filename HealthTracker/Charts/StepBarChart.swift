@@ -6,7 +6,7 @@ struct StepBarChart: View {
 
 	@State private var rawSelectedDate: Date? = nil
 
-	let selectedStat: HealthMetricContext
+	let metricType = MetricType.steps
 
 	var selectedDiscreteMetric: DiscreteMetric? {
 		guard let rawSelectedDate = self.rawSelectedDate else {
@@ -20,12 +20,12 @@ struct StepBarChart: View {
 
 	var body: some View {
 		VStack {
-			NavigationLink(value: self.selectedStat) {
+			NavigationLink(value: self.metricType) {
 				HStack {
 					VStack(alignment: .leading) {
 						Label("Steps", systemImage: "figure.walk")
 							.font(.title3.bold())
-							.foregroundStyle(self.selectedStat.tint)
+							.foregroundStyle(self.metricType.tint)
 
 						Text("Avg: \(Int(self.healthKitManager.averageStepCount)) steps")
 							.font(.caption)
@@ -65,7 +65,7 @@ struct StepBarChart: View {
 						x: .value("Date", steps.date, unit: .day),
 						y: .value("Steps", steps.value),
 					)
-					.foregroundStyle(self.selectedStat.tint.gradient)
+					.foregroundStyle(self.metricType.tint.gradient)
 					.opacity(
 						self.rawSelectedDate == nil || steps.date == self.selectedDiscreteMetric?.date ? 1.0 : 0.3,
 					)
@@ -108,7 +108,7 @@ struct StepBarChart: View {
 
 			Text(selectedDiscreteMetric.value, format: .number.precision(.fractionLength(0)))
 				.fontWeight(.heavy)
-				.foregroundStyle(self.selectedStat.tint)
+				.foregroundStyle(self.metricType.tint)
 		}
 		.padding(12)
 		.background {
@@ -122,7 +122,7 @@ struct StepBarChart: View {
 #Preview {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
-	StepBarChart(selectedStat: .steps)
+	StepBarChart()
 		.task {
 			try! await healthKitManager.fetchMetrics()
 		}

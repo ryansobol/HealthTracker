@@ -6,7 +6,7 @@ struct WeightBarChart: View {
 
 	@State private var rawSelectedAverageMetricWeekday: Weekday? = nil
 
-	let selectedStat: HealthMetricContext
+	let metricType = MetricType.weight
 
 	var selectedAverageMetric: AverageMetric? {
 		guard let rawSelectedAverageMetricWeekday = self.rawSelectedAverageMetricWeekday else {
@@ -24,7 +24,7 @@ struct WeightBarChart: View {
 				VStack(alignment: .leading) {
 					Label("Average Change", systemImage: "figure")
 						.font(.title3.bold())
-						.foregroundStyle(self.selectedStat.tint)
+						.foregroundStyle(self.metricType.tint)
 
 					Text("Last 28 Days")
 						.font(.caption)
@@ -59,7 +59,7 @@ struct WeightBarChart: View {
 					)
 					.foregroundStyle(
 						averageDiffMetric.value >= 0
-							? self.selectedStat.tint.gradient
+							? self.metricType.tint.gradient
 							: Color.mint.gradient,
 					)
 					.opacity(
@@ -107,7 +107,7 @@ struct WeightBarChart: View {
 
 			Text(selectedAverageMetric.value, format: .number.precision(.fractionLength(2)))
 				.fontWeight(.heavy)
-				.foregroundStyle(selectedAverageMetric.value >= 0 ? self.selectedStat.tint : Color.mint)
+				.foregroundStyle(selectedAverageMetric.value >= 0 ? self.metricType.tint : Color.mint)
 		}
 		.padding(12)
 		.background {
@@ -121,7 +121,7 @@ struct WeightBarChart: View {
 #Preview {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
-	WeightBarChart(selectedStat: .weight)
+	WeightBarChart()
 		.task {
 			try! await healthKitManager.fetchMetrics()
 		}

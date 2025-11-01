@@ -7,10 +7,10 @@ struct DiscreteMetricListView: View {
 	@State private var newValue = ""
 	@State private var isPresentingForm = false
 
-	let metric: HealthMetricContext
+	let metricType: MetricType
 
 	var discreteMetrics: [DiscreteMetric] {
-		return switch self.metric {
+		return switch self.metricType {
 		case .steps: self.healthKitManager.stepDiscreteMetrics
 		case .weight: self.healthKitManager.weightDiscreteMetrics
 		}
@@ -25,11 +25,11 @@ struct DiscreteMetricListView: View {
 
 				Text(
 					healthMetric.value,
-					format: .number.precision(.fractionLength(self.metric == .steps ? 0 : 1)),
+					format: .number.precision(.fractionLength(self.metricType == .steps ? 0 : 1)),
 				)
 			}
 		}
-		.navigationTitle(self.metric.title)
+		.navigationTitle(self.metricType.title)
 		.sheet(isPresented: self.$isPresentingForm) {
 			self.addDataView
 		}
@@ -46,18 +46,18 @@ struct DiscreteMetricListView: View {
 				DatePicker("Data", selection: self.$newDate, displayedComponents: .date)
 
 				HStack {
-					Text(self.metric.title)
+					Text(self.metricType.title)
 
 					Spacer()
 
 					TextField("Value", text: self.$newValue)
 						.multilineTextAlignment(.trailing)
 						.frame(width: 140)
-						.keyboardType(self.metric == .steps ? .numberPad : .decimalPad)
+						.keyboardType(self.metricType == .steps ? .numberPad : .decimalPad)
 				}
 			}
 			.navigationBarTitleDisplayMode(.inline)
-			.navigationTitle(self.metric.title)
+			.navigationTitle(self.metricType.title)
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
 					Button("Dismiss") {
@@ -70,7 +70,7 @@ struct DiscreteMetricListView: View {
 						Task {
 							do {
 								try await self.healthKitManager.createSample(
-									for: self.metric,
+									metricType: self.metricType,
 									date: self.newDate,
 									// TODO: Add validation
 									value: Double(self.newValue)!,
@@ -93,7 +93,7 @@ struct DiscreteMetricListView: View {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
 	NavigationStack {
-		DiscreteMetricListView(metric: .weight)
+		DiscreteMetricListView(metricType: .weight)
 	}
 	.task {
 		try! await healthKitManager.fetchMetrics()

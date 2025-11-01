@@ -7,8 +7,7 @@ struct WeightLineChart: View {
 	@State private var rawSelectedDate: Date? = nil
 
 	let goal = 165
-
-	let selectedStat: HealthMetricContext
+	let metricType = MetricType.weight
 
 	var minValue: Double {
 		return self.healthKitManager.weightDiscreteMetrics.map { $0.value }.min() ?? 0
@@ -26,12 +25,12 @@ struct WeightLineChart: View {
 
 	var body: some View {
 		VStack {
-			NavigationLink(value: self.selectedStat) {
+			NavigationLink(value: self.metricType) {
 				HStack {
 					VStack(alignment: .leading) {
 						Label("Weight", systemImage: "figure")
 							.font(.title3.bold())
-							.foregroundStyle(self.selectedStat.tint)
+							.foregroundStyle(self.metricType.tint)
 
 						Text("Avg: 180 lbs")
 							.font(.caption)
@@ -72,13 +71,13 @@ struct WeightLineChart: View {
 						yStart: .value("Value", weight.value),
 						yEnd: .value("Min value", self.minValue),
 					)
-					.foregroundStyle(Gradient(colors: [self.selectedStat.tint.opacity(0.5), .clear]))
+					.foregroundStyle(Gradient(colors: [self.metricType.tint.opacity(0.5), .clear]))
 
 					LineMark(
 						x: .value("Day", weight.date, unit: .day),
 						y: .value("Value", weight.value),
 					)
-					.foregroundStyle(self.selectedStat.tint)
+					.foregroundStyle(self.metricType.tint)
 					.symbol(.circle)
 				}
 				.interpolationMethod(.catmullRom)
@@ -118,7 +117,7 @@ struct WeightLineChart: View {
 
 			Text(selectedDiscreteMetric.value, format: .number.precision(.fractionLength(1)))
 				.fontWeight(.heavy)
-				.foregroundStyle(self.selectedStat.tint)
+				.foregroundStyle(self.metricType.tint)
 		}
 		.padding(12)
 		.background {
@@ -132,7 +131,7 @@ struct WeightLineChart: View {
 #Preview {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
-	WeightLineChart(selectedStat: .weight)
+	WeightLineChart()
 		.task {
 			try! await healthKitManager.fetchMetrics()
 		}

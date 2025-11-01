@@ -2,12 +2,11 @@ import HealthKit
 import Observation
 import OSLog
 
-let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "HealthKitManager")
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "HealthKitManager")
 
 @Observable
 final class HealthKitManager {
 	let store = HKHealthStore()
-	let types = Set([HKQuantityType(.stepCount), HKQuantityType(.bodyMass)])
 
 	var stepDiscreteMetrics = [DiscreteMetric]()
 	var weightDiscreteMetrics = [DiscreteMetric]()
@@ -15,12 +14,25 @@ final class HealthKitManager {
 	var stepAverageMetrics = [AverageMetric]()
 	var weightAverageDiffMetrics = [AverageMetric]()
 
+	let types: Set<HKQuantityType>
+
+	private let stepType = HKQuantityType(.stepCount)
+	private let weightType = HKQuantityType(.bodyMass)
+
+	init() {
+		self.types = Set([
+			self.stepType,
+			self.weightType,
+		])
+	}
+
 	var averageStepCount: Double {
 		guard !self.stepDiscreteMetrics.isEmpty else {
 			return 0
 		}
 
-		return self.stepDiscreteMetrics.reduce(0) { $0 + $1.value } / Double(self.stepDiscreteMetrics.count)
+		return self.stepDiscreteMetrics
+			.reduce(0) { $0 + $1.value } / Double(self.stepDiscreteMetrics.count)
 	}
 
 	var averageWeightDifference: Double {
@@ -32,26 +44,13 @@ final class HealthKitManager {
 			.reduce(0) { $0 + $1.value } / Double(self.weightAverageDiffMetrics.count)
 	}
 
-	var shouldRequestAuthorization: Bool {
-		get async throws {
-			let result = try await self.store.statusForAuthorizationRequest(
-				toShare: self.types,
-				read: self.types,
-			)
+	private func isAuthorizationRequestUnnecessary(for type: HKQuantityType) async throws -> Bool {
+		let result = try await self.store.statusForAuthorizationRequest(
+			toShare: Set([type]),
+			read: Set([type]),
+		)
 
-			return result == .shouldRequest
-		}
-	}
-
-	var isAuthorizationRequestUnnecessary: Bool {
-		get async throws {
-			let result = try await self.store.statusForAuthorizationRequest(
-				toShare: self.types,
-				read: self.types,
-			)
-
-			return result == .unnecessary
-		}
+		return result == .unnecessary
 	}
 
 	// MARK: - Fetch Metrics
@@ -61,9 +60,9 @@ final class HealthKitManager {
 		try await self.fetchWeightMetrics()
 	}
 
-	func fetchStepMetrics() async throws -> Void {
-		guard try await self.isAuthorizationRequestUnnecessary else {
-			return
+	private func fetchStepMetrics() async throws -> Void {
+		guard try await self.isAuthorizationRequestUnnecessary(for: self.stepType) else {
+			throw AuthorizationError.authorizationRequestNecessary(metricType: .steps)
 		}
 
 		let calendar = Calendar.current
@@ -97,9 +96,9 @@ final class HealthKitManager {
 		self.stepAverageMetrics = AverageMetric.calculate(from: self.stepDiscreteMetrics)
 	}
 
-	func fetchWeightMetrics() async throws -> Void {
-		guard try await self.isAuthorizationRequestUnnecessary else {
-			return
+	private func fetchWeightMetrics() async throws -> Void {
+		guard try await self.isAuthorizationRequestUnnecessary(for: self.weightType) else {
+			throw AuthorizationError.authorizationRequestNecessary(metricType: .weight)
 		}
 
 		let calendar = Calendar.current
@@ -130,15 +129,18 @@ final class HealthKitManager {
 			)
 		}
 
-		self.weightAverageDiffMetrics = AverageMetric.calculateDifferences(from: self.weightDiscreteMetrics)
+		self.weightAverageDiffMetrics = AverageMetric.calculateDifferences(
+			from: self.weightDiscreteMetrics,
+		)
 	}
 
 	// MARK: - Create Samples
 
-	func createSample(for metric: HealthMetricContext, date: Date, value: Double) async throws -> Void {
-		switch metric {
+	func createSample(metricType: MetricType, date: Date, value: Double) async throws -> Void {
+		switch metricType {
 		case .steps:
 			try await self.createStepSample(
+				metricType: metricType,
 				date: date,
 				value: value,
 			)
@@ -147,6 +149,7 @@ final class HealthKitManager {
 
 		case .weight:
 			try await self.createWeightSample(
+				metricType: metricType,
 				date: date,
 				value: value,
 			)
@@ -155,27 +158,32 @@ final class HealthKitManager {
 		}
 	}
 
-	func createStepSample(date: Date, value: Double) async throws -> Void {
-		let sample = HKQuantitySample(
-			type: HKQuantityType(.stepCount),
-			quantity: HKQuantity(unit: .count(), doubleValue: value),
-			start: date,
-			end: date,
-		)
+	private func createStepSample(
+		metricType: MetricType,
+		date: Date,
+		value: Double,
+	) async throws -> Void {
+		guard self.store.authorizationStatus(for: self.stepType) == .sharingAuthorized else {
+			throw AuthorizationError.sharingNotAuthorized(metricType: metricType)
+		}
+
+		let quantity = HKQuantity(unit: .count(), doubleValue: value)
+		let sample = HKQuantitySample(type: self.stepType, quantity: quantity, start: date, end: date)
 
 		try await self.store.save(sample)
 	}
 
-	func createWeightSample(date: Date, value: Double) async throws -> Void {
-		let sample = HKQuantitySample(
-			type: HKQuantityType(.bodyMass),
-			quantity: HKQuantity(
-				unit: .pound(),
-				doubleValue: value,
-			),
-			start: date,
-			end: date,
-		)
+	private func createWeightSample(
+		metricType: MetricType,
+		date: Date,
+		value: Double,
+	) async throws -> Void {
+		guard self.store.authorizationStatus(for: self.weightType) == .sharingAuthorized else {
+			throw AuthorizationError.sharingNotAuthorized(metricType: metricType)
+		}
+
+		let quantity = HKQuantity(unit: .pound(), doubleValue: value)
+		let sample = HKQuantitySample(type: self.weightType, quantity: quantity, start: date, end: date)
 
 		try await self.store.save(sample)
 	}
@@ -185,33 +193,45 @@ final class HealthKitManager {
 			return
 		#endif
 
-		guard try await self.isAuthorizationRequestUnnecessary else {
-			return
+		guard self.store.authorizationStatus(for: self.stepType) == .sharingAuthorized else {
+			throw AuthorizationError.sharingNotAuthorized(metricType: .steps)
 		}
 
+		guard self.store.authorizationStatus(for: self.weightType) == .sharingAuthorized else {
+			throw AuthorizationError.sharingNotAuthorized(metricType: .weight)
+		}
+
+		let days = 28
 		var fakeSamples = [HKQuantitySample]()
 
-		fakeSamples.reserveCapacity(28)
+		fakeSamples.reserveCapacity(days * 2)
 
-		for i in 0 ..< 28 {
+		for i in 0 ..< days {
 			let startDate = Calendar.current.date(byAdding: .day, value: -i, to: .now)!
 			let endDate = Calendar.current.date(byAdding: .second, value: i, to: startDate)!
 
+			let stepQuantity = HKQuantity(
+				unit: .count(),
+				doubleValue: .random(in: 4000 ... 20000),
+			)
+
 			let stepSample = HKQuantitySample(
-				type: HKQuantityType(.stepCount),
-				quantity: HKQuantity(unit: .count(), doubleValue: .random(in: 4000 ... 20000)),
+				type: self.stepType,
+				quantity: stepQuantity,
 				start: startDate,
 				end: endDate,
 			)
 
 			fakeSamples.append(stepSample)
 
+			let weightQuantity = HKQuantity(
+				unit: .pound(),
+				doubleValue: .random(in: 160 + Double(i / 3) ... 165 + Double(i / 3)),
+			)
+
 			let weightSample = HKQuantitySample(
-				type: HKQuantityType(.bodyMass),
-				quantity: HKQuantity(
-					unit: .pound(),
-					doubleValue: .random(in: 160 + Double(i / 3) ... 165 + Double(i / 3)),
-				),
+				type: self.weightType,
+				quantity: weightQuantity,
 				start: startDate,
 				end: endDate,
 			)

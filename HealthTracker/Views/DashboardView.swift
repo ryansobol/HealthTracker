@@ -4,66 +4,43 @@ import SwiftUI
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "DashboardView")
 
-enum HealthMetricContext: CaseIterable, Identifiable {
-	case steps
-	case weight
-
-	var id: Self {
-		return self
-	}
-
-	var title: String {
-		return switch self {
-		case .steps: "Steps"
-		case .weight: "Weight"
-		}
-	}
-
-	var tint: Color {
-		return switch self {
-		case .steps: .pink
-		case .weight: .indigo
-		}
-	}
-}
-
 struct DashboardView: View {
 	@Environment(HealthKitManager.self) private var healthKitManager
 
 	@State private var isShowingPermissionPrimingSheet = false
-	@State private var selectedStat = HealthMetricContext.steps
+	@State private var selectedMetricType = MetricType.steps
 
 	var body: some View {
 		NavigationStack {
 			ScrollView {
 				VStack(spacing: 20) {
-					Picker("Selected Stat", selection: self.$selectedStat) {
-						ForEach(HealthMetricContext.allCases) { metric in
+					Picker("Selected Metric Type", selection: self.$selectedMetricType) {
+						ForEach(MetricType.allCases) { metric in
 							Text(metric.title)
 						}
 					}
 					.pickerStyle(.segmented)
 
-					switch self.selectedStat {
+					switch self.selectedMetricType {
 					case .steps:
-						StepBarChart(selectedStat: self.selectedStat)
+						StepBarChart()
 
 						StepPieChart()
 
 					case .weight:
-						WeightLineChart(selectedStat: self.selectedStat)
+						WeightLineChart()
 
-						WeightBarChart(selectedStat: self.selectedStat)
+						WeightBarChart()
 					}
 				}
 			}
 			.padding()
 			.navigationTitle("Dashboard")
-			.navigationDestination(for: HealthMetricContext.self) { metric in
-				DiscreteMetricListView(metric: metric)
+			.navigationDestination(for: MetricType.self) { metric in
+				DiscreteMetricListView(metricType: metric)
 			}
 		}
-		.tint(self.selectedStat.tint)
+		.tint(self.selectedMetricType.tint)
 		.fullScreenCover(isPresented: self.$isShowingPermissionPrimingSheet, onDismiss: {
 			Task {
 				do {
@@ -79,16 +56,10 @@ struct DashboardView: View {
 		})
 		.task {
 			do {
-				self.isShowingPermissionPrimingSheet =
-					try await self.healthKitManager.shouldRequestAuthorization
-			}
-			catch {
-				logger.error("\(error)")
-			}
-		}
-		.task {
-			do {
 				try await self.healthKitManager.fetchMetrics()
+			}
+			catch AuthorizationError.authorizationRequestNecessary {
+				self.isShowingPermissionPrimingSheet = true
 			}
 			catch {
 				logger.error("\(error)")
