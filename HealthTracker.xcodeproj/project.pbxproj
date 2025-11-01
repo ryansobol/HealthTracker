@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1D2A48DA2EAD1F4E00AAA276 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1D2A48D82EAD1F4700AAA276 /* .gitignore */; };
-		1D2A48F22EAD745F00AAA276 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 1D2A48F12EAD745F00AAA276 /* Algorithms */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,7 +59,6 @@
 		1DC7CE8A2EAC08CC00068BDD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
-				1D2A48F22EAD745F00AAA276 /* Algorithms in Frameworks */,
 			);
 		};
 		1DC7CE972EAC08CD00068BDD /* Frameworks */ = {
@@ -117,9 +115,6 @@
 				1DC7CE8F2EAC08CC00068BDD /* HealthTracker */,
 			);
 			name = HealthTracker;
-			packageProductDependencies = (
-				1D2A48F12EAD745F00AAA276 /* Algorithms */,
-			);
 			productName = HealthTracker;
 			productReference = 1DC7CE8D2EAC08CC00068BDD /* HealthTracker.app */;
 			productType = "com.apple.product-type.application";
@@ -199,7 +194,6 @@
 			mainGroup = 1DC7CE842EAC08CC00068BDD;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				1D2A48F02EAD745F00AAA276 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 1DC7CE8E2EAC08CC00068BDD /* Products */;
@@ -575,25 +569,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		1D2A48F02EAD745F00AAA276 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-algorithms.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		1D2A48F12EAD745F00AAA276 /* Algorithms */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1D2A48F02EAD745F00AAA276 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
-			productName = Algorithms;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1DC7CE852EAC08CC00068BDD /* Project object */;
 }
