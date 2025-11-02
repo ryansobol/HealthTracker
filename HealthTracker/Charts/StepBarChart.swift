@@ -19,81 +19,55 @@ struct StepBarChart: View {
 	}
 
 	var body: some View {
-		VStack {
-			NavigationLink(value: self.metricType) {
-				HStack {
-					VStack(alignment: .leading) {
-						Label("Steps", systemImage: "figure.walk")
-							.font(.title3.bold())
-							.foregroundStyle(self.metricType.tint)
-
-						Text("Avg: \(Int(self.healthKitManager.averageStepCount)) steps")
-							.font(.caption)
+		Chart {
+			if let selectedDiscreteMetric = self.selectedDiscreteMetric {
+				RuleMark(x: .value("Selected Metric", selectedDiscreteMetric.date, unit: .day))
+					.foregroundStyle(.gray.opacity(0.3))
+					.offset(y: -10)
+					.annotation(
+						position: .top,
+						spacing: 0,
+						overflowResolution: .init(
+							x: .fit(to: .chart),
+							y: .disabled,
+						),
+					) {
+						self.annotationView(selectedDiscreteMetric)
 					}
-
-					Spacer()
-
-					Image(systemName: "chevron.right")
-				}
 			}
-			.foregroundStyle(.secondary)
-			.padding(.bottom, 12)
 
-			Chart {
-				if let selectedDiscreteMetric = self.selectedDiscreteMetric {
-					RuleMark(x: .value("Selected Metric", selectedDiscreteMetric.date, unit: .day))
-						.foregroundStyle(.gray.opacity(0.3))
-						.offset(y: -10)
-						.annotation(
-							position: .top,
-							spacing: 0,
-							overflowResolution: .init(
-								x: .fit(to: .chart),
-								y: .disabled,
-							),
-						) {
-							self.annotationView(selectedDiscreteMetric)
-						}
-				}
+			RuleMark(y: .value("Average", self.healthKitManager.averageStepCount))
+				.foregroundStyle(.secondary)
+				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-				RuleMark(y: .value("Average", self.healthKitManager.averageStepCount))
-					.foregroundStyle(.secondary)
-					.lineStyle(.init(lineWidth: 1, dash: [5]))
-
-				ForEach(self.healthKitManager.stepDiscreteMetrics) { steps in
-					BarMark(
-						x: .value("Date", steps.date, unit: .day),
-						y: .value("Steps", steps.value),
-					)
-					.foregroundStyle(self.metricType.tint.gradient)
-					.opacity(
-						self.rawSelectedDate == nil || steps.date == self.selectedDiscreteMetric?.date ? 1.0 : 0.3,
-					)
-				}
-			}
-			.frame(height: 150)
-			.chartXSelection(value: self.$rawSelectedDate.animation(.smooth(duration: 0.25)))
-			.chartXAxis {
-				AxisMarks { _ in
-					AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
-				}
-			}
-			.chartYAxis {
-				AxisMarks { value in
-					AxisGridLine()
-						.foregroundStyle(.gray.opacity(0.3))
-
-					AxisValueLabel(
-						(value.as(Double.self) ?? 0)
-							.formatted(.number.notation(.compactName)),
-					)
-				}
+			ForEach(self.healthKitManager.stepDiscreteMetrics) { steps in
+				BarMark(
+					x: .value("Date", steps.date, unit: .day),
+					y: .value("Steps", steps.value),
+				)
+				.foregroundStyle(self.metricType.tint.gradient)
+				.opacity(
+					self.rawSelectedDate == nil || steps.date == self.selectedDiscreteMetric?.date ? 1.0 : 0.3,
+				)
 			}
 		}
-		.padding()
-		.background {
-			RoundedRectangle(cornerRadius: 12)
-				.fill(Color(.secondarySystemBackground))
+		.frame(height: 150)
+		.chartXSelection(value: self.$rawSelectedDate.animation(.smooth(duration: 0.25)))
+		.chartXAxis {
+			AxisMarks { _ in
+				AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
+			}
+		}
+		.chartYAxis {
+			AxisMarks { value in
+				AxisGridLine()
+					.foregroundStyle(.gray.opacity(0.3))
+
+				AxisValueLabel(
+					(value.as(Double.self) ?? 0)
+						.formatted(.number.notation(.compactName)),
+				)
+			}
 		}
 		.sensoryFeedback(.selection, trigger: self.rawSelectedDate?.weekday)
 	}

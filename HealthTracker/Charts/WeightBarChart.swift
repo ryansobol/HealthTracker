@@ -19,84 +19,63 @@ struct WeightBarChart: View {
 	}
 
 	var body: some View {
-		VStack {
-			HStack {
-				VStack(alignment: .leading) {
-					Label("Average Change", systemImage: "figure")
-						.font(.title3.bold())
-						.foregroundStyle(self.metricType.tint)
-
-					Text("Last 28 Days")
-						.font(.caption)
-				}
-
-				Spacer()
+		Chart {
+			if let selectedAverageMetric = self.selectedAverageMetric {
+				RuleMark(x: .value("Selected Average Metric", selectedAverageMetric.weekday))
+					.foregroundStyle(.gray.opacity(0.3))
+					.offset(y: -10)
+					.annotation(
+						position: .top,
+						spacing: 0,
+						overflowResolution: .init(
+							x: .fit(to: .chart),
+							y: .disabled,
+						),
+					) {
+						self.annotationView(selectedAverageMetric)
+					}
 			}
-			.foregroundStyle(.secondary)
-			.padding(.bottom, 12)
 
-			Chart {
-				if let selectedAverageMetric = self.selectedAverageMetric {
-					RuleMark(x: .value("Selected Average Metric", selectedAverageMetric.weekday))
-						.foregroundStyle(.gray.opacity(0.3))
-						.offset(y: -10)
-						.annotation(
-							position: .top,
-							spacing: 0,
-							overflowResolution: .init(
-								x: .fit(to: .chart),
-								y: .disabled,
-							),
-						) {
-							self.annotationView(selectedAverageMetric)
-						}
-				}
-
-				ForEach(self.healthKitManager.weightAverageDiffMetrics) { averageDiffMetric in
-					BarMark(
-						x: .value("Weekday", averageDiffMetric.weekday),
-						y: .value("Average Differece", averageDiffMetric.value),
-					)
-					.foregroundStyle(
-						averageDiffMetric.value >= 0
-							? self.metricType.tint.gradient
-							: Color.mint.gradient,
-					)
-					.opacity(
-						self.rawSelectedAverageMetricWeekday == nil || self
-							.rawSelectedAverageMetricWeekday == averageDiffMetric.weekday ? 1.0 : 0.3,
-					)
-				}
+			ForEach(self.healthKitManager.weightAverageDiffMetrics) { averageDiffMetric in
+				BarMark(
+					x: .value("Weekday", averageDiffMetric.weekday),
+					y: .value("Average Differece", averageDiffMetric.value),
+				)
+				.foregroundStyle(
+					averageDiffMetric.value >= 0
+						? self.metricType.tint.gradient
+						: Color.mint.gradient,
+				)
+				.opacity(
+					self.rawSelectedAverageMetricWeekday == nil || self
+						.rawSelectedAverageMetricWeekday == averageDiffMetric.weekday ? 1.0 : 0.3,
+				)
 			}
-			.frame(height: 150)
-			.chartXSelection(value: self.$rawSelectedAverageMetricWeekday.animation(.smooth(duration: 0.25)))
-			.chartXAxis {
-				AxisMarks { value in
-					if let weekday = value.as(Weekday.self) {
-						AxisValueLabel {
-							Text(weekday.shortSymbol)
-						}
+		}
+		.frame(height: 150)
+		.chartXSelection(value: self.$rawSelectedAverageMetricWeekday.animation(.smooth(duration: 0.25)))
+		.chartXAxis {
+			AxisMarks { value in
+				if let weekday = value.as(Weekday.self) {
+					AxisValueLabel {
+						Text(weekday.shortSymbol)
 					}
 				}
 			}
-			.chartXScale(domain: Weekday.allCases.map { $0.symbol }, type: .category)
-			.chartYAxis {
-				AxisMarks { value in
-					AxisGridLine()
-						.foregroundStyle(.gray.opacity(0.3))
+		}
+		.chartXScale(domain: Weekday.allCases.map { $0.symbol }, type: .category)
+		.chartYAxis {
+			AxisMarks { value in
+				AxisGridLine()
+					.foregroundStyle(.gray.opacity(0.3))
 
-					AxisValueLabel(
-						(value.as(Double.self) ?? 0)
-							.formatted(.number.notation(.compactName)),
-					)
-				}
+				AxisValueLabel(
+					(value.as(Double.self) ?? 0)
+						.formatted(.number.notation(.compactName)),
+				)
 			}
 		}
-		.padding()
-		.background {
-			RoundedRectangle(cornerRadius: 12)
-				.fill(Color(.secondarySystemBackground))
-		}
+		.sensoryFeedback(.selection, trigger: self.rawSelectedAverageMetricWeekday)
 	}
 
 	func annotationView(_ selectedAverageMetric: AverageMetric) -> some View {

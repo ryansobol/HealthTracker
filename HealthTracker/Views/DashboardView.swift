@@ -24,14 +24,14 @@ struct DashboardView: View {
 
 					switch self.selectedMetricType {
 					case .steps:
-						StepBarChart()
+						StepBarCardView()
 
-						StepPieChart()
+						StepPieCardView()
 
 					case .weight:
-						WeightLineChart()
+						WeightLineCardView()
 
-						WeightBarChart()
+						WeightBarCardView()
 					}
 				}
 			}

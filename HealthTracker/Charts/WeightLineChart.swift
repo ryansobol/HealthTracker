@@ -24,86 +24,61 @@ struct WeightLineChart: View {
 	}
 
 	var body: some View {
-		VStack {
-			NavigationLink(value: self.metricType) {
-				HStack {
-					VStack(alignment: .leading) {
-						Label("Weight", systemImage: "figure")
-							.font(.title3.bold())
-							.foregroundStyle(self.metricType.tint)
-
-						Text("Avg: 180 lbs")
-							.font(.caption)
+		Chart {
+			if let selectedDiscreteMetric = self.selectedDiscreteMetric {
+				RuleMark(x: .value("Selected Metric", selectedDiscreteMetric.date, unit: .day))
+					.foregroundStyle(.gray.opacity(0.3))
+					.offset(y: -10)
+					.annotation(
+						position: .top,
+						spacing: 0,
+						overflowResolution: .init(
+							x: .fit(to: .chart),
+							y: .disabled,
+						),
+					) {
+						self.annotationView(selectedDiscreteMetric)
 					}
-
-					Spacer()
-
-					Image(systemName: "chevron.right")
-				}
 			}
-			.foregroundStyle(.secondary)
-			.padding(.bottom, 12)
 
-			Chart {
-				if let selectedDiscreteMetric = self.selectedDiscreteMetric {
-					RuleMark(x: .value("Selected Metric", selectedDiscreteMetric.date, unit: .day))
-						.foregroundStyle(.gray.opacity(0.3))
-						.offset(y: -10)
-						.annotation(
-							position: .top,
-							spacing: 0,
-							overflowResolution: .init(
-								x: .fit(to: .chart),
-								y: .disabled,
-							),
-						) {
-							self.annotationView(selectedDiscreteMetric)
-						}
-				}
+			RuleMark(y: .value("Goal", self.goal))
+				.foregroundStyle(.mint)
+				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-				RuleMark(y: .value("Goal", self.goal))
-					.foregroundStyle(.mint)
-					.lineStyle(.init(lineWidth: 1, dash: [5]))
+			ForEach(self.healthKitManager.weightDiscreteMetrics) { weight in
+				AreaMark(
+					x: .value("Day", weight.date, unit: .day),
+					yStart: .value("Value", weight.value),
+					yEnd: .value("Min value", self.minValue),
+				)
+				.foregroundStyle(Gradient(colors: [self.metricType.tint.opacity(0.5), .clear]))
 
-				ForEach(self.healthKitManager.weightDiscreteMetrics) { weight in
-					AreaMark(
-						x: .value("Day", weight.date, unit: .day),
-						yStart: .value("Value", weight.value),
-						yEnd: .value("Min value", self.minValue),
-					)
-					.foregroundStyle(Gradient(colors: [self.metricType.tint.opacity(0.5), .clear]))
-
-					LineMark(
-						x: .value("Day", weight.date, unit: .day),
-						y: .value("Value", weight.value),
-					)
-					.foregroundStyle(self.metricType.tint)
-					.symbol(.circle)
-				}
-				.interpolationMethod(.catmullRom)
+				LineMark(
+					x: .value("Day", weight.date, unit: .day),
+					y: .value("Value", weight.value),
+				)
+				.foregroundStyle(self.metricType.tint)
+				.symbol(.circle)
 			}
-			.frame(height: 150)
-			.chartXSelection(value: self.$rawSelectedDate)
-			.chartYScale(domain: .automatic(includesZero: false))
-			.chartXAxis {
-				AxisMarks { _ in
-					AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
-				}
-			}
-			.chartYAxis {
-				AxisMarks { _ in
-					AxisGridLine()
-						.foregroundStyle(.gray.opacity(0.3))
-
-					AxisValueLabel()
-				}
+			.interpolationMethod(.catmullRom)
+		}
+		.frame(height: 150)
+		.chartXSelection(value: self.$rawSelectedDate)
+		.chartYScale(domain: .automatic(includesZero: false))
+		.chartXAxis {
+			AxisMarks { _ in
+				AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
 			}
 		}
-		.padding()
-		.background {
-			RoundedRectangle(cornerRadius: 12)
-				.fill(Color(.secondarySystemBackground))
+		.chartYAxis {
+			AxisMarks { _ in
+				AxisGridLine()
+					.foregroundStyle(.gray.opacity(0.3))
+
+				AxisValueLabel()
+			}
 		}
+		.sensoryFeedback(.selection, trigger: self.rawSelectedDate?.weekday)
 	}
 
 	func annotationView(_ selectedDiscreteMetric: DiscreteMetric) -> some View {
@@ -125,7 +100,6 @@ struct WeightLineChart: View {
 				.fill(Color(.secondarySystemBackground))
 				.shadow(color: .secondary.opacity(0.1), radius: 2, x: 2, y: 2)
 		}
-		.sensoryFeedback(.selection, trigger: self.rawSelectedDate?.weekday)
 	}
 }
 
