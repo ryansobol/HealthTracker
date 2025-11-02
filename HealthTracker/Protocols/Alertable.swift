@@ -3,9 +3,9 @@ import SwiftUI
 protocol Alertable {
 	var title: String { get }
 
-	associatedtype ActionsBody: View
-	@ViewBuilder var actions: Self.ActionsBody { get }
+	associatedtype Actions: View
+	@ViewBuilder var actions: Actions { get }
 
-	associatedtype MessageBody: View
-	@ViewBuilder var message: Self.MessageBody { get }
+	associatedtype Message: View
+	@ViewBuilder var message: Message { get }
 }
