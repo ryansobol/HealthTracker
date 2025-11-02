@@ -8,7 +8,7 @@ struct DashboardView: View {
 	@Environment(HealthKitManager.self) private var healthKitManager
 
 	@State private var appError: AppError? = nil
-	@State private var isPermissionPrimerPresented = false
+	@State private var isHealthKitAuthorizationPresented = false
 	@State private var selectedMetricType = MetricType.steps
 
 	var body: some View {
@@ -40,15 +40,15 @@ struct DashboardView: View {
 			.navigationDestination(for: MetricType.self) { metric in
 				DiscreteMetricListView(
 					metricType: metric,
-					isPermissionPrimerPresented: self.$isPermissionPrimerPresented,
+					isHealthKitAuthorizationPresented: self.$isHealthKitAuthorizationPresented,
 				)
 			}
 		}
 		.tint(self.selectedMetricType.tint)
-		.fullScreenCover(isPresented: self.$isPermissionPrimerPresented, onDismiss: {
+		.fullScreenCover(isPresented: self.$isHealthKitAuthorizationPresented, onDismiss: {
 			Task {
 				do {
-					#if !targetEnvironment(simulator)
+					#if targetEnvironment(simulator)
 						try await self.healthKitManager.createFakeSamples()
 					#endif
 
@@ -59,7 +59,7 @@ struct DashboardView: View {
 				}
 			}
 		}, content: {
-			HealthKitPermissionPrimingView()
+			HealthKitAuthorizationView()
 		})
 		.alert(for: self.$appError)
 		.task {
@@ -67,7 +67,7 @@ struct DashboardView: View {
 				try await self.healthKitManager.fetchMetrics()
 			}
 			catch is AuthorizationRequestNecessaryError {
-				self.isPermissionPrimerPresented = true
+				self.isHealthKitAuthorizationPresented = true
 			}
 			catch let error as AppError {
 				self.logger.error(for: error)

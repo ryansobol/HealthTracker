@@ -14,7 +14,7 @@ struct DiscreteMetricListView: View {
 
 	let metricType: MetricType
 
-	@Binding var isPermissionPrimerPresented: Bool
+	@Binding var isHealthKitAuthorizationPresented: Bool
 
 	var discreteMetrics: [DiscreteMetric] {
 		return switch self.metricType {
@@ -85,7 +85,7 @@ struct DiscreteMetricListView: View {
 								)
 							}
 							catch is AuthorizationRequestNecessaryError {
-								self.isPermissionPrimerPresented = true
+								self.isHealthKitAuthorizationPresented = true
 							}
 							catch let error as AppError {
 								self.logger.error(for: error)
@@ -113,7 +113,10 @@ struct DiscreteMetricListView: View {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
 	NavigationStack {
-		DiscreteMetricListView(metricType: .weight, isPermissionPrimerPresented: .constant(false))
+		DiscreteMetricListView(
+			metricType: .weight,
+			isHealthKitAuthorizationPresented: .constant(false),
+		)
 	}
 	.task {
 		try! await healthKitManager.fetchMetrics()
