@@ -21,17 +21,17 @@ extension AppError: Explainable {
 	var failureReason: String {
 		return switch self {
 		case .caught:
-			"An unexpected error occurred."
+			"The app encountered an unexpected error."
 
 		case let .sharingNotAuthorized(metricType):
-			"You have not authorization the app to share \(metricType) data with HealthKit."
+			"The app has not been authorization to share \(metricType) data with HealthKit."
 		}
 	}
 
-	var recoverySuggestion: String? {
+	var recoverySuggestion: String {
 		return switch self {
 		case .caught:
-			nil
+			"Try performing the action again. If the error persists, try restarting the app."
 
 		case .sharingNotAuthorized:
 			"You can authorize sharing by going to Settings > Health > Data Access & Devices."
@@ -61,10 +61,6 @@ extension AppError: Alertable {
 	}
 
 	var message: some View {
-		Text(
-			self.recoverySuggestion != nil
-				? "\(self.failureReason)\n\n\(self.recoverySuggestion!)"
-				: self.failureReason,
-		)
+		Text("\(self.failureReason)\n\n\(self.recoverySuggestion)")
 	}
 }

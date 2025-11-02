@@ -3,5 +3,5 @@ protocol Explainable: Error {
 
 	var failureReason: String { get }
 
-	var recoverySuggestion: String? { get }
+	var recoverySuggestion: String { get }
 }
