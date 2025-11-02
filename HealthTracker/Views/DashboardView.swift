@@ -2,11 +2,12 @@ import Charts
 import OSLog
 import SwiftUI
 
-private let logger = Logger.dashboardView
-
 struct DashboardView: View {
+	private let logger = Logger(category: Self.self)
+
 	@Environment(HealthKitManager.self) private var healthKitManager
 
+	@State private var appError: AppError? = nil
 	@State private var isPermissionPrimerPresented = false
 	@State private var selectedMetricType = MetricType.steps
 
@@ -51,24 +52,31 @@ struct DashboardView: View {
 					try await self.healthKitManager.fetchMetrics()
 				}
 				catch {
-					logger.error("\(error)")
+					self.logger.error("\(error)")
 				}
 			}
 		}, content: {
 			HealthKitPermissionPrimingView()
 		})
+		.alert(throwable: self.$appError)
 		.task {
 			do {
 				try await self.healthKitManager.fetchMetrics()
 			}
-			catch AuthorizationError.authorizationRequestNecessary {
+			catch is AuthorizationRequestNecessaryError {
 				self.isPermissionPrimerPresented = true
 			}
-			catch let AuthorizationError.sharingNotAuthorized(mediaType) {
-				logger.error("Sharing not authorized for \(mediaType)")
+			catch let error as AppError {
+				logger.error(error)
+
+				self.appError = error
 			}
 			catch {
-				logger.error("\(error)")
+				let error = AppError.caught(underlyingError: error)
+
+				self.logger.error(error)
+
+				self.appError = error
 			}
 		}
 	}

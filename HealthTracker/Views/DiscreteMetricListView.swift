@@ -1,11 +1,13 @@
 import OSLog
 import SwiftUI
 
-private let logger = Logger.discreteMetricListView
-
 struct DiscreteMetricListView: View {
-	@Environment(HealthKitManager.self) private var healthKitManager
+	private let logger = Logger(category: Self.self)
 
+	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(\.openURL) private var openURL
+
+	@State private var appError: AppError? = nil
 	@State private var newDate = Date.now
 	@State private var newValue = ""
 	@State private var isAddDataFormPresented = false
@@ -35,6 +37,7 @@ struct DiscreteMetricListView: View {
 			}
 		}
 		.navigationTitle(self.metricType.title)
+		.alert(throwable: self.$appError)
 		.sheet(isPresented: self.$isAddDataFormPresented) {
 			self.addDataView
 		}
@@ -81,14 +84,20 @@ struct DiscreteMetricListView: View {
 									value: Double(self.newValue)!,
 								)
 							}
-							catch AuthorizationError.authorizationRequestNecessary {
+							catch is AuthorizationRequestNecessaryError {
 								self.isPermissionPrimerPresented = true
 							}
-							catch let AuthorizationError.sharingNotAuthorized(mediaType) {
-								logger.error("Sharing not authorized for \(mediaType)")
+							catch let error as AppError {
+								logger.error(error)
+
+								self.appError = error
 							}
 							catch {
-								logger.error("\(error)")
+								let error = AppError.caught(underlyingError: error)
+
+								self.logger.error(error)
+
+								self.appError = error
 							}
 
 							self.isAddDataFormPresented = false

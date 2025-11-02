@@ -2,10 +2,10 @@ import HealthKit
 import Observation
 import OSLog
 
-private let logger = Logger.healthKitManager
-
 @Observable
 final class HealthKitManager {
+	private let logger = Logger(category: HealthKitManager.self)
+
 	let store = HKHealthStore()
 
 	var stepDiscreteMetrics = [DiscreteMetric]()
@@ -70,7 +70,7 @@ final class HealthKitManager {
 
 	private func fetchStepMetrics() async throws -> Void {
 		guard try await self.isAuthorizationRequestUnnecessary(for: self.stepType) else {
-			throw AuthorizationError.authorizationRequestNecessary(metricType: .steps)
+			throw AuthorizationRequestNecessaryError(metricType: .steps)
 		}
 
 		let calendar = Calendar.current
@@ -106,7 +106,7 @@ final class HealthKitManager {
 
 	private func fetchWeightMetrics() async throws -> Void {
 		guard try await self.isAuthorizationRequestUnnecessary(for: self.weightType) else {
-			throw AuthorizationError.authorizationRequestNecessary(metricType: .weight)
+			throw AuthorizationRequestNecessaryError(metricType: .weight)
 		}
 
 		let calendar = Calendar.current
@@ -145,6 +145,7 @@ final class HealthKitManager {
 	// MARK: - Create Samples
 
 	func createSample(metricType: MetricType, date: Date, value: Double) async throws -> Void {
+		throw AppError.sharingNotAuthorized(metricType: .steps)
 		switch metricType {
 		case .steps:
 			try await self.createStepSample(
@@ -172,7 +173,7 @@ final class HealthKitManager {
 		value: Double,
 	) async throws -> Void {
 		guard self.isSharingAuthorized(for: self.stepType) else {
-			throw AuthorizationError.sharingNotAuthorized(metricType: metricType)
+			throw AppError.sharingNotAuthorized(metricType: metricType)
 		}
 
 		let quantity = HKQuantity(unit: .count(), doubleValue: value)
@@ -187,7 +188,7 @@ final class HealthKitManager {
 		value: Double,
 	) async throws -> Void {
 		guard self.isSharingAuthorized(for: self.weightType) else {
-			throw AuthorizationError.sharingNotAuthorized(metricType: metricType)
+			throw AppError.sharingNotAuthorized(metricType: metricType)
 		}
 
 		let quantity = HKQuantity(unit: .pound(), doubleValue: value)
@@ -202,11 +203,11 @@ final class HealthKitManager {
 		#endif
 
 		guard self.isSharingAuthorized(for: self.stepType) else {
-			throw AuthorizationError.sharingNotAuthorized(metricType: .steps)
+			throw AppError.sharingNotAuthorized(metricType: .steps)
 		}
 
 		guard self.isSharingAuthorized(for: self.weightType) else {
-			throw AuthorizationError.sharingNotAuthorized(metricType: .weight)
+			throw AppError.sharingNotAuthorized(metricType: .weight)
 		}
 
 		let days = 28
@@ -249,6 +250,6 @@ final class HealthKitManager {
 
 		try! await self.store.save(fakeSamples)
 
-		logger.debug("Created fake discrete samples in simulator")
+		self.logger.debug("Created fake discrete samples in simulator")
 	}
 }
