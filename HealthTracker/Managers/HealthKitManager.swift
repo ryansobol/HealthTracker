@@ -145,7 +145,6 @@ final class HealthKitManager {
 	// MARK: - Create Samples
 
 	func createSample(metricType: MetricType, date: Date, value: Double) async throws -> Void {
-		throw AppError.sharingNotAuthorized(metricType: .steps)
 		switch metricType {
 		case .steps:
 			try await self.createStepSample(
