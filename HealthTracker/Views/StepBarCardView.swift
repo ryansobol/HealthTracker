@@ -26,7 +26,19 @@ struct StepBarCardView: View {
 			.foregroundStyle(.secondary)
 			.padding(.bottom, 12)
 
-			StepBarChart()
+			Group {
+				if self.healthKitManager.stepDiscreteMetrics.isEmpty {
+					EmptyChart(
+						title: "No Data",
+						systemName: "chart.bar",
+						description: "No steps data collected from HealthKit",
+					)
+				}
+				else {
+					StepBarChart()
+				}
+			}
+			.frame(height: 150)
 		}
 		.padding()
 		.background {
@@ -57,12 +69,19 @@ struct StepBarCardView: View {
 	}
 }
 
-#Preview {
+#Preview("With Metrics") {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
 	StepBarCardView()
 		.task {
 			try! await healthKitManager.fetchMetrics()
 		}
+		.environment(healthKitManager)
+}
+
+#Preview("Without Metrics") {
+	@Previewable @State var healthKitManager = HealthKitManager()
+
+	StepBarCardView()
 		.environment(healthKitManager)
 }

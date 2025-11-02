@@ -34,7 +34,6 @@ struct StepPieChart: View {
 				.opacity(self.selectedAverageMetric?.weekday == averageMetric.weekday ? 1 : 0.3)
 			}
 		}
-		.frame(height: 240)
 		.chartAngleSelection(
 			value: self.$rawSelectedAverageMetricValue.animation(.smooth(duration: 0.25)),
 		)
@@ -59,7 +58,7 @@ struct StepPieChart: View {
 #Preview {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
-	StepPieChart()
+	StepPieCardView()
 		.task {
 			try! await healthKitManager.fetchMetrics()
 		}

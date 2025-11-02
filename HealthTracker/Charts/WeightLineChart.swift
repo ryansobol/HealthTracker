@@ -62,7 +62,6 @@ struct WeightLineChart: View {
 			}
 			.interpolationMethod(.catmullRom)
 		}
-		.frame(height: 150)
 		.chartXSelection(value: self.$rawSelectedDate)
 		.chartYScale(domain: .automatic(includesZero: false))
 		.chartXAxis {
@@ -106,7 +105,7 @@ struct WeightLineChart: View {
 #Preview {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
-	WeightLineChart()
+	WeightLineCardView()
 		.task {
 			try! await healthKitManager.fetchMetrics()
 		}

@@ -27,7 +27,19 @@ struct WeightLineCardView: View {
 			.foregroundStyle(.secondary)
 			.padding(.bottom, 12)
 
-			WeightLineChart()
+			Group {
+				if self.healthKitManager.weightDiscreteMetrics.isEmpty {
+					EmptyChart(
+						title: "No Data",
+						systemName: "chart.xyaxis.line",
+						description: "No weight data collected from HealthKit",
+					)
+				}
+				else {
+					WeightLineChart()
+				}
+			}
+			.frame(height: 150)
 		}
 		.padding()
 		.background {
@@ -58,12 +70,19 @@ struct WeightLineCardView: View {
 	}
 }
 
-#Preview {
+#Preview("With Metrics") {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
 	WeightLineCardView()
 		.task {
 			try! await healthKitManager.fetchMetrics()
 		}
+		.environment(healthKitManager)
+}
+
+#Preview("Without Metrics") {
+	@Previewable @State var healthKitManager = HealthKitManager()
+
+	WeightLineCardView()
 		.environment(healthKitManager)
 }

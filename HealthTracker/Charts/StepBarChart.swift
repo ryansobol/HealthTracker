@@ -51,7 +51,6 @@ struct StepBarChart: View {
 				)
 			}
 		}
-		.frame(height: 150)
 		.chartXSelection(value: self.$rawSelectedDate.animation(.smooth(duration: 0.25)))
 		.chartXAxis {
 			AxisMarks { _ in
@@ -97,7 +96,7 @@ struct StepBarChart: View {
 #Preview {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
-	StepBarChart()
+	StepBarCardView()
 		.task {
 			try! await healthKitManager.fetchMetrics()
 		}

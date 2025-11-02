@@ -52,7 +52,6 @@ struct WeightBarChart: View {
 				)
 			}
 		}
-		.frame(height: 150)
 		.chartXSelection(value: self.$rawSelectedAverageMetricWeekday.animation(.smooth(duration: 0.25)))
 		.chartXAxis {
 			AxisMarks { value in
@@ -101,7 +100,7 @@ struct WeightBarChart: View {
 #Preview {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
-	WeightBarChart()
+	WeightBarCardView()
 		.task {
 			try! await healthKitManager.fetchMetrics()
 		}

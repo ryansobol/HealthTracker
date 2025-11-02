@@ -22,7 +22,19 @@ struct WeightBarCardView: View {
 			.foregroundStyle(.secondary)
 			.padding(.bottom, 12)
 
-			WeightBarChart()
+			Group {
+				if self.healthKitManager.weightAverageDiffMetrics.isEmpty {
+					EmptyChart(
+						title: "No Data",
+						systemName: "chart.bar",
+						description: "No weight data collected from HealthKit",
+					)
+				}
+				else {
+					WeightBarChart()
+				}
+			}
+			.frame(height: 150)
 		}
 		.padding()
 		.background {
@@ -50,12 +62,19 @@ struct WeightBarCardView: View {
 	}
 }
 
-#Preview {
+#Preview("With Metrics") {
 	@Previewable @State var healthKitManager = HealthKitManager()
 
 	WeightBarCardView()
 		.task {
 			try! await healthKitManager.fetchMetrics()
 		}
+		.environment(healthKitManager)
+}
+
+#Preview("Without Metrics") {
+	@Previewable @State var healthKitManager = HealthKitManager()
+
+	WeightBarCardView()
 		.environment(healthKitManager)
 }
