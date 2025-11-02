@@ -48,7 +48,10 @@ struct DashboardView: View {
 		.fullScreenCover(isPresented: self.$isPermissionPrimerPresented, onDismiss: {
 			Task {
 				do {
-					try await self.healthKitManager.createFakeSamples()
+					#if !targetEnvironment(simulator)
+						try await self.healthKitManager.createFakeSamples()
+					#endif
+
 					try await self.healthKitManager.fetchMetrics()
 				}
 				catch {

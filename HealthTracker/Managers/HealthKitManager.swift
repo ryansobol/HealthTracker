@@ -197,10 +197,6 @@ final class HealthKitManager {
 	}
 
 	func createFakeSamples() async throws -> Void {
-		#if !targetEnvironment(simulator)
-			return
-		#endif
-
 		guard self.isSharingAuthorized(for: self.stepType) else {
 			throw AppError.sharingNotAuthorized(metricType: .steps)
 		}
