@@ -58,7 +58,7 @@ struct DashboardView: View {
 		}, content: {
 			HealthKitPermissionPrimingView()
 		})
-		.alert(throwable: self.$appError)
+		.alert(for: self.$appError)
 		.task {
 			do {
 				try await self.healthKitManager.fetchMetrics()

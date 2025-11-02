@@ -2,13 +2,11 @@ import SwiftUI
 
 extension View {
 	@ViewBuilder
-	func alert(
-		throwable error: Binding<(some Throwable)?>,
-	) -> some View {
-		if let wrappedValue = error.wrappedValue {
+	func alert(for alertable: Binding<(some Alertable)?>) -> some View {
+		if let wrappedValue = alertable.wrappedValue {
 			self.alert(
-				wrappedValue.errorDescription,
-				isPresented: Binding(optionalValue: error),
+				wrappedValue.title,
+				isPresented: Binding(optionalValue: alertable),
 				actions: { wrappedValue.actions },
 				message: { wrappedValue.message },
 			)

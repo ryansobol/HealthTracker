@@ -37,7 +37,7 @@ struct DiscreteMetricListView: View {
 			}
 		}
 		.navigationTitle(self.metricType.title)
-		.alert(throwable: self.$appError)
+		.alert(for: self.$appError)
 		.sheet(isPresented: self.$isAddDataFormPresented) {
 			self.addDataView
 		}

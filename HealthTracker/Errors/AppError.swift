@@ -5,6 +5,8 @@ enum AppError {
 	case sharingNotAuthorized(metricType: MetricType)
 }
 
+// MARK: - Throwable
+
 extension AppError: Throwable {
 	var errorDescription: String {
 		return switch self {
@@ -35,6 +37,14 @@ extension AppError: Throwable {
 			"You can authorize sharing by going to Settings > Health > Data Access & Devices."
 		}
 	}
+}
+
+// MARK: - Alertable
+
+extension AppError: Alertable {
+	var title: String {
+		return self.errorDescription
+	}
 
 	var actions: some View {
 		switch self {
@@ -51,6 +61,10 @@ extension AppError: Throwable {
 	}
 
 	var message: some View {
-		Text(self.fullMessage)
+		Text(
+			self.recoverySuggestion != nil
+				? "\(self.failureReason)\n\n\(self.recoverySuggestion!)"
+				: self.failureReason,
+		)
 	}
 }
