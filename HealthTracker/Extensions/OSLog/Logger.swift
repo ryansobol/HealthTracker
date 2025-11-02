@@ -9,7 +9,7 @@ extension Logger {
 }
 
 extension Logger {
-	/// Writes an error description and a debug message to the log.
+	/// Writes debug message to the log for an explainable error.
 	///
 	/// ## Usage
 	///
@@ -22,12 +22,12 @@ extension Logger {
 	///
 	/// - Parameters:
 	///   - message: The optional message to include
-	///   - error: Extract the description from this error
+	///   - error: The error to explain
 	func debug(_ message: String = "", for error: some Explainable) {
 		self.debug("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
-	/// Writes an error description and an info message to the log.
+	/// Writes info message to the log for an explainable error.
 	///
 	/// ## Usage
 	///
@@ -40,12 +40,12 @@ extension Logger {
 	///
 	/// - Parameters:
 	///   - message: The optional message to include
-	///   - error: Extract the description from this error
+	///   - error: The error to explain
 	func info(_ message: String = "", for error: some Explainable) {
 		self.info("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
-	/// Writes an error description and a notice to the log.
+	/// Writes notice message to the log for an explainable error.
 	///
 	/// ## Usage
 	///
@@ -58,12 +58,12 @@ extension Logger {
 	///
 	/// - Parameters:
 	///   - message: The optional message to include
-	///   - error: Extract the description from this error
+	///   - error: The error to explain
 	func notice(_ message: String = "", for error: some Explainable) {
 		self.notice("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
-	/// Writes an error description and a warning to the log.
+	/// Writes warning message to the log for an explainable error.
 	///
 	/// ## Usage
 	///
@@ -76,12 +76,12 @@ extension Logger {
 	///
 	/// - Parameters:
 	///   - message: The optional message to include
-	///   - error: Extract the description from this error
+	///   - error: The error to explain
 	func warning(_ message: String = "", for error: some Explainable) {
 		self.warning("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
-	/// Writes an error description and an error message to the log.
+	/// Writes error message to the log for an explainable error.
 	///
 	/// ## Usage
 	///
@@ -94,12 +94,12 @@ extension Logger {
 	///
 	/// - Parameters:
 	///   - message: The optional message to include
-	///   - error: Extract the description from this error
+	///   - error: The error to explain
 	func error(_ message: String = "", for error: some Explainable) {
 		self.error("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
-	/// Writes an error description and a fault to the log.
+	/// Writes fault message to the log for an explainable error.
 	///
 	/// ## Usage
 	///
@@ -112,7 +112,7 @@ extension Logger {
 	///
 	/// - Parameters:
 	///   - message: The optional message to include
-	///   - error: Extract the description from this error
+	///   - error: The error to explain
 	func fault(_ message: String = "", for error: some Explainable) {
 		self.fault("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
