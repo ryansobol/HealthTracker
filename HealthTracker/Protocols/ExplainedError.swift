@@ -1,4 +1,4 @@
-protocol Explainable: Error {
+protocol ExplainedError: Error {
 	var errorDescription: String { get }
 
 	var failureReason: String { get }

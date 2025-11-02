@@ -23,7 +23,7 @@ extension Logger {
 	/// - Parameters:
 	///   - message: The optional message to include
 	///   - error: The error to explain
-	func debug(_ message: String = "", for error: some Explainable) {
+	func debug(_ message: String = "", for error: some ExplainedError) {
 		self.debug("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
@@ -41,7 +41,7 @@ extension Logger {
 	/// - Parameters:
 	///   - message: The optional message to include
 	///   - error: The error to explain
-	func info(_ message: String = "", for error: some Explainable) {
+	func info(_ message: String = "", for error: some ExplainedError) {
 		self.info("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
@@ -59,7 +59,7 @@ extension Logger {
 	/// - Parameters:
 	///   - message: The optional message to include
 	///   - error: The error to explain
-	func notice(_ message: String = "", for error: some Explainable) {
+	func notice(_ message: String = "", for error: some ExplainedError) {
 		self.notice("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
@@ -77,7 +77,7 @@ extension Logger {
 	/// - Parameters:
 	///   - message: The optional message to include
 	///   - error: The error to explain
-	func warning(_ message: String = "", for error: some Explainable) {
+	func warning(_ message: String = "", for error: some ExplainedError) {
 		self.warning("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
@@ -95,7 +95,7 @@ extension Logger {
 	/// - Parameters:
 	///   - message: The optional message to include
 	///   - error: The error to explain
-	func error(_ message: String = "", for error: some Explainable) {
+	func error(_ message: String = "", for error: some ExplainedError) {
 		self.error("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
@@ -113,7 +113,7 @@ extension Logger {
 	/// - Parameters:
 	///   - message: The optional message to include
 	///   - error: The error to explain
-	func fault(_ message: String = "", for error: some Explainable) {
+	func fault(_ message: String = "", for error: some ExplainedError) {
 		self.fault("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 

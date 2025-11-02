@@ -6,9 +6,9 @@ enum AppError {
 	case sharingNotAuthorized(metricType: MetricType)
 }
 
-// MARK: - Explainable
+// MARK: - ExplainedError
 
-extension AppError: Explainable {
+extension AppError: ExplainedError {
 	var errorDescription: String {
 		return switch self {
 		case .caught:
