@@ -1,4 +1,4 @@
-protocol Throwable: Error {
+protocol Explainable: Error {
 	var errorDescription: String { get }
 
 	var failureReason: String { get }
