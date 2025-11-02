@@ -67,14 +67,14 @@ struct DashboardView: View {
 				self.isPermissionPrimerPresented = true
 			}
 			catch let error as AppError {
-				logger.error(error)
+				self.logger.error(for: error)
 
 				self.appError = error
 			}
 			catch {
 				let error = AppError.caught(underlyingError: error)
 
-				self.logger.error(error)
+				self.logger.error(for: error)
 
 				self.appError = error
 			}

@@ -16,13 +16,14 @@ extension Logger {
 	/// ```swift
 	/// let logger = Logger()
 	///
-	/// logger.debug(error, "Boom")
+	/// logger.debug("Boom", for: error)
+	/// logger.debug(for: error)
 	/// ```
 	///
 	/// - Parameters:
-	///   - error: Extract the description from this error
 	///   - message: The optional message to include
-	func debug(_ error: some Throwable, _ message: String = "") {
+	///   - error: Extract the description from this error
+	func debug(_ message: String = "", for error: some Throwable) {
 		self.debug("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
@@ -33,13 +34,14 @@ extension Logger {
 	/// ```swift
 	/// let logger = Logger()
 	///
-	/// logger.info(error, "Boom")
+	/// logger.info("Boom", for: error)
+	/// logger.info(for: error)
 	/// ```
 	///
 	/// - Parameters:
-	///   - error: Extract the description from this error
 	///   - message: The optional message to include
-	func info(_ error: some Throwable, _ message: String = "") {
+	///   - error: Extract the description from this error
+	func info(_ message: String = "", for error: some Throwable) {
 		self.info("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
@@ -50,13 +52,14 @@ extension Logger {
 	/// ```swift
 	/// let logger = Logger()
 	///
-	/// logger.notice(error, "Boom")
+	/// logger.notice("Boom", for: error)
+	/// logger.notice(for: error)
 	/// ```
 	///
 	/// - Parameters:
-	///   - error: Extract the description from this error
 	///   - message: The optional message to include
-	func notice(_ error: some Throwable, _ message: String = "") {
+	///   - error: Extract the description from this error
+	func notice(_ message: String = "", for error: some Throwable) {
 		self.notice("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
@@ -67,13 +70,14 @@ extension Logger {
 	/// ```swift
 	/// let logger = Logger()
 	///
-	/// logger.warning(error, "Boom")
+	/// logger.warning("Boom", for: error)
+	/// logger.warning(for: error)
 	/// ```
 	///
 	/// - Parameters:
-	///   - error: Extract the description from this error
 	///   - message: The optional message to include
-	func warning(_ error: some Throwable, _ message: String = "") {
+	///   - error: Extract the description from this error
+	func warning(_ message: String = "", for error: some Throwable) {
 		self.warning("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
@@ -84,13 +88,14 @@ extension Logger {
 	/// ```swift
 	/// let logger = Logger()
 	///
-	/// logger.error(error, "Boom")
+	/// logger.error("Boom", for: error)
+	/// logger.error(for: error)
 	/// ```
 	///
 	/// - Parameters:
-	///   - error: Extract the description from this error
 	///   - message: The optional message to include
-	func error(_ error: some Throwable, _ message: String = "") {
+	///   - error: Extract the description from this error
+	func error(_ message: String = "", for error: some Throwable) {
 		self.error("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
@@ -101,13 +106,14 @@ extension Logger {
 	/// ```swift
 	/// let logger = Logger()
 	///
-	/// logger.fault(error, "Boom")
+	/// logger.fault("Boom", for: error)
+	/// logger.fault(for: error)
 	/// ```
 	///
 	/// - Parameters:
-	///   - error: Extract the description from this error
 	///   - message: The optional message to include
-	func fault(_ error: some Throwable, _ message: String = "") {
+	///   - error: Extract the description from this error
+	func fault(_ message: String = "", for error: some Throwable) {
 		self.fault("\(self.prepareMessage(message))\(error.errorDescription)")
 	}
 
