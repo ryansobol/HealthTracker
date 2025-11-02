@@ -125,6 +125,7 @@ struct WeightLineChart: View {
 				.fill(Color(.secondarySystemBackground))
 				.shadow(color: .secondary.opacity(0.1), radius: 2, x: 2, y: 2)
 		}
+		.sensoryFeedback(.selection, trigger: self.rawSelectedDate?.weekday)
 	}
 }
 

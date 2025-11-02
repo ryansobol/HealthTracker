@@ -95,6 +95,7 @@ struct StepBarChart: View {
 			RoundedRectangle(cornerRadius: 12)
 				.fill(Color(.secondarySystemBackground))
 		}
+		.sensoryFeedback(.selection, trigger: self.rawSelectedDate?.weekday)
 	}
 
 	func annotationView(_ selectedDiscreteMetric: DiscreteMetric) -> some View {

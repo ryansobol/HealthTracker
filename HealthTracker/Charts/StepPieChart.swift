@@ -69,6 +69,7 @@ struct StepPieChart: View {
 			RoundedRectangle(cornerRadius: 12)
 				.fill(Color(.secondarySystemBackground))
 		}
+		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
 	}
 }
 
