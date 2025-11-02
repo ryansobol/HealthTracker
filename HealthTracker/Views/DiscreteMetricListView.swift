@@ -5,7 +5,6 @@ struct DiscreteMetricListView: View {
 	private let logger = Logger(category: Self.self)
 
 	@Environment(HealthKitManager.self) private var healthKitManager
-	@Environment(\.openURL) private var openURL
 
 	@State private var appError: AppError? = nil
 	@State private var newDate = Date.now
@@ -80,8 +79,7 @@ struct DiscreteMetricListView: View {
 								try await self.healthKitManager.createSample(
 									metricType: self.metricType,
 									date: self.newDate,
-									// TODO: Add validation
-									value: Double(self.newValue)!,
+									value: self.validateNewValue(),
 								)
 							}
 							catch is AuthorizationRequestNecessaryError {
@@ -101,11 +99,25 @@ struct DiscreteMetricListView: View {
 							}
 
 							self.isAddDataFormPresented = false
+							self.newValue = ""
 						}
 					}
+					.disabled(self.isAddDataButtonDisabled)
 				}
 			}
 		}
+	}
+
+	private var isAddDataButtonDisabled: Bool {
+		return (try? self.validateNewValue()) == nil
+	}
+
+	private func validateNewValue() throws -> Double {
+		guard let value = Double(self.newValue), value > 0 else {
+			throw AppError.invalidMetricValue(metricType: self.metricType, value: self.newValue)
+		}
+
+		return value
 	}
 }
 
