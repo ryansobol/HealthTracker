@@ -25,14 +25,6 @@ struct WeightLineChart: View {
 		)
 	}
 
-	private func isBarMarkOpaque(for discreteMetric: DiscreteMetric) -> Bool {
-		guard let selectedDiscreteMetric = self.selectedDiscreteMetric else {
-			return false
-		}
-
-		return selectedDiscreteMetric.date != discreteMetric.date
-	}
-
 	var minValue: Double {
 		return self.healthKitManager.weightDiscreteMetrics.map { $0.value }.min() ?? 0
 	}
@@ -59,17 +51,17 @@ struct WeightLineChart: View {
 				.foregroundStyle(.mint)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-			ForEach(self.healthKitManager.weightDiscreteMetrics) { weight in
+			ForEach(self.healthKitManager.weightDiscreteMetrics) { discreteMetric in
 				AreaMark(
-					x: .value("Day", weight.date, unit: .day),
-					yStart: .value("Value", weight.value),
+					x: .value("Day", discreteMetric.date, unit: .day),
+					yStart: .value("Value", discreteMetric.value),
 					yEnd: .value("Min value", self.minValue),
 				)
 				.foregroundStyle(Gradient(colors: [self.metricType.tint.opacity(0.5), .clear]))
 
 				LineMark(
-					x: .value("Day", weight.date, unit: .day),
-					y: .value("Value", weight.value),
+					x: .value("Day", discreteMetric.date, unit: .day),
+					y: .value("Value", discreteMetric.value),
 				)
 				.foregroundStyle(self.metricType.tint)
 				.symbol(.circle)
