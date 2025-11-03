@@ -13,8 +13,8 @@ struct StepBarChart: View {
 			get: { self.selectedDiscreteMetric?.date },
 			set: { newValue in
 				self.selectedDiscreteMetric = if let newValue {
-					self.healthKitManager.stepDiscreteMetrics.first { metric in
-						Calendar.current.isDate(newValue, inSameDayAs: metric.date)
+					self.healthKitManager.stepDiscreteMetrics.first { discreteMetric in
+						Calendar.current.isDate(newValue, inSameDayAs: discreteMetric.date)
 					}
 				}
 				else {

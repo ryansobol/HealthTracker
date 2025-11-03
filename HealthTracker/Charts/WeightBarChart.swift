@@ -2,20 +2,34 @@ import Charts
 import SwiftUI
 
 struct WeightBarChart: View {
-	@Environment(HealthKitManager.self) private var healthKitManager
-
-	@State private var rawSelectedAverageMetricWeekday: Weekday? = nil
-
 	let metricType = MetricType.weight
 
-	var selectedAverageMetric: AverageMetric? {
-		guard let rawSelectedAverageMetricWeekday = self.rawSelectedAverageMetricWeekday else {
-			return nil
+	@Environment(HealthKitManager.self) private var healthKitManager
+
+	@State private var selectedAverageMetric: AverageMetric? = nil
+
+	private var selectedWeekdayBinding: Binding<Weekday?> {
+		return Binding(
+			get: { self.selectedAverageMetric?.weekday },
+			set: { newValue in
+				self.selectedAverageMetric = if let newValue {
+					self.healthKitManager.weightAverageDiffMetrics.first { averageDiffMetric in
+						averageDiffMetric.weekday == newValue
+					}
+				}
+				else {
+					nil
+				}
+			},
+		)
+	}
+
+	private func isBarMarkOpaque(for averageMetric: AverageMetric) -> Bool {
+		guard let selectedAverageMetric = self.selectedAverageMetric else {
+			return false
 		}
 
-		return self.healthKitManager.weightAverageDiffMetrics.first { averageDiffMetric in
-			rawSelectedAverageMetricWeekday == averageDiffMetric.weekday
-		}
+		return selectedAverageMetric.weekday != averageMetric.weekday
 	}
 
 	var body: some View {
@@ -46,13 +60,11 @@ struct WeightBarChart: View {
 						? self.metricType.tint.gradient
 						: Color.mint.gradient,
 				)
-				.opacity(
-					self.rawSelectedAverageMetricWeekday == nil || self
-						.rawSelectedAverageMetricWeekday == averageDiffMetric.weekday ? 1.0 : 0.3,
-				)
+				.opacity(self.isBarMarkOpaque(for: averageDiffMetric) ? 0.3 : 1.0)
 			}
 		}
-		.chartXSelection(value: self.$rawSelectedAverageMetricWeekday.animation(.smooth(duration: 0.25)))
+		.animation(.smooth(duration: 0.05), value: self.selectedAverageMetric?.weekday)
+		.chartXSelection(value: self.selectedWeekdayBinding)
 		.chartXAxis {
 			AxisMarks { value in
 				if let weekday = value.as(Weekday.self) {
@@ -74,7 +86,7 @@ struct WeightBarChart: View {
 				)
 			}
 		}
-		.sensoryFeedback(.selection, trigger: self.rawSelectedAverageMetricWeekday)
+		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
 	}
 
 	func annotationView(_ selectedAverageMetric: AverageMetric) -> some View {
@@ -93,7 +105,6 @@ struct WeightBarChart: View {
 				.fill(Color(.secondarySystemBackground))
 				.shadow(color: .secondary.opacity(0.1), radius: 2, x: 2, y: 2)
 		}
-		.sensoryFeedback(.selection, trigger: self.rawSelectedAverageMetricWeekday)
 	}
 }
 
