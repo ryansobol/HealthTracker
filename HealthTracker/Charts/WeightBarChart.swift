@@ -63,7 +63,6 @@ struct WeightBarChart: View {
 				.opacity(self.isBarMarkOpaque(for: averageDiffMetric) ? 0.3 : 1.0)
 			}
 		}
-		.animation(.smooth(duration: 0.05), value: self.selectedAverageMetric?.weekday)
 		.chartXSelection(value: self.selectedWeekdayBinding)
 		.chartXAxis {
 			AxisMarks { value in
@@ -86,6 +85,7 @@ struct WeightBarChart: View {
 				)
 			}
 		}
+		.animation(.smooth(duration: 0.05), value: self.selectedAverageMetric?.weekday)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
 	}
 
