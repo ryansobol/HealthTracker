@@ -4,20 +4,34 @@ import SwiftUI
 struct StepPieChart: View {
 	@Environment(HealthKitManager.self) private var healthKitManager
 
-	@State private var rawSelectedAverageMetricValue: Double? = 0
+	@State private var selectedAverageMetric: AverageMetric? = nil
 
-	var selectedAverageMetric: AverageMetric? {
-		guard let rawSelectedAverageMetricValue = self.rawSelectedAverageMetricValue else {
-			return nil
+	private var selectedValueBinding: Binding<Double?> {
+		return Binding(
+			get: { self.selectedAverageMetric?.value },
+			set: { newValue in
+				guard let newValue else {
+					self.selectedAverageMetric = nil
+					return
+				}
+
+				var total = 0.0
+
+				self.selectedAverageMetric = self.healthKitManager.stepAverageMetrics.first { averageMetric in
+					total += averageMetric.value
+
+					return newValue <= total
+				}
+			},
+		)
+	}
+
+	private func isSectorMarkOpaque(for averageMetric: AverageMetric) -> Bool {
+		guard let selectedAverageMetric = self.selectedAverageMetric else {
+			return false
 		}
 
-		var total = 0.0
-
-		return self.healthKitManager.stepAverageMetrics.first { stepAverageMetric in
-			total += stepAverageMetric.value
-
-			return rawSelectedAverageMetricValue <= total
-		}
+		return selectedAverageMetric.weekday != averageMetric.weekday
 	}
 
 	var body: some View {
@@ -31,27 +45,39 @@ struct StepPieChart: View {
 				)
 				.foregroundStyle(.pink.gradient)
 				.cornerRadius(6)
-				.opacity(self.selectedAverageMetric?.weekday == averageMetric.weekday ? 1 : 0.3)
+				.opacity(self.isSectorMarkOpaque(for: averageMetric) ? 0.3 : 1)
 			}
 		}
-		.chartAngleSelection(
-			value: self.$rawSelectedAverageMetricValue.animation(.smooth(duration: 0.25)),
-		)
+		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)
+		.chartAngleSelection(value: self.selectedValueBinding)
 		.chartBackground { _ in
 			if let selectedStepChartMetric = self.selectedAverageMetric {
-				VStack {
-					Text(selectedStepChartMetric.weekday.symbol)
-						.font(.title2.bold())
-						.animation(.none, value: selectedStepChartMetric.weekday)
-
-					Text(selectedStepChartMetric.value, format: .number.precision(.fractionLength(0)))
-						.fontWeight(.medium)
-						.foregroundStyle(.secondary)
-						.contentTransition(.numericText())
-				}
+				self.chartAverage(
+					title: selectedStepChartMetric.weekday.symbol,
+					value: selectedStepChartMetric.value,
+				)
+			}
+			else {
+				self.chartAverage(
+					title: "Daily",
+					value: self.healthKitManager.averageStepCount,
+				)
 			}
 		}
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
+	}
+
+	private func chartAverage(title: String, value: Double) -> some View {
+		VStack {
+			Text(title)
+				.font(.title2.bold())
+				.animation(.none, value: title)
+
+			Text(value, format: .number.precision(.fractionLength(0)))
+				.fontWeight(.medium)
+				.foregroundStyle(.secondary)
+				.contentTransition(.numericText())
+		}
 	}
 }
 
