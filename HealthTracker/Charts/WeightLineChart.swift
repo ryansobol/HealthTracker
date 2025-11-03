@@ -2,25 +2,39 @@ import Charts
 import SwiftUI
 
 struct WeightLineChart: View {
-	@Environment(HealthKitManager.self) private var healthKitManager
-
-	@State private var rawSelectedDate: Date? = nil
-
 	let goal = 165
 	let metricType = MetricType.weight
 
-	var minValue: Double {
-		return self.healthKitManager.weightDiscreteMetrics.map { $0.value }.min() ?? 0
+	@Environment(HealthKitManager.self) private var healthKitManager
+
+	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
+
+	private var selectedDateBinding: Binding<Date?> {
+		return Binding(
+			get: { self.selectedDiscreteMetric?.date },
+			set: { newValue in
+				self.selectedDiscreteMetric = if let newValue {
+					self.healthKitManager.weightDiscreteMetrics.first { discreteMetric in
+						Calendar.current.isDate(newValue, inSameDayAs: discreteMetric.date)
+					}
+				}
+				else {
+					nil
+				}
+			},
+		)
 	}
 
-	var selectedDiscreteMetric: DiscreteMetric? {
-		guard let rawSelectedDate = self.rawSelectedDate else {
-			return nil
+	private func isBarMarkOpaque(for discreteMetric: DiscreteMetric) -> Bool {
+		guard let selectedDiscreteMetric = self.selectedDiscreteMetric else {
+			return false
 		}
 
-		return self.healthKitManager.weightDiscreteMetrics.first { metric in
-			Calendar.current.isDate(rawSelectedDate, inSameDayAs: metric.date)
-		}
+		return selectedDiscreteMetric.date != discreteMetric.date
+	}
+
+	var minValue: Double {
+		return self.healthKitManager.weightDiscreteMetrics.map { $0.value }.min() ?? 0
 	}
 
 	var body: some View {
@@ -62,7 +76,7 @@ struct WeightLineChart: View {
 			}
 			.interpolationMethod(.catmullRom)
 		}
-		.chartXSelection(value: self.$rawSelectedDate)
+		.chartXSelection(value: self.selectedDateBinding)
 		.chartYScale(domain: .automatic(includesZero: false))
 		.chartXAxis {
 			AxisMarks { _ in
@@ -77,7 +91,7 @@ struct WeightLineChart: View {
 				AxisValueLabel()
 			}
 		}
-		.sensoryFeedback(.selection, trigger: self.rawSelectedDate?.weekday)
+		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date)
 	}
 
 	func annotationView(_ selectedDiscreteMetric: DiscreteMetric) -> some View {
