@@ -48,22 +48,14 @@ struct StepPieChart: View {
 				.opacity(self.isSectorMarkOpaque(for: averageMetric) ? 0.3 : 1)
 			}
 		}
-		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)
 		.chartAngleSelection(value: self.selectedValueBinding)
 		.chartBackground { _ in
-			if let selectedStepChartMetric = self.selectedAverageMetric {
-				self.chartAverage(
-					title: selectedStepChartMetric.weekday.symbol,
-					value: selectedStepChartMetric.value,
-				)
-			}
-			else {
-				self.chartAverage(
-					title: "Daily",
-					value: self.healthKitManager.averageStepCount,
-				)
-			}
+			self.chartAverage(
+				title: self.selectedAverageMetric?.weekday.symbol ?? "Daily",
+				value: self.selectedAverageMetric?.value ?? self.healthKitManager.averageStepCount,
+			)
 		}
+		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
 	}
 
