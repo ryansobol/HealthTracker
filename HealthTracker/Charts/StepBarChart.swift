@@ -2,20 +2,34 @@ import Charts
 import SwiftUI
 
 struct StepBarChart: View {
-	@Environment(HealthKitManager.self) private var healthKitManager
-
-	@State private var rawSelectedDate: Date? = nil
-
 	let metricType = MetricType.steps
 
-	var selectedDiscreteMetric: DiscreteMetric? {
-		guard let rawSelectedDate = self.rawSelectedDate else {
-			return nil
+	@Environment(HealthKitManager.self) private var healthKitManager
+
+	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
+
+	private var selectedDateBinding: Binding<Date?> {
+		return Binding(
+			get: { self.selectedDiscreteMetric?.date },
+			set: { newValue in
+				self.selectedDiscreteMetric = if let newValue {
+					self.healthKitManager.stepDiscreteMetrics.first { metric in
+						Calendar.current.isDate(newValue, inSameDayAs: metric.date)
+					}
+				}
+				else {
+					nil
+				}
+			},
+		)
+	}
+
+	private func isBarMarkOpaque(for discreteMetric: DiscreteMetric) -> Bool {
+		guard let selectedDiscreteMetric = self.selectedDiscreteMetric else {
+			return false
 		}
 
-		return self.healthKitManager.stepDiscreteMetrics.first { metric in
-			Calendar.current.isDate(rawSelectedDate, inSameDayAs: metric.date)
-		}
+		return selectedDiscreteMetric.date != discreteMetric.date
 	}
 
 	var body: some View {
@@ -40,18 +54,16 @@ struct StepBarChart: View {
 				.foregroundStyle(.secondary)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-			ForEach(self.healthKitManager.stepDiscreteMetrics) { steps in
+			ForEach(self.healthKitManager.stepDiscreteMetrics) { discreteMetric in
 				BarMark(
-					x: .value("Date", steps.date, unit: .day),
-					y: .value("Steps", steps.value),
+					x: .value("Date", discreteMetric.date, unit: .day),
+					y: .value("Steps", discreteMetric.value),
 				)
 				.foregroundStyle(self.metricType.tint.gradient)
-				.opacity(
-					self.rawSelectedDate == nil || steps.date == self.selectedDiscreteMetric?.date ? 1.0 : 0.3,
-				)
+				.opacity(self.isBarMarkOpaque(for: discreteMetric) ? 0.3 : 1.0)
 			}
 		}
-		.chartXSelection(value: self.$rawSelectedDate.animation(.smooth(duration: 0.25)))
+		.chartXSelection(value: self.selectedDateBinding)
 		.chartXAxis {
 			AxisMarks { _ in
 				AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
@@ -68,7 +80,7 @@ struct StepBarChart: View {
 				)
 			}
 		}
-		.sensoryFeedback(.selection, trigger: self.rawSelectedDate?.weekday)
+		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date.weekday)
 	}
 
 	func annotationView(_ selectedDiscreteMetric: DiscreteMetric) -> some View {
