@@ -1,4 +1,5 @@
 import Charts
+import OrderedCollections
 import SwiftUI
 
 struct StepPieChart: View {
@@ -10,17 +11,13 @@ struct StepPieChart: View {
 		return Binding(
 			get: { self.selectedAverageMetric?.value },
 			set: { newValue in
-				guard let newValue else {
-					self.selectedAverageMetric = nil
-					return
-				}
+				self.selectedAverageMetric = newValue.flatMap { value in
+					self.healthKitManager.stepAverageMetricByWeekday.values
+						.first(into: 0.0) { cummulativeValue, averageMetric in
+							cummulativeValue += averageMetric.value
 
-				var total = 0.0
-
-				self.selectedAverageMetric = self.healthKitManager.stepAverageMetrics.first { averageMetric in
-					total += averageMetric.value
-
-					return newValue <= total
+							return value <= cummulativeValue
+						}
 				}
 			},
 		)
@@ -36,7 +33,7 @@ struct StepPieChart: View {
 
 	var body: some View {
 		Chart {
-			ForEach(self.healthKitManager.stepAverageMetrics) { averageMetric in
+			ForEach(self.healthKitManager.stepAverageMetricByWeekday.values) { averageMetric in
 				SectorMark(
 					angle: .value("Average Steps", averageMetric.value),
 					innerRadius: .ratio(0.618),

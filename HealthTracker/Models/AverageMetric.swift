@@ -1,4 +1,5 @@
 import Foundation
+import OrderedCollections
 
 struct AverageMetric: Identifiable {
 	let id = UUID()
@@ -15,6 +16,14 @@ struct AverageMetric: Identifiable {
 		return Dictionary(grouping: discreteMetrics) { $0.date.weekday }
 			.map { Self(weekday: $0, discreteMetrics: $1) }
 			.sorted { $0.weekday < $1.weekday }
+	}
+
+	static func calculate(from discreteMetrics: some Sequence<DiscreteMetric>)
+		-> OrderedDictionary<Weekday, Self>
+	{
+		return OrderedDictionary(grouping: discreteMetrics) { $0.date.weekday }
+			.mapValues { Self(weekday: $0, discreteMetrics: $1) }
+			.sorted()
 	}
 
 	static func calculateDifferences(from discreteMetrics: some Sequence<DiscreteMetric>) -> [Self] {

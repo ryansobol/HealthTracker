@@ -12,7 +12,7 @@ final class HealthKitManager {
 	var stepDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 	var weightDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 
-	var stepAverageMetrics = [AverageMetric]()
+	var stepAverageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
 	var weightAverageDiffMetrics = [AverageMetric]()
 
 	let types: Set<HKQuantityType>
@@ -98,7 +98,7 @@ final class HealthKitManager {
 		let statistics = statisticsCollection.statistics()
 
 		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
-			minimumCapacity: statistics.count
+			minimumCapacity: statistics.count,
 		)
 
 		self.stepDiscreteMetricByDate =
@@ -111,7 +111,9 @@ final class HealthKitManager {
 				dictionary[statistic.startDate] = discreteMetric
 			}
 
-		self.stepAverageMetrics = AverageMetric.calculate(from: self.stepDiscreteMetricByDate.values)
+		self.stepAverageMetricByWeekday = AverageMetric.calculate(
+			from: self.stepDiscreteMetricByDate.values,
+		)
 	}
 
 	private func fetchWeightMetrics() async throws -> Void {
@@ -142,7 +144,7 @@ final class HealthKitManager {
 		let statistics = statisticsCollection.statistics()
 
 		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
-			minimumCapacity: statistics.count
+			minimumCapacity: statistics.count,
 		)
 
 		self.weightDiscreteMetricByDate =
