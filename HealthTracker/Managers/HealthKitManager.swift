@@ -1,5 +1,6 @@
 import HealthKit
 import Observation
+import OrderedCollections
 import OSLog
 
 @Observable
@@ -8,7 +9,7 @@ final class HealthKitManager {
 
 	let store = HKHealthStore()
 
-	var stepDiscreteMetrics = [DiscreteMetric]()
+	var stepDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 	var weightDiscreteMetrics = [DiscreteMetric]()
 
 	var stepAverageMetrics = [AverageMetric]()
@@ -27,12 +28,13 @@ final class HealthKitManager {
 	}
 
 	var averageStepCount: Double {
-		guard !self.stepDiscreteMetrics.isEmpty else {
+		let stepDiscreteMetrics = self.stepDiscreteMetricByDate.values
+
+		guard !stepDiscreteMetrics.isEmpty else {
 			return 0
 		}
 
-		return self.stepDiscreteMetrics
-			.reduce(0) { $0 + $1.value } / Double(self.stepDiscreteMetrics.count)
+		return stepDiscreteMetrics.reduce(0) { $0 + $1.value } / Double(stepDiscreteMetrics.count)
 	}
 
 	var averageWeightDifference: Double {
@@ -93,15 +95,23 @@ final class HealthKitManager {
 		)
 
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
+		let statistics = statisticsCollection.statistics()
 
-		self.stepDiscreteMetrics = statisticsCollection.statistics().map { statistic in
-			.init(
-				date: statistic.startDate,
-				value: statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0,
-			)
-		}
+		var stepDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 
-		self.stepAverageMetrics = AverageMetric.calculate(from: self.stepDiscreteMetrics)
+		stepDiscreteMetricByDate.reserveCapacity(statistics.count)
+
+		self.stepDiscreteMetricByDate =
+			statistics.reduce(into: stepDiscreteMetricByDate) { dictionary, statistic in
+				let discreteMetric = DiscreteMetric(
+					date: statistic.startDate,
+					value: statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0
+				)
+
+				dictionary[statistic.startDate] = discreteMetric
+			}
+
+		self.stepAverageMetrics = AverageMetric.calculate(from: self.stepDiscreteMetricByDate.values)
 	}
 
 	private func fetchWeightMetrics() async throws -> Void {

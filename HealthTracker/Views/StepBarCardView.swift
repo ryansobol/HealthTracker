@@ -1,3 +1,4 @@
+import OrderedCollections
 import SwiftUI
 
 struct StepBarCardView: View {
@@ -27,7 +28,7 @@ struct StepBarCardView: View {
 			.padding(.bottom, 12)
 
 			Group {
-				if self.healthKitManager.stepDiscreteMetrics.isEmpty {
+				if self.healthKitManager.stepDiscreteMetricByDate.isEmpty {
 					EmptyChart(
 						title: "No Data",
 						systemName: "chart.bar",

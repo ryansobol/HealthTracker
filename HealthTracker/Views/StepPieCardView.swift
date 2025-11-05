@@ -1,3 +1,4 @@
+import OrderedCollections
 import SwiftUI
 
 struct StepPieCardView: View {
@@ -16,7 +17,7 @@ struct StepPieCardView: View {
 			}
 
 			Group {
-				if self.healthKitManager.stepDiscreteMetrics.isEmpty {
+				if self.healthKitManager.stepDiscreteMetricByDate.isEmpty {
 					EmptyChart(
 						title: "No Data",
 						systemName: "chart.pie",

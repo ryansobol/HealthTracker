@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1D2A48DA2EAD1F4E00AAA276 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1D2A48D82EAD1F4700AAA276 /* .gitignore */; };
+		1DDB37A72EBAECB90040DFA2 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 1DDB37A62EBAECB90040DFA2 /* OrderedCollections */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		1DC7CE8A2EAC08CC00068BDD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				1DDB37A72EBAECB90040DFA2 /* OrderedCollections in Frameworks */,
 			);
 		};
 		1DC7CE972EAC08CD00068BDD /* Frameworks */ = {
@@ -115,6 +117,9 @@
 				1DC7CE8F2EAC08CC00068BDD /* HealthTracker */,
 			);
 			name = HealthTracker;
+			packageProductDependencies = (
+				1DDB37A62EBAECB90040DFA2 /* OrderedCollections */,
+			);
 			productName = HealthTracker;
 			productReference = 1DC7CE8D2EAC08CC00068BDD /* HealthTracker.app */;
 			productType = "com.apple.product-type.application";
@@ -194,6 +199,7 @@
 			mainGroup = 1DC7CE842EAC08CC00068BDD;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				1DDB37A52EBAECB90040DFA2 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 1DC7CE8E2EAC08CC00068BDD /* Products */;
@@ -571,6 +577,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1DDB37A52EBAECB90040DFA2 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections";
+			requirement = {
+				kind = exactVersion;
+				version = 1.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1DDB37A62EBAECB90040DFA2 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1DDB37A52EBAECB90040DFA2 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1DC7CE852EAC08CC00068BDD /* Project object */;
 }

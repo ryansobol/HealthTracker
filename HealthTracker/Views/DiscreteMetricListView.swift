@@ -1,3 +1,4 @@
+import OrderedCollections
 import OSLog
 import SwiftUI
 
@@ -17,7 +18,7 @@ struct DiscreteMetricListView: View {
 
 	var discreteMetrics: [DiscreteMetric] {
 		return switch self.metricType {
-		case .steps: self.healthKitManager.stepDiscreteMetrics
+		case .steps: Array(self.healthKitManager.stepDiscreteMetricByDate.values)
 		case .weight: self.healthKitManager.weightDiscreteMetrics
 		}
 	}

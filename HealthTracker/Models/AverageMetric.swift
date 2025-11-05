@@ -11,7 +11,7 @@ struct AverageMetric: Identifiable {
 		self.value = discreteMetrics.reduce(0) { $0 + $1.value } / Double(discreteMetrics.count)
 	}
 
-	static func calculate(from discreteMetrics: [DiscreteMetric]) -> [Self] {
+	static func calculate(from discreteMetrics: some Sequence<DiscreteMetric>) -> [Self] {
 		return Dictionary(grouping: discreteMetrics) { $0.date.weekday }
 			.map { Self(weekday: $0, discreteMetrics: $1) }
 			.sorted { $0.weekday < $1.weekday }

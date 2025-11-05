@@ -1,4 +1,5 @@
 import Charts
+import OrderedCollections
 import SwiftUI
 
 struct StepBarChart: View {
@@ -12,13 +13,10 @@ struct StepBarChart: View {
 		return Binding(
 			get: { self.selectedDiscreteMetric?.date },
 			set: { newValue in
-				self.selectedDiscreteMetric = if let newValue {
-					self.healthKitManager.stepDiscreteMetrics.first { discreteMetric in
-						Calendar.current.isDate(newValue, inSameDayAs: discreteMetric.date)
-					}
-				}
-				else {
-					nil
+				self.selectedDiscreteMetric = newValue.flatMap { date in
+					let normalizedDate = Calendar.current.startOfDay(for: date)
+
+					return self.healthKitManager.stepDiscreteMetricByDate[normalizedDate]
 				}
 			},
 		)
@@ -54,7 +52,7 @@ struct StepBarChart: View {
 				.foregroundStyle(.secondary)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-			ForEach(self.healthKitManager.stepDiscreteMetrics) { discreteMetric in
+			ForEach(self.healthKitManager.stepDiscreteMetricByDate.values) { discreteMetric in
 				BarMark(
 					x: .value("Date", discreteMetric.date, unit: .day),
 					y: .value("Steps", discreteMetric.value),
