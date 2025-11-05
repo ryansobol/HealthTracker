@@ -97,9 +97,9 @@ final class HealthKitManager {
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
 		let statistics = statisticsCollection.statistics()
 
-		var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
-
-		discreteMetricByDate.reserveCapacity(statistics.count)
+		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
+			minimumCapacity: statistics.count
+		)
 
 		self.stepDiscreteMetricByDate =
 			statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
@@ -141,9 +141,9 @@ final class HealthKitManager {
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
 		let statistics = statisticsCollection.statistics()
 
-		var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
-
-		discreteMetricByDate.reserveCapacity(statistics.count)
+		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
+			minimumCapacity: statistics.count
+		)
 
 		self.weightDiscreteMetricByDate =
 			statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
