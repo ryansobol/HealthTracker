@@ -10,7 +10,7 @@ final class HealthKitManager {
 	let store = HKHealthStore()
 
 	var stepDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
-	var weightDiscreteMetrics = [DiscreteMetric]()
+	var weightDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 
 	var stepAverageMetrics = [AverageMetric]()
 	var weightAverageDiffMetrics = [AverageMetric]()
@@ -97,15 +97,15 @@ final class HealthKitManager {
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
 		let statistics = statisticsCollection.statistics()
 
-		var stepDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
+		var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 
-		stepDiscreteMetricByDate.reserveCapacity(statistics.count)
+		discreteMetricByDate.reserveCapacity(statistics.count)
 
 		self.stepDiscreteMetricByDate =
-			statistics.reduce(into: stepDiscreteMetricByDate) { dictionary, statistic in
+			statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
 				let discreteMetric = DiscreteMetric(
 					date: statistic.startDate,
-					value: statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0
+					value: statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0,
 				)
 
 				dictionary[statistic.startDate] = discreteMetric
@@ -139,16 +139,24 @@ final class HealthKitManager {
 		)
 
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
+		let statistics = statisticsCollection.statistics()
 
-		self.weightDiscreteMetrics = statisticsCollection.statistics().map { statistic in
-			.init(
-				date: statistic.startDate,
-				value: statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0,
-			)
-		}
+		var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
+
+		discreteMetricByDate.reserveCapacity(statistics.count)
+
+		self.weightDiscreteMetricByDate =
+			statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
+				let discreteMetric = DiscreteMetric(
+					date: statistic.startDate,
+					value: statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0,
+				)
+
+				dictionary[statistic.startDate] = discreteMetric
+			}
 
 		self.weightAverageDiffMetrics = AverageMetric.calculateDifferences(
-			from: self.weightDiscreteMetrics,
+			from: self.weightDiscreteMetricByDate.values,
 		)
 	}
 

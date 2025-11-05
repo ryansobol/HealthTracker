@@ -1,4 +1,5 @@
 import Charts
+import OrderedCollections
 import SwiftUI
 
 struct WeightLineCardView: View {
@@ -28,7 +29,7 @@ struct WeightLineCardView: View {
 			.padding(.bottom, 12)
 
 			Group {
-				if self.healthKitManager.weightDiscreteMetrics.isEmpty {
+				if self.healthKitManager.weightDiscreteMetricByDate.isEmpty {
 					EmptyChart(
 						title: "No Data",
 						systemName: "chart.xyaxis.line",

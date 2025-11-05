@@ -17,7 +17,7 @@ struct AverageMetric: Identifiable {
 			.sorted { $0.weekday < $1.weekday }
 	}
 
-	static func calculateDifferences(from discreteMetrics: [DiscreteMetric]) -> [Self] {
+	static func calculateDifferences(from discreteMetrics: some Sequence<DiscreteMetric>) -> [Self] {
 		let differences = zip(discreteMetrics.dropFirst(), discreteMetrics).map { current, previous in
 			DiscreteMetric(date: current.date, value: current.value - previous.value)
 		}

@@ -1,4 +1,5 @@
 import Charts
+import OrderedCollections
 import SwiftUI
 
 struct WeightLineChart: View {
@@ -13,20 +14,17 @@ struct WeightLineChart: View {
 		return Binding(
 			get: { self.selectedDiscreteMetric?.date },
 			set: { newValue in
-				self.selectedDiscreteMetric = if let newValue {
-					self.healthKitManager.weightDiscreteMetrics.first { discreteMetric in
-						Calendar.current.isDate(newValue, inSameDayAs: discreteMetric.date)
-					}
-				}
-				else {
-					nil
+				self.selectedDiscreteMetric = newValue.flatMap { date in
+					let normalizedDate = Calendar.current.startOfDay(for: date)
+
+					return self.healthKitManager.weightDiscreteMetricByDate[normalizedDate]
 				}
 			},
 		)
 	}
 
 	var minValue: Double {
-		return self.healthKitManager.weightDiscreteMetrics.map { $0.value }.min() ?? 0
+		return self.healthKitManager.weightDiscreteMetricByDate.values.map { $0.value }.min() ?? 0
 	}
 
 	var body: some View {
@@ -51,7 +49,7 @@ struct WeightLineChart: View {
 				.foregroundStyle(.mint)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-			ForEach(self.healthKitManager.weightDiscreteMetrics) { discreteMetric in
+			ForEach(self.healthKitManager.weightDiscreteMetricByDate.values) { discreteMetric in
 				AreaMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
 					yStart: .value("Value", discreteMetric.value),

@@ -16,10 +16,10 @@ struct DiscreteMetricListView: View {
 
 	@Binding var isHealthKitAuthorizationPresented: Bool
 
-	var discreteMetrics: [DiscreteMetric] {
+	var discreteMetrics: OrderedDictionary<Date, DiscreteMetric>.Values {
 		return switch self.metricType {
-		case .steps: Array(self.healthKitManager.stepDiscreteMetricByDate.values)
-		case .weight: self.healthKitManager.weightDiscreteMetrics
+		case .steps: self.healthKitManager.stepDiscreteMetricByDate.values
+		case .weight: self.healthKitManager.weightDiscreteMetricByDate.values
 		}
 	}
 
