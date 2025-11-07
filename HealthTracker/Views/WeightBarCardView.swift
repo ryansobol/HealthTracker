@@ -2,9 +2,9 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightBarCardView: View {
-	@Environment(MetricStore.self) private var metricStore
-
 	let metricType = MetricType.weight
+
+	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
 		VStack {

@@ -2,9 +2,9 @@ import OrderedCollections
 import SwiftUI
 
 struct StepBarCardView: View {
-	@Environment(MetricStore.self) private var metricStore
-
 	let metricType = MetricType.steps
+
+	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
 		VStack {

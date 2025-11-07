@@ -2,6 +2,8 @@ import OrderedCollections
 import SwiftUI
 
 struct StepPieCardView: View {
+	let metricType = MetricType.steps
+
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
@@ -9,7 +11,7 @@ struct StepPieCardView: View {
 			VStack(alignment: .leading) {
 				Label("Averages", systemImage: "calendar")
 					.font(.title3.bold())
-					.foregroundStyle(.pink)
+					.foregroundStyle(self.metricType.tint)
 
 				Text("Last 28 Days")
 					.font(.caption)
