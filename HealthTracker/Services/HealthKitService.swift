@@ -1,6 +1,4 @@
 import HealthKit
-import Observation
-import OrderedCollections
 
 struct HealthKitService {
 	private let stepType = HKQuantityType(.stepCount)
