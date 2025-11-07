@@ -25,8 +25,7 @@ struct HealthKitService {
 		return result == .unnecessary
 	}
 
-	nonisolated
-	private func isSharingAuthorized(for type: HKQuantityType) -> Bool {
+	private nonisolated func isSharingAuthorized(for type: HKQuantityType) -> Bool {
 		return self.store.authorizationStatus(for: self.stepType) == .sharingAuthorized
 	}
 
@@ -95,11 +94,7 @@ struct HealthKitService {
 	// MARK: - Creation
 
 	@concurrent
-	func createStepSample(
-		metricType: MetricType,
-		date: Date,
-		value: Double,
-	) async throws -> Void {
+	func createStepSample(metricType: MetricType, date: Date, value: Double) async throws -> Void {
 		guard self.isSharingAuthorized(for: self.stepType) else {
 			throw AppError.sharingNotAuthorized(metricType: metricType)
 		}
@@ -111,11 +106,7 @@ struct HealthKitService {
 	}
 
 	@concurrent
-	func createWeightSample(
-		metricType: MetricType,
-		date: Date,
-		value: Double,
-	) async throws -> Void {
+	func createWeightSample(metricType: MetricType, date: Date, value: Double) async throws -> Void {
 		guard self.isSharingAuthorized(for: self.weightType) else {
 			throw AppError.sharingNotAuthorized(metricType: metricType)
 		}
