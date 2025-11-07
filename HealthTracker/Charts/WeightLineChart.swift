@@ -4,11 +4,11 @@ import SwiftUI
 
 struct WeightLineChart: View {
 	let goal = 165
-	let metricType = MetricType.weight
-
 	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
+
+	let chartType: ChartType
 
 	private var selectedDateBinding: Binding<Date?> {
 		return Binding(
@@ -55,13 +55,15 @@ struct WeightLineChart: View {
 					yStart: .value("Value", discreteMetric.value),
 					yEnd: .value("Min value", self.minValue),
 				)
-				.foregroundStyle(Gradient(colors: [self.metricType.tint.opacity(0.5), .clear]))
+				.foregroundStyle(
+					Gradient(colors: [self.chartType.metricType.tint.opacity(0.5), .clear])
+				)
 
 				LineMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
 					y: .value("Value", discreteMetric.value),
 				)
-				.foregroundStyle(self.metricType.tint)
+				.foregroundStyle(self.chartType.metricType.tint)
 				.symbol(.circle)
 			}
 			.interpolationMethod(.catmullRom)
@@ -95,7 +97,7 @@ struct WeightLineChart: View {
 
 			Text(selectedDiscreteMetric.value, format: .number.precision(.fractionLength(1)))
 				.fontWeight(.heavy)
-				.foregroundStyle(self.metricType.tint)
+				.foregroundStyle(self.chartType.metricType.tint)
 		}
 		.padding(12)
 		.background {

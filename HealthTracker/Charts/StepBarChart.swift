@@ -3,11 +3,11 @@ import OrderedCollections
 import SwiftUI
 
 struct StepBarChart: View {
-	let metricType = MetricType.steps
-
 	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
+
+	let chartType: ChartType
 
 	private var selectedDateBinding: Binding<Date?> {
 		return Binding(
@@ -57,7 +57,7 @@ struct StepBarChart: View {
 					x: .value("Date", discreteMetric.date, unit: .day),
 					y: .value("Steps", discreteMetric.value),
 				)
-				.foregroundStyle(self.metricType.tint.gradient)
+				.foregroundStyle(self.chartType.metricType.tint.gradient)
 				.opacity(self.isBarMarkOpaque(for: discreteMetric) ? 0.3 : 1.0)
 			}
 		}
@@ -92,7 +92,7 @@ struct StepBarChart: View {
 
 			Text(selectedDiscreteMetric.value, format: .number.precision(.fractionLength(0)))
 				.fontWeight(.heavy)
-				.foregroundStyle(self.metricType.tint)
+				.foregroundStyle(self.chartType.metricType.tint)
 		}
 		.padding(12)
 		.background {

@@ -7,6 +7,8 @@ struct StepPieChart: View {
 
 	@State private var selectedAverageMetric: AverageMetric? = nil
 
+	let chartType: ChartType
+
 	private var selectedValueBinding: Binding<Double?> {
 		return Binding(
 			get: { self.selectedAverageMetric?.value },
@@ -40,7 +42,7 @@ struct StepPieChart: View {
 					outerRadius: self.selectedAverageMetric?.weekday == averageMetric.weekday ? 140 : 110,
 					angularInset: 1,
 				)
-				.foregroundStyle(.pink.gradient)
+				.foregroundStyle(self.chartType.metricType.tint.gradient)
 				.cornerRadius(6)
 				.opacity(self.isSectorMarkOpaque(for: averageMetric) ? 0.3 : 1)
 			}

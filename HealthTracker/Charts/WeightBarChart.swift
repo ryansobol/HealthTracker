@@ -3,11 +3,11 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightBarChart: View {
-	let metricType = MetricType.weight
-
 	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedAverageMetric: AverageMetric? = nil
+
+	let chartType: ChartType
 
 	private var selectedWeekdayBinding: Binding<Weekday?> {
 		return Binding(
@@ -53,7 +53,7 @@ struct WeightBarChart: View {
 				)
 				.foregroundStyle(
 					averageDiffMetric.value >= 0
-						? self.metricType.tint.gradient
+						? self.chartType.metricType.tint.gradient
 						: Color.mint.gradient,
 				)
 				.opacity(self.isBarMarkOpaque(for: averageDiffMetric) ? 0.3 : 1.0)
@@ -93,7 +93,11 @@ struct WeightBarChart: View {
 
 			Text(selectedAverageMetric.value, format: .number.precision(.fractionLength(2)))
 				.fontWeight(.heavy)
-				.foregroundStyle(selectedAverageMetric.value >= 0 ? self.metricType.tint : Color.mint)
+				.foregroundStyle(
+					selectedAverageMetric.value >= 0
+						? self.chartType.metricType.tint
+						: Color.mint
+				)
 		}
 		.padding(12)
 		.background {

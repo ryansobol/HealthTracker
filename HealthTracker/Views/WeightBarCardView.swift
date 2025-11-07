@@ -2,7 +2,7 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightBarCardView: View {
-	let metricType = MetricType.weight
+	let chartType = ChartType.weightBar
 
 	@Environment(MetricStore.self) private var metricStore
 
@@ -12,7 +12,7 @@ struct WeightBarCardView: View {
 				VStack(alignment: .leading) {
 					Label("Average Change", systemImage: "figure")
 						.font(.title3.bold())
-						.foregroundStyle(self.metricType.tint)
+						.foregroundStyle(self.chartType.metricType.tint)
 
 					Text("Last 28 Days")
 						.font(.caption)
@@ -32,7 +32,7 @@ struct WeightBarCardView: View {
 					)
 				}
 				else {
-					WeightBarChart()
+					WeightBarChart(chartType: self.chartType)
 				}
 			}
 			.frame(height: 150)
@@ -52,7 +52,11 @@ struct WeightBarCardView: View {
 
 			Text(selectedAverageMetric.value, format: .number.precision(.fractionLength(2)))
 				.fontWeight(.heavy)
-				.foregroundStyle(selectedAverageMetric.value >= 0 ? self.metricType.tint : Color.mint)
+				.foregroundStyle(
+					selectedAverageMetric.value >= 0
+						? self.chartType.metricType.tint
+						: Color.mint
+				)
 		}
 		.padding(12)
 		.background {

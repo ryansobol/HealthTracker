@@ -3,18 +3,18 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightLineCardView: View {
-	let metricType = MetricType.weight
+	let chartType = ChartType.weightLine
 
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
 		VStack {
-			NavigationLink(value: self.metricType) {
+			NavigationLink(value: self.chartType.metricType) {
 				HStack {
 					VStack(alignment: .leading) {
 						Label("Weight", systemImage: "figure")
 							.font(.title3.bold())
-							.foregroundStyle(self.metricType.tint)
+							.foregroundStyle(self.chartType.metricType.tint)
 
 						Text("Avg: 180 lbs")
 							.font(.caption)
@@ -37,7 +37,7 @@ struct WeightLineCardView: View {
 					)
 				}
 				else {
-					WeightLineChart()
+					WeightLineChart(chartType: self.chartType)
 				}
 			}
 			.frame(height: 150)
@@ -60,7 +60,7 @@ struct WeightLineCardView: View {
 
 			Text(selectedDiscreteMetric.value, format: .number.precision(.fractionLength(1)))
 				.fontWeight(.heavy)
-				.foregroundStyle(self.metricType.tint)
+				.foregroundStyle(self.chartType.metricType.tint)
 		}
 		.padding(12)
 		.background {
