@@ -5,7 +5,7 @@ import SwiftUI
 struct DashboardView: View {
 	private let logger = Logger(category: Self.self)
 
-	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(MetricStore.self) private var metricStore
 
 	@State private var appError: AppError? = nil
 	@State private var isHealthKitAuthorizationPresented = false
@@ -49,10 +49,10 @@ struct DashboardView: View {
 			Task {
 				do {
 					#if targetEnvironment(simulator)
-						try await self.healthKitManager.createFakeSamples()
+						try await self.metricStore.createFakeMetrics()
 					#endif
 
-					try await self.healthKitManager.fetchMetrics()
+					try await self.metricStore.fetchMetrics()
 				}
 				catch {
 					self.logger.error("\(error)")
@@ -64,7 +64,7 @@ struct DashboardView: View {
 		.alert(for: self.$appError)
 		.task {
 			do {
-				try await self.healthKitManager.fetchMetrics()
+				try await self.metricStore.fetchMetrics()
 			}
 			catch is AuthorizationRequestNecessaryError {
 				self.isHealthKitAuthorizationPresented = true
@@ -86,6 +86,8 @@ struct DashboardView: View {
 }
 
 #Preview {
+	@Previewable @State var metricStore = MetricStore()
+
 	DashboardView()
-		.environment(HealthKitManager())
+		.environment(metricStore)
 }

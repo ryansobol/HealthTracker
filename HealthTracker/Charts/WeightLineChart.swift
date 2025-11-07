@@ -6,7 +6,7 @@ struct WeightLineChart: View {
 	let goal = 165
 	let metricType = MetricType.weight
 
-	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 
@@ -17,14 +17,14 @@ struct WeightLineChart: View {
 				self.selectedDiscreteMetric = newValue.flatMap { date in
 					let normalizedDate = Calendar.current.startOfDay(for: date)
 
-					return self.healthKitManager.weightDiscreteMetricByDate[normalizedDate]
+					return self.metricStore.weightDiscreteMetricByDate[normalizedDate]
 				}
 			},
 		)
 	}
 
 	var minValue: Double {
-		return self.healthKitManager.weightDiscreteMetricByDate.values.map { $0.value }.min() ?? 0
+		return self.metricStore.weightDiscreteMetricByDate.values.map { $0.value }.min() ?? 0
 	}
 
 	var body: some View {
@@ -49,7 +49,7 @@ struct WeightLineChart: View {
 				.foregroundStyle(.mint)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-			ForEach(self.healthKitManager.weightDiscreteMetricByDate.values) { discreteMetric in
+			ForEach(self.metricStore.weightDiscreteMetricByDate.values) { discreteMetric in
 				AreaMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
 					yStart: .value("Value", discreteMetric.value),
@@ -107,11 +107,11 @@ struct WeightLineChart: View {
 }
 
 #Preview {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	WeightLineCardView()
 		.task {
-			try! await healthKitManager.fetchMetrics()
+			try! await metricStore.fetchMetrics()
 		}
-		.environment(healthKitManager)
+		.environment(metricStore)
 }

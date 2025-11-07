@@ -5,7 +5,7 @@ import SwiftUI
 struct WeightBarChart: View {
 	let metricType = MetricType.weight
 
-	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedAverageMetric: AverageMetric? = nil
 
@@ -14,7 +14,7 @@ struct WeightBarChart: View {
 			get: { self.selectedAverageMetric?.weekday },
 			set: { newValue in
 				self.selectedAverageMetric = newValue.flatMap { weekday in
-					return self.healthKitManager.weightDiffAverageMetricByWeekday[weekday]
+					return self.metricStore.weightDiffAverageMetricByWeekday[weekday]
 				}
 			},
 		)
@@ -46,7 +46,7 @@ struct WeightBarChart: View {
 					}
 			}
 
-			ForEach(self.healthKitManager.weightDiffAverageMetricByWeekday.values) { averageDiffMetric in
+			ForEach(self.metricStore.weightDiffAverageMetricByWeekday.values) { averageDiffMetric in
 				BarMark(
 					x: .value("Weekday", averageDiffMetric.weekday),
 					y: .value("Average Differece", averageDiffMetric.value),
@@ -105,11 +105,11 @@ struct WeightBarChart: View {
 }
 
 #Preview {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	WeightBarCardView()
 		.task {
-			try! await healthKitManager.fetchMetrics()
+			try! await metricStore.fetchMetrics()
 		}
-		.environment(healthKitManager)
+		.environment(metricStore)
 }

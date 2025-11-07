@@ -3,7 +3,7 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightLineCardView: View {
-	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(MetricStore.self) private var metricStore
 
 	let metricType = MetricType.weight
 
@@ -29,7 +29,7 @@ struct WeightLineCardView: View {
 			.padding(.bottom, 12)
 
 			Group {
-				if self.healthKitManager.weightDiscreteMetricByDate.isEmpty {
+				if self.metricStore.weightDiscreteMetricByDate.isEmpty {
 					EmptyChart(
 						title: "No Data",
 						systemName: "chart.xyaxis.line",
@@ -72,18 +72,18 @@ struct WeightLineCardView: View {
 }
 
 #Preview("With Metrics") {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	WeightLineCardView()
 		.task {
-			try! await healthKitManager.fetchMetrics()
+			try! await metricStore.fetchMetrics()
 		}
-		.environment(healthKitManager)
+		.environment(metricStore)
 }
 
 #Preview("Without Metrics") {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	WeightLineCardView()
-		.environment(healthKitManager)
+		.environment(metricStore)
 }

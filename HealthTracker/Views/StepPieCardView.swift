@@ -2,7 +2,7 @@ import OrderedCollections
 import SwiftUI
 
 struct StepPieCardView: View {
-	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
 		VStack(alignment: .leading) {
@@ -17,7 +17,7 @@ struct StepPieCardView: View {
 			}
 
 			Group {
-				if self.healthKitManager.stepDiscreteMetricByDate.isEmpty {
+				if self.metricStore.stepDiscreteMetricByDate.isEmpty {
 					EmptyChart(
 						title: "No Data",
 						systemName: "chart.pie",
@@ -39,18 +39,18 @@ struct StepPieCardView: View {
 }
 
 #Preview("With Metrics") {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	StepPieCardView()
 		.task {
-			try! await healthKitManager.fetchMetrics()
+			try! await metricStore.fetchMetrics()
 		}
-		.environment(healthKitManager)
+		.environment(metricStore)
 }
 
 #Preview("Without Metrics") {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	StepPieCardView()
-		.environment(healthKitManager)
+		.environment(metricStore)
 }

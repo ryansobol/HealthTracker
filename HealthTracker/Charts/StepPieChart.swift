@@ -3,7 +3,7 @@ import OrderedCollections
 import SwiftUI
 
 struct StepPieChart: View {
-	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedAverageMetric: AverageMetric? = nil
 
@@ -12,7 +12,7 @@ struct StepPieChart: View {
 			get: { self.selectedAverageMetric?.value },
 			set: { newValue in
 				self.selectedAverageMetric = newValue.flatMap { value in
-					self.healthKitManager.stepAverageMetricByWeekday.values
+					self.metricStore.stepAverageMetricByWeekday.values
 						.first(into: 0.0) { cummulativeValue, averageMetric in
 							cummulativeValue += averageMetric.value
 
@@ -33,7 +33,7 @@ struct StepPieChart: View {
 
 	var body: some View {
 		Chart {
-			ForEach(self.healthKitManager.stepAverageMetricByWeekday.values) { averageMetric in
+			ForEach(self.metricStore.stepAverageMetricByWeekday.values) { averageMetric in
 				SectorMark(
 					angle: .value("Average Steps", averageMetric.value),
 					innerRadius: .ratio(0.618),
@@ -49,7 +49,7 @@ struct StepPieChart: View {
 		.chartBackground { _ in
 			self.chartAverage(
 				title: self.selectedAverageMetric?.weekday.symbol ?? "Daily",
-				value: self.selectedAverageMetric?.value ?? self.healthKitManager.averageStepCount,
+				value: self.selectedAverageMetric?.value ?? self.metricStore.averageStepCount,
 			)
 		}
 		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)
@@ -71,11 +71,11 @@ struct StepPieChart: View {
 }
 
 #Preview {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	StepPieCardView()
 		.task {
-			try! await healthKitManager.fetchMetrics()
+			try! await metricStore.fetchMetrics()
 		}
-		.environment(healthKitManager)
+		.environment(metricStore)
 }

@@ -1,24 +1,13 @@
 import HealthKit
 import Observation
 import OrderedCollections
-import OSLog
 
-@Observable
-final class HealthKitManager {
-	private let logger = Logger(category: HealthKitManager.self)
-
-	let store = HKHealthStore()
-
-	var stepDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
-	var weightDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
-
-	var stepAverageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
-	var weightDiffAverageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
-
-	let types: Set<HKQuantityType>
-
+struct HealthKitService {
 	private let stepType = HKQuantityType(.stepCount)
 	private let weightType = HKQuantityType(.bodyMass)
+
+	let store = HKHealthStore()
+	let types: Set<HKQuantityType>
 
 	init() {
 		self.types = Set([
@@ -27,26 +16,7 @@ final class HealthKitManager {
 		])
 	}
 
-	var averageStepCount: Double {
-		let stepDiscreteMetrics = self.stepDiscreteMetricByDate.values
-
-		guard !stepDiscreteMetrics.isEmpty else {
-			return 0
-		}
-
-		return stepDiscreteMetrics.reduce(0) { $0 + $1.value } / Double(stepDiscreteMetrics.count)
-	}
-
-	var averageWeightDifference: Double {
-		let weightDiffAverageMetrics = self.weightDiffAverageMetricByWeekday.values
-
-		guard !weightDiffAverageMetrics.isEmpty else {
-			return 0
-		}
-
-		return weightDiffAverageMetrics
-			.reduce(0) { $0 + $1.value } / Double(weightDiffAverageMetrics.count)
-	}
+	// MARK: - Authorization
 
 	private func isAuthorizationRequestUnnecessary(for type: HKQuantityType) async throws -> Bool {
 		let result = try await self.store.statusForAuthorizationRequest(
@@ -61,18 +31,9 @@ final class HealthKitManager {
 		return self.store.authorizationStatus(for: self.stepType) == .sharingAuthorized
 	}
 
-	// MARK: - Fetch Metrics
+	// MARK: - Fetching
 
-	func fetchMetrics() async throws -> Void {
-		try await withThrowingTaskGroup { group in
-			group.addTask { try await self.fetchStepMetrics() }
-			group.addTask { try await self.fetchWeightMetrics() }
-
-			try await group.waitForAll()
-		}
-	}
-
-	private func fetchStepMetrics() async throws -> Void {
+	func fetchStepStatistics() async throws -> [HKStatistics] {
 		guard try await self.isAuthorizationRequestUnnecessary(for: self.stepType) else {
 			throw AuthorizationRequestNecessaryError(metricType: .steps)
 		}
@@ -97,28 +58,11 @@ final class HealthKitManager {
 		)
 
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
-		let statistics = statisticsCollection.statistics()
 
-		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
-			minimumCapacity: statistics.count,
-		)
-
-		self.stepDiscreteMetricByDate =
-			statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
-				let discreteMetric = DiscreteMetric(
-					date: statistic.startDate,
-					value: statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0,
-				)
-
-				dictionary[statistic.startDate] = discreteMetric
-			}
-
-		self.stepAverageMetricByWeekday = AverageMetric.calculate(
-			from: self.stepDiscreteMetricByDate.values,
-		)
+		return statisticsCollection.statistics()
 	}
 
-	private func fetchWeightMetrics() async throws -> Void {
+	func fetchWeightStatistics() async throws -> [HKStatistics] {
 		guard try await self.isAuthorizationRequestUnnecessary(for: self.weightType) else {
 			throw AuthorizationRequestNecessaryError(metricType: .weight)
 		}
@@ -143,52 +87,13 @@ final class HealthKitManager {
 		)
 
 		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
-		let statistics = statisticsCollection.statistics()
 
-		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
-			minimumCapacity: statistics.count,
-		)
-
-		self.weightDiscreteMetricByDate =
-			statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
-				let discreteMetric = DiscreteMetric(
-					date: statistic.startDate,
-					value: statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0,
-				)
-
-				dictionary[statistic.startDate] = discreteMetric
-			}
-
-		self.weightDiffAverageMetricByWeekday = AverageMetric.calculateDifferences(
-			from: self.weightDiscreteMetricByDate.values,
-		)
+		return statisticsCollection.statistics()
 	}
 
-	// MARK: - Create Samples
+	// MARK: - Creation
 
-	func createSample(metricType: MetricType, date: Date, value: Double) async throws -> Void {
-		switch metricType {
-		case .steps:
-			try await self.createStepSample(
-				metricType: metricType,
-				date: date,
-				value: value,
-			)
-
-			try await self.fetchStepMetrics()
-
-		case .weight:
-			try await self.createWeightSample(
-				metricType: metricType,
-				date: date,
-				value: value,
-			)
-
-			try await self.fetchWeightMetrics()
-		}
-	}
-
-	private func createStepSample(
+	func createStepSample(
 		metricType: MetricType,
 		date: Date,
 		value: Double,
@@ -203,7 +108,7 @@ final class HealthKitManager {
 		try await self.store.save(sample)
 	}
 
-	private func createWeightSample(
+	func createWeightSample(
 		metricType: MetricType,
 		date: Date,
 		value: Double,
@@ -266,7 +171,5 @@ final class HealthKitManager {
 		}
 
 		try! await self.store.save(fakeSamples)
-
-		self.logger.debug("Created fake discrete samples in simulator")
 	}
 }

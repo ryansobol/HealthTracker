@@ -2,7 +2,7 @@ import OrderedCollections
 import SwiftUI
 
 struct StepBarCardView: View {
-	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(MetricStore.self) private var metricStore
 
 	let metricType = MetricType.steps
 
@@ -15,7 +15,7 @@ struct StepBarCardView: View {
 							.font(.title3.bold())
 							.foregroundStyle(self.metricType.tint)
 
-						Text("Avg: \(Int(self.healthKitManager.averageStepCount)) steps")
+						Text("Avg: \(Int(self.metricStore.averageStepCount)) steps")
 							.font(.caption)
 					}
 
@@ -28,7 +28,7 @@ struct StepBarCardView: View {
 			.padding(.bottom, 12)
 
 			Group {
-				if self.healthKitManager.stepDiscreteMetricByDate.isEmpty {
+				if self.metricStore.stepDiscreteMetricByDate.isEmpty {
 					EmptyChart(
 						title: "No Data",
 						systemName: "chart.bar",
@@ -71,18 +71,18 @@ struct StepBarCardView: View {
 }
 
 #Preview("With Metrics") {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	StepBarCardView()
 		.task {
-			try! await healthKitManager.fetchMetrics()
+			try! await metricStore.fetchMetrics()
 		}
-		.environment(healthKitManager)
+		.environment(metricStore)
 }
 
 #Preview("Without Metrics") {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	StepBarCardView()
-		.environment(healthKitManager)
+		.environment(metricStore)
 }

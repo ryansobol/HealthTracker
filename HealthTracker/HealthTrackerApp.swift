@@ -2,12 +2,12 @@ import SwiftUI
 
 @main
 struct HealthTrackerApp: App {
-	private let healthKitManager = HealthKitManager()
+	private let metricStore = MetricStore()
 
 	var body: some Scene {
 		WindowGroup {
 			DashboardView()
-				.environment(self.healthKitManager)
+				.environment(self.metricStore)
 		}
 	}
 }

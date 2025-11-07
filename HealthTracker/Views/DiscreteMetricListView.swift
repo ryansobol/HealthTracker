@@ -5,7 +5,7 @@ import SwiftUI
 struct DiscreteMetricListView: View {
 	private let logger = Logger(category: Self.self)
 
-	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(MetricStore.self) private var metricStore
 
 	@State private var appError: AppError? = nil
 	@State private var newDate = Date.now
@@ -18,8 +18,8 @@ struct DiscreteMetricListView: View {
 
 	var discreteMetrics: OrderedDictionary<Date, DiscreteMetric>.Values {
 		return switch self.metricType {
-		case .steps: self.healthKitManager.stepDiscreteMetricByDate.values
-		case .weight: self.healthKitManager.weightDiscreteMetricByDate.values
+		case .steps: self.metricStore.stepDiscreteMetricByDate.values
+		case .weight: self.metricStore.weightDiscreteMetricByDate.values
 		}
 	}
 
@@ -77,7 +77,7 @@ struct DiscreteMetricListView: View {
 					Button("Add Data") {
 						Task {
 							do {
-								try await self.healthKitManager.createSample(
+								try await self.metricStore.createMetric(
 									metricType: self.metricType,
 									date: self.newDate,
 									value: self.validateNewValue(),
@@ -123,7 +123,7 @@ struct DiscreteMetricListView: View {
 }
 
 #Preview {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	NavigationStack {
 		DiscreteMetricListView(
@@ -132,7 +132,7 @@ struct DiscreteMetricListView: View {
 		)
 	}
 	.task {
-		try! await healthKitManager.fetchMetrics()
+		try! await metricStore.fetchMetrics()
 	}
-	.environment(healthKitManager)
+	.environment(metricStore)
 }

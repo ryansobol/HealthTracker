@@ -5,7 +5,7 @@ import SwiftUI
 struct StepBarChart: View {
 	let metricType = MetricType.steps
 
-	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 
@@ -16,7 +16,7 @@ struct StepBarChart: View {
 				self.selectedDiscreteMetric = newValue.flatMap { date in
 					let normalizedDate = Calendar.current.startOfDay(for: date)
 
-					return self.healthKitManager.stepDiscreteMetricByDate[normalizedDate]
+					return self.metricStore.stepDiscreteMetricByDate[normalizedDate]
 				}
 			},
 		)
@@ -48,11 +48,11 @@ struct StepBarChart: View {
 					}
 			}
 
-			RuleMark(y: .value("Average", self.healthKitManager.averageStepCount))
+			RuleMark(y: .value("Average", self.metricStore.averageStepCount))
 				.foregroundStyle(.secondary)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-			ForEach(self.healthKitManager.stepDiscreteMetricByDate.values) { discreteMetric in
+			ForEach(self.metricStore.stepDiscreteMetricByDate.values) { discreteMetric in
 				BarMark(
 					x: .value("Date", discreteMetric.date, unit: .day),
 					y: .value("Steps", discreteMetric.value),
@@ -104,11 +104,11 @@ struct StepBarChart: View {
 }
 
 #Preview {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	StepBarCardView()
 		.task {
-			try! await healthKitManager.fetchMetrics()
+			try! await metricStore.fetchMetrics()
 		}
-		.environment(healthKitManager)
+		.environment(metricStore)
 }

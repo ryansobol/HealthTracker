@@ -2,7 +2,7 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightBarCardView: View {
-	@Environment(HealthKitManager.self) private var healthKitManager
+	@Environment(MetricStore.self) private var metricStore
 
 	let metricType = MetricType.weight
 
@@ -24,7 +24,7 @@ struct WeightBarCardView: View {
 			.padding(.bottom, 12)
 
 			Group {
-				if self.healthKitManager.weightDiffAverageMetricByWeekday.isEmpty {
+				if self.metricStore.weightDiffAverageMetricByWeekday.isEmpty {
 					EmptyChart(
 						title: "No Data",
 						systemName: "chart.bar",
@@ -64,18 +64,18 @@ struct WeightBarCardView: View {
 }
 
 #Preview("With Metrics") {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	WeightBarCardView()
 		.task {
-			try! await healthKitManager.fetchMetrics()
+			try! await metricStore.fetchMetrics()
 		}
-		.environment(healthKitManager)
+		.environment(metricStore)
 }
 
 #Preview("Without Metrics") {
-	@Previewable @State var healthKitManager = HealthKitManager()
+	@Previewable @State var metricStore = MetricStore()
 
 	WeightBarCardView()
-		.environment(healthKitManager)
+		.environment(metricStore)
 }
