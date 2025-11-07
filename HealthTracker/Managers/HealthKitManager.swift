@@ -13,7 +13,7 @@ final class HealthKitManager {
 	var weightDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 
 	var stepAverageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
-	var weightAverageDiffMetrics = [AverageMetric]()
+	var weightDiffAverageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
 
 	let types: Set<HKQuantityType>
 
@@ -38,12 +38,14 @@ final class HealthKitManager {
 	}
 
 	var averageWeightDifference: Double {
-		guard !self.weightAverageDiffMetrics.isEmpty else {
+		let weightDiffAverageMetrics = self.weightDiffAverageMetricByWeekday.values
+
+		guard !weightDiffAverageMetrics.isEmpty else {
 			return 0
 		}
 
-		return self.weightAverageDiffMetrics
-			.reduce(0) { $0 + $1.value } / Double(self.weightAverageDiffMetrics.count)
+		return weightDiffAverageMetrics
+			.reduce(0) { $0 + $1.value } / Double(weightDiffAverageMetrics.count)
 	}
 
 	private func isAuthorizationRequestUnnecessary(for type: HKQuantityType) async throws -> Bool {
@@ -157,7 +159,7 @@ final class HealthKitManager {
 				dictionary[statistic.startDate] = discreteMetric
 			}
 
-		self.weightAverageDiffMetrics = AverageMetric.calculateDifferences(
+		self.weightDiffAverageMetricByWeekday = AverageMetric.calculateDifferences(
 			from: self.weightDiscreteMetricByDate.values,
 		)
 	}

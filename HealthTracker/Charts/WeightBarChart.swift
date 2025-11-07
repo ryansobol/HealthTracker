@@ -1,4 +1,5 @@
 import Charts
+import OrderedCollections
 import SwiftUI
 
 struct WeightBarChart: View {
@@ -12,13 +13,8 @@ struct WeightBarChart: View {
 		return Binding(
 			get: { self.selectedAverageMetric?.weekday },
 			set: { newValue in
-				self.selectedAverageMetric = if let newValue {
-					self.healthKitManager.weightAverageDiffMetrics.first { averageDiffMetric in
-						averageDiffMetric.weekday == newValue
-					}
-				}
-				else {
-					nil
+				self.selectedAverageMetric = newValue.flatMap { weekday in
+					return self.healthKitManager.weightDiffAverageMetricByWeekday[weekday]
 				}
 			},
 		)
@@ -50,7 +46,7 @@ struct WeightBarChart: View {
 					}
 			}
 
-			ForEach(self.healthKitManager.weightAverageDiffMetrics) { averageDiffMetric in
+			ForEach(self.healthKitManager.weightDiffAverageMetricByWeekday.values) { averageDiffMetric in
 				BarMark(
 					x: .value("Weekday", averageDiffMetric.weekday),
 					y: .value("Average Differece", averageDiffMetric.value),

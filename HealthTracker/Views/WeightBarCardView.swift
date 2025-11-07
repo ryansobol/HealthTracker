@@ -1,3 +1,4 @@
+import OrderedCollections
 import SwiftUI
 
 struct WeightBarCardView: View {
@@ -23,7 +24,7 @@ struct WeightBarCardView: View {
 			.padding(.bottom, 12)
 
 			Group {
-				if self.healthKitManager.weightAverageDiffMetrics.isEmpty {
+				if self.healthKitManager.weightDiffAverageMetricByWeekday.isEmpty {
 					EmptyChart(
 						title: "No Data",
 						systemName: "chart.bar",

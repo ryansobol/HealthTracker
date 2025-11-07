@@ -12,12 +12,6 @@ struct AverageMetric: Identifiable {
 		self.value = discreteMetrics.reduce(0) { $0 + $1.value } / Double(discreteMetrics.count)
 	}
 
-	static func calculate(from discreteMetrics: some Sequence<DiscreteMetric>) -> [Self] {
-		return Dictionary(grouping: discreteMetrics) { $0.date.weekday }
-			.map { Self(weekday: $0, discreteMetrics: $1) }
-			.sorted { $0.weekday < $1.weekday }
-	}
-
 	static func calculate(from discreteMetrics: some Sequence<DiscreteMetric>)
 		-> OrderedDictionary<Weekday, Self>
 	{
@@ -26,7 +20,9 @@ struct AverageMetric: Identifiable {
 			.sorted()
 	}
 
-	static func calculateDifferences(from discreteMetrics: some Sequence<DiscreteMetric>) -> [Self] {
+	static func calculateDifferences(from discreteMetrics: some Sequence<DiscreteMetric>)
+		-> OrderedDictionary<Weekday, Self>
+	{
 		let differences = zip(discreteMetrics.dropFirst(), discreteMetrics).map { current, previous in
 			DiscreteMetric(date: current.date, value: current.value - previous.value)
 		}
