@@ -76,10 +76,10 @@ struct HealthKitService {
 			throw AuthorizationRequestNecessaryError(metricType: metricType)
 		}
 
-		let fromDate = Date.now
+		let today = Date.now
 
-		guard let dateInterval = DateInterval(from: fromDate, daysAgo: daysAgo) else {
-			fatalError("No date interval from \(fromDate) to \(daysAgo) days ago")
+		guard let dateInterval = DateInterval(from: today, daysAgo: daysAgo) else {
+			fatalError("No date interval from \(today) to \(daysAgo) days ago")
 		}
 
 		let queryPredicate = HKQuery.predicateForSamples(
