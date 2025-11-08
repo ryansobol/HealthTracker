@@ -1,9 +1,6 @@
 import SwiftUI
 
 struct ChartCardView: View {
-	private let durationOpacity = 0.15
-	private let durationScaleEffect = 0.1
-
 	let context: ChartContext
 
 	var body: some View {
