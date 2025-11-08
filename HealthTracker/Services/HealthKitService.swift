@@ -26,7 +26,7 @@ struct HealthKitService {
 	}
 
 	private nonisolated func isSharingAuthorized(for type: HKQuantityType) -> Bool {
-		return self.store.authorizationStatus(for: self.stepType) == .sharingAuthorized
+		return self.store.authorizationStatus(for: type) == .sharingAuthorized
 	}
 
 	// MARK: - Fetching
