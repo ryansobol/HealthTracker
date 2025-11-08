@@ -84,7 +84,7 @@ struct StepBarChartView: View {
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
 
-	StepBarCardView()
+	MetricCardView(chartContext: .stepBar(store: metricStore))
 		.task {
 			try! await metricStore.fetchMetrics()
 		}

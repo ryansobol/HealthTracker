@@ -86,7 +86,7 @@ struct WeightBarChartView: View {
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
 
-	WeightBarCardView()
+	MetricCardView(chartContext: .weightBar(store: metricStore))
 		.task {
 			try! await metricStore.fetchMetrics()
 		}
