@@ -8,19 +8,13 @@ struct WeightBarCardView: View {
 
 	var body: some View {
 		ChartCardView(chartType: self.chartType) {
-			Group {
-				if self.metricStore.weightDiffAverageMetricByWeekday.isEmpty {
-					EmptyChartView(
-						title: "No Data",
-						systemName: "chart.bar",
-						description: "No weight data collected from HealthKit",
-					)
-				}
-				else {
-					WeightBarChartView(chartType: self.chartType)
-				}
+			MetricCardView(
+				chartType: self.chartType,
+				isEmpty: self.metricStore.weightDiffAverageMetricByWeekday.isEmpty,
+				height: 150,
+			) {
+				WeightBarChartView(chartType: self.chartType)
 			}
-			.frame(height: 150)
 		}
 	}
 }

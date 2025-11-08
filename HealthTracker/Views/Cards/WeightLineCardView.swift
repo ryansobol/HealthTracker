@@ -9,19 +9,13 @@ struct WeightLineCardView: View {
 		let chartType = ChartType.weightLine(averageWeight: self.metricStore.averageWeight)
 
 		ChartCardView(chartType: chartType) {
-			Group {
-				if self.metricStore.weightDiscreteMetricByDate.isEmpty {
-					EmptyChartView(
-						title: "No Data",
-						systemName: "chart.xyaxis.line",
-						description: "No weight data collected from HealthKit",
-					)
-				}
-				else {
-					WeightLineChartView(chartType: chartType)
-				}
+			MetricCardView(
+				chartType: chartType,
+				isEmpty: self.metricStore.weightDiscreteMetricByDate.isEmpty,
+				height: 150,
+			) {
+				WeightLineChartView(chartType: chartType)
 			}
-			.frame(height: 150)
 		}
 	}
 }

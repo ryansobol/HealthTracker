@@ -8,19 +8,13 @@ struct StepPieCardView: View {
 
 	var body: some View {
 		ChartCardView(chartType: self.chartType) {
-			Group {
-				if self.metricStore.stepDiscreteMetricByDate.isEmpty {
-					EmptyChartView(
-						title: "No Data",
-						systemName: "chart.pie",
-						description: "No steps data collected from HealthKit",
-					)
-				}
-				else {
-					StepPieChartView(chartType: self.chartType)
-				}
+			MetricCardView(
+				chartType: self.chartType,
+				isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
+				height: 240,
+			) {
+				StepPieChartView(chartType: self.chartType)
 			}
-			.frame(height: 240)
 		}
 	}
 }

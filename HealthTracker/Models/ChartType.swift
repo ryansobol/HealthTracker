@@ -33,6 +33,15 @@ enum ChartType {
 		}
 	}
 
+	var chartSymbol: String {
+		return switch self {
+		case .stepBar: "chart.bar"
+		case .stepPie: "chart.pie"
+		case .weightBar: "chart.bar"
+		case .weightLine: "chart.xyaxis.line"
+		}
+	}
+
 	var subtitle: String {
 		return switch self {
 		case let .stepBar(averageSteps):

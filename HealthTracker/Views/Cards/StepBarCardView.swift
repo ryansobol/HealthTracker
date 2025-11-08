@@ -8,19 +8,13 @@ struct StepBarCardView: View {
 		let chartType = ChartType.stepBar(averageSteps: self.metricStore.averageSteps)
 
 		ChartCardView(chartType: chartType) {
-			Group {
-				if self.metricStore.stepDiscreteMetricByDate.isEmpty {
-					EmptyChartView(
-						title: "No Data",
-						systemName: "chart.bar",
-						description: "No steps data collected from HealthKit",
-					)
-				}
-				else {
-					StepBarChartView(chartType: chartType)
-				}
+			MetricCardView(
+				chartType: chartType,
+				isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
+				height: 150,
+			) {
+				StepBarChartView(chartType: chartType)
 			}
-			.frame(height: 150)
 		}
 	}
 }

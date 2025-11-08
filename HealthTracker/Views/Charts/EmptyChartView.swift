@@ -1,21 +1,19 @@
 import SwiftUI
 
 struct EmptyChartView: View {
-	let title: String
-	let systemName: String
-	let description: String
+	let chartType: ChartType
 
 	var body: some View {
 		ContentUnavailableView {
-			Image(systemName: self.systemName)
+			Image(systemName: self.chartType.chartSymbol)
 				.font(.largeTitle)
 				.foregroundStyle(.secondary)
 				.padding(.bottom, 4)
 
-			Text(self.title)
+			Text("No Data")
 				.font(.callout.bold())
 
-			Text(self.description)
+			Text("No \(self.chartType.metricType.title.lowercased()) data collected from HealthKit")
 				.font(.footnote)
 				.foregroundStyle(.secondary)
 		}
@@ -23,9 +21,5 @@ struct EmptyChartView: View {
 }
 
 #Preview {
-	EmptyChartView(
-		title: "No Data",
-		systemName: "chart.bar",
-		description: "No steps collected from HealthKit",
-	)
+	EmptyChartView(chartType: .stepPie)
 }
