@@ -74,38 +74,40 @@ struct DiscreteMetricListView: View {
 				}
 
 				ToolbarItem(placement: .topBarTrailing) {
-					Button("Add Data") {
-						Task {
-							do {
-								try await self.metricStore.createMetric(
-									metricType: self.metricType,
-									date: self.newDate,
-									value: self.validateNewValue(),
-								)
-							}
-							catch is AuthorizationRequestNecessaryError {
-								self.isHealthKitAuthorizationPresented = true
-							}
-							catch let error as AppError {
-								self.logger.error(for: error)
-
-								self.appError = error
-							}
-							catch {
-								let error = AppError.caught(underlyingError: error)
-
-								self.logger.error(for: error)
-
-								self.appError = error
-							}
-
-							self.isAddDataFormPresented = false
-							self.newValue = ""
-						}
-					}
-					.disabled(self.isAddDataButtonDisabled)
+					Button("Add Data", action: self.addData)
+						.disabled(self.isAddDataButtonDisabled)
 				}
 			}
+		}
+	}
+
+	private func addData() -> Void {
+		Task {
+			do {
+				try await self.metricStore.createMetric(
+					metricType: self.metricType,
+					date: self.newDate,
+					value: self.validateNewValue(),
+				)
+			}
+			catch is AuthorizationRequestNecessaryError {
+				self.isHealthKitAuthorizationPresented = true
+			}
+			catch let error as AppError {
+				self.logger.error(for: error)
+
+				self.appError = error
+			}
+			catch {
+				let error = AppError.caught(underlyingError: error)
+
+				self.logger.error(for: error)
+
+				self.appError = error
+			}
+
+			self.isAddDataFormPresented = false
+			self.newValue = ""
 		}
 	}
 
