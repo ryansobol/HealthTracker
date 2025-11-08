@@ -66,4 +66,13 @@ enum ChartType {
 		case .weightLine: true
 		}
 	}
+
+	var height: CGFloat {
+		return switch self {
+		case .stepBar: 150
+		case .stepPie: 240
+		case .weightBar: 150
+		case .weightLine: 150
+		}
+	}
 }

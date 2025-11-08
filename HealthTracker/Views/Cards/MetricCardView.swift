@@ -6,7 +6,6 @@ struct MetricCardView<ChartView: View>: View {
 
 	let chartType: ChartType
 	let isEmpty: Bool
-	let height: CGFloat
 
 	@ViewBuilder let chartView: () -> ChartView
 
@@ -20,7 +19,7 @@ struct MetricCardView<ChartView: View>: View {
 					self.chartView()
 				}
 			}
-			.frame(height: self.height)
+			.frame(height: self.chartType.height)
 		}
 	}
 }
@@ -33,7 +32,6 @@ struct MetricCardView<ChartView: View>: View {
 		MetricCardView(
 			chartType: .stepBar(averageSteps: 10000),
 			isEmpty: isEmpty,
-			height: 150,
 		) {
 			StepBarChartView(chartType: .stepBar(averageSteps: 10000))
 		}

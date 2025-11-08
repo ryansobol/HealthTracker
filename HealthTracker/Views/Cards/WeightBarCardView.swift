@@ -10,7 +10,6 @@ struct WeightBarCardView: View {
 		MetricCardView(
 			chartType: self.chartType,
 			isEmpty: self.metricStore.weightDiffAverageMetricByWeekday.isEmpty,
-			height: 150,
 		) {
 			WeightBarChartView(chartType: self.chartType)
 		}

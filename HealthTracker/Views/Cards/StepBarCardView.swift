@@ -10,7 +10,6 @@ struct StepBarCardView: View {
 		MetricCardView(
 			chartType: chartType,
 			isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
-			height: 150,
 		) {
 			StepBarChartView(chartType: chartType)
 		}

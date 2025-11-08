@@ -10,7 +10,6 @@ struct StepPieCardView: View {
 		MetricCardView(
 			chartType: self.chartType,
 			isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
-			height: 240,
 		) {
 			StepPieChartView(chartType: self.chartType)
 		}

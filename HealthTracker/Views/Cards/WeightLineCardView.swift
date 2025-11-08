@@ -11,7 +11,6 @@ struct WeightLineCardView: View {
 		MetricCardView(
 			chartType: chartType,
 			isEmpty: self.metricStore.weightDiscreteMetricByDate.isEmpty,
-			height: 150,
 		) {
 			WeightLineChartView(chartType: chartType)
 		}
