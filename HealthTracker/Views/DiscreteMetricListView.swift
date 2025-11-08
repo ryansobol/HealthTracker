@@ -25,15 +25,14 @@ struct DiscreteMetricListView: View {
 
 	var body: some View {
 		List(self.discreteMetrics.reversed()) { healthMetric in
-			HStack {
-				Text(healthMetric.date, format: .dateTime.month().day().year())
-
-				Spacer()
-
+			LabeledContent {
 				Text(
 					healthMetric.value,
 					format: .number.precision(.fractionLength(self.metricType == .steps ? 0 : 1)),
 				)
+			} label: {
+				Text(healthMetric.date, format: .dateTime.month().day().year())
+
 			}
 		}
 		.navigationTitle(self.metricType.title)
@@ -53,11 +52,7 @@ struct DiscreteMetricListView: View {
 			Form {
 				DatePicker("Data", selection: self.$newDate, displayedComponents: .date)
 
-				HStack {
-					Text(self.metricType.title)
-
-					Spacer()
-
+				LabeledContent(self.metricType.title) {
 					TextField("Value", text: self.$newValue)
 						.multilineTextAlignment(.trailing)
 						.frame(width: 140)
