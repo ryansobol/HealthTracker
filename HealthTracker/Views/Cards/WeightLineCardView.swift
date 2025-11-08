@@ -11,14 +11,14 @@ struct WeightLineCardView: View {
 		ChartCardView(chartType: chartType) {
 			Group {
 				if self.metricStore.weightDiscreteMetricByDate.isEmpty {
-					EmptyChart(
+					EmptyChartView(
 						title: "No Data",
 						systemName: "chart.xyaxis.line",
 						description: "No weight data collected from HealthKit",
 					)
 				}
 				else {
-					WeightLineChart(chartType: chartType)
+					WeightLineChartView(chartType: chartType)
 				}
 			}
 			.frame(height: 150)

@@ -2,7 +2,7 @@ import Charts
 import OrderedCollections
 import SwiftUI
 
-struct WeightLineChart: View {
+struct WeightLineChartView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil

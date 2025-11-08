@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct EmptyChart: View {
+struct EmptyChartView: View {
 	let title: String
 	let systemName: String
 	let description: String
@@ -23,7 +23,7 @@ struct EmptyChart: View {
 }
 
 #Preview {
-	EmptyChart(
+	EmptyChartView(
 		title: "No Data",
 		systemName: "chart.bar",
 		description: "No steps collected from HealthKit",

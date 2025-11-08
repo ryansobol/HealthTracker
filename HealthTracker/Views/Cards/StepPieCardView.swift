@@ -10,14 +10,14 @@ struct StepPieCardView: View {
 		ChartCardView(chartType: self.chartType) {
 			Group {
 				if self.metricStore.stepDiscreteMetricByDate.isEmpty {
-					EmptyChart(
+					EmptyChartView(
 						title: "No Data",
 						systemName: "chart.pie",
 						description: "No steps data collected from HealthKit",
 					)
 				}
 				else {
-					StepPieChart(chartType: self.chartType)
+					StepPieChartView(chartType: self.chartType)
 				}
 			}
 			.frame(height: 240)

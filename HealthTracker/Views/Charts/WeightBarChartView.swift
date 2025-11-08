@@ -2,7 +2,7 @@ import Charts
 import OrderedCollections
 import SwiftUI
 
-struct WeightBarChart: View {
+struct WeightBarChartView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedAverageMetric: AverageMetric? = nil

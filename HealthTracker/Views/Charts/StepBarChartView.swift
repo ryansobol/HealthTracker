@@ -2,7 +2,7 @@ import Charts
 import OrderedCollections
 import SwiftUI
 
-struct StepBarChart: View {
+struct StepBarChartView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
