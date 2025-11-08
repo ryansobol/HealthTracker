@@ -38,7 +38,7 @@ struct MetricCardView: View {
 
 	VStack {
 		MetricCardView(
-			chartContext: .stepBar(averageSteps: 10000),
+			chartContext: .stepBar(store: metricStore),
 			isEmpty: isEmpty,
 		)
 
