@@ -8,9 +8,7 @@ struct StepPieCardView: View {
 		MetricCardView(
 			chartType: .stepPie,
 			isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
-		) {
-			StepPieChartView(chartType: $0)
-		}
+		)
 	}
 }
 

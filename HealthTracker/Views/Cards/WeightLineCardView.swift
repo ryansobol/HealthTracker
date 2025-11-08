@@ -9,9 +9,7 @@ struct WeightLineCardView: View {
 		MetricCardView(
 			chartType: .weightLine(averageWeight: self.metricStore.averageWeight),
 			isEmpty: self.metricStore.weightDiscreteMetricByDate.isEmpty,
-		) {
-			WeightLineChartView(chartType: $0)
-		}
+		)
 	}
 }
 

@@ -8,9 +8,7 @@ struct StepBarCardView: View {
 		MetricCardView(
 			chartType: .stepBar(averageSteps: self.metricStore.averageSteps),
 			isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
-		) {
-			StepBarChartView(chartType: $0)
-		}
+		)
 	}
 }
 

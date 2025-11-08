@@ -1,13 +1,11 @@
 import SwiftUI
 
-struct MetricCardView<ChartView: View>: View {
+struct MetricCardView: View {
 	let durationOpacity = 0.15
 	let durationScaleEffect = 0.1
 
 	let chartType: ChartType
 	let isEmpty: Bool
-
-	@ViewBuilder let chartView: (ChartType) -> ChartView
 
 	var body: some View {
 		ChartCardView(chartType: self.chartType) {
@@ -16,10 +14,20 @@ struct MetricCardView<ChartView: View>: View {
 					EmptyChartView(chartType: self.chartType)
 				}
 				else {
-					self.chartView(self.chartType)
+					self.chartView
 				}
 			}
 			.frame(height: self.chartType.height)
+		}
+	}
+
+	@ViewBuilder
+	private var chartView: some View {
+		switch self.chartType {
+		case .stepBar: StepBarChartView(chartType: self.chartType)
+		case .stepPie: StepPieChartView(chartType: self.chartType)
+		case .weightBar: WeightBarChartView(chartType: self.chartType)
+		case .weightLine: WeightLineChartView(chartType: self.chartType)
 		}
 	}
 }
@@ -32,9 +40,7 @@ struct MetricCardView<ChartView: View>: View {
 		MetricCardView(
 			chartType: .stepBar(averageSteps: 10000),
 			isEmpty: isEmpty,
-		) {
-			StepBarChartView(chartType: $0)
-		}
+		)
 
 		Button("Toggle") {
 			isEmpty.toggle()

@@ -8,9 +8,7 @@ struct WeightBarCardView: View {
 		MetricCardView(
 			chartType: .weightBar,
 			isEmpty: self.metricStore.weightDiffAverageMetricByWeekday.isEmpty,
-		) {
-			WeightBarChartView(chartType: $0)
-		}
+		)
 	}
 }
 
