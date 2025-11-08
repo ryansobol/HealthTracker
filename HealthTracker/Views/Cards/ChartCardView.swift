@@ -1,71 +1,52 @@
 import SwiftUI
 
-struct ChartCardView<Content: View>: View {
+struct ChartCardView: View {
+	let durationOpacity = 0.15
+	let durationScaleEffect = 0.1
+
 	let chartContext: ChartContext
 
-	@ViewBuilder let content: () -> Content
-
 	var body: some View {
-		VStack(alignment: .leading) {
-			self.header
-				.foregroundStyle(.secondary)
-				.padding(.bottom, 8)
-
-			self.content()
-		}
-		.padding()
-		.background {
-			RoundedRectangle(cornerRadius: 12)
-				.fill(Color(.secondarySystemBackground))
+		ChartContentCardView(chartContext: self.chartContext) {
+			Group {
+				if self.chartContext.hasData {
+					self.chartView
+				}
+				else {
+					EmptyChartView(chartContext: self.chartContext)
+				}
+			}
+			.frame(height: self.chartContext.height)
 		}
 	}
 
 	@ViewBuilder
-	var header: some View {
-		if self.chartContext.hasNavigation {
-			NavigationLink(value: self.chartContext.metricType) {
-				HStack {
-					self.titles
-
-					Spacer()
-
-					Image(systemName: "chevron.right")
-				}
-			}
-		}
-		else {
-			self.titles
-		}
-	}
-
-	var titles: some View {
-		VStack(alignment: .leading) {
-			Label(self.chartContext.title, systemImage: self.chartContext.symbol)
-				.font(.title3.bold())
-				.foregroundStyle(self.chartContext.metricType.color)
-
-			Text(self.chartContext.subtitle)
-				.font(.caption)
+	private var chartView: some View {
+		switch self.chartContext {
+		case .stepBar: StepBarChartView(chartContext: self.chartContext)
+		case .stepPie: StepPieChartView(chartContext: self.chartContext)
+		case .weightBar: WeightBarChartView(chartContext: self.chartContext)
+		case .weightLine: WeightLineChartView(chartContext: self.chartContext)
 		}
 	}
 }
 
-#Preview("With Navigation") {
+#Preview("With Metrics") {
 	@Previewable @State var metricStore = MetricStore()
 
-	ChartCardView(chartContext: .stepBar(store: metricStore)) {
-		Rectangle()
-			.frame(height: 240)
-			.foregroundColor(.gray)
+	VStack {
+		ChartCardView(chartContext: .stepBar(store: metricStore))
 	}
+	.task {
+		try! await metricStore.fetchMetrics()
+	}
+	.environment(metricStore)
 }
 
-#Preview("Without Navigation") {
+#Preview("Without Metrics") {
 	@Previewable @State var metricStore = MetricStore()
 
-	ChartCardView(chartContext: .stepPie(store: metricStore)) {
-		Rectangle()
-			.frame(height: 240)
-			.foregroundColor(.gray)
+	VStack {
+		ChartCardView(chartContext: .stepBar(store: metricStore))
 	}
 }

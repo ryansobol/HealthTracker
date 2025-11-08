@@ -24,14 +24,14 @@ struct DashboardScreenView: View {
 
 					switch self.selectedMetricType {
 					case .steps:
-						MetricCardView(chartContext: .stepBar(store: self.metricStore))
+						ChartCardView(chartContext: .stepBar(store: self.metricStore))
 
-						MetricCardView(chartContext: .stepPie(store: self.metricStore))
+						ChartCardView(chartContext: .stepPie(store: self.metricStore))
 
 					case .weight:
-						MetricCardView(chartContext: .weightLine(store: self.metricStore))
+						ChartCardView(chartContext: .weightLine(store: self.metricStore))
 
-						MetricCardView(chartContext: .weightBar(store: self.metricStore))
+						ChartCardView(chartContext: .weightBar(store: self.metricStore))
 					}
 				}
 			}
