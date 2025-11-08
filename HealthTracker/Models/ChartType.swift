@@ -1,8 +1,10 @@
+import Foundation
+
 enum ChartType {
-	case stepBar
+	case stepBar(averageSteps: Double)
 	case stepPie
 	case weightBar
-	case weightLine
+	case weightLine(averageWeight: Double)
 
 	var metricType: MetricType {
 		return switch self {
@@ -33,10 +35,17 @@ enum ChartType {
 
 	var subtitle: String {
 		return switch self {
-		case .stepBar: "Last 28 Days"
-		case .stepPie: "Last 28 Days"
-		case .weightBar: "Last 28 Days"
-		case .weightLine: "Avg: 180 lbs"
+		case let .stepBar(averageSteps):
+			"Average \(averageSteps.formatted(.number.precision(.fractionLength(0)))) steps"
+
+		case .stepPie:
+			"Last 28 Days"
+
+		case .weightBar:
+			"Last 28 Days"
+
+		case let .weightLine(averageWeight):
+			"Average \(averageWeight.formatted(.number.precision(.fractionLength(1)))) lbs"
 		}
 	}
 

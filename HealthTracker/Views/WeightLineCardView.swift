@@ -3,12 +3,12 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightLineCardView: View {
-	let chartType = ChartType.weightLine
-
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		ChartCardView(chartType: self.chartType) {
+		let chartType = ChartType.weightLine(averageWeight: self.metricStore.averageWeight)
+
+		ChartCardView(chartType: chartType) {
 			Group {
 				if self.metricStore.weightDiscreteMetricByDate.isEmpty {
 					EmptyChart(
@@ -18,7 +18,7 @@ struct WeightLineCardView: View {
 					)
 				}
 				else {
-					WeightLineChart(chartType: self.chartType)
+					WeightLineChart(chartType: chartType)
 				}
 			}
 			.frame(height: 150)

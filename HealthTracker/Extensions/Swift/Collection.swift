@@ -1,4 +1,4 @@
-extension Collection where Element == Double {
+extension Collection<Double> {
 	var average: Double? {
 		guard !self.isEmpty else {
 			return nil

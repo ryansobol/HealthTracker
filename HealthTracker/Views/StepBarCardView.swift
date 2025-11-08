@@ -2,12 +2,12 @@ import OrderedCollections
 import SwiftUI
 
 struct StepBarCardView: View {
-	let chartType = ChartType.stepBar
-
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		ChartCardView(chartType: self.chartType) {
+		let chartType = ChartType.stepBar(averageSteps: self.metricStore.averageSteps)
+
+		ChartCardView(chartType: chartType) {
 			Group {
 				if self.metricStore.stepDiscreteMetricByDate.isEmpty {
 					EmptyChart(
@@ -17,7 +17,7 @@ struct StepBarCardView: View {
 					)
 				}
 				else {
-					StepBarChart(chartType: self.chartType)
+					StepBarChart(chartType: chartType)
 				}
 			}
 			.frame(height: 150)

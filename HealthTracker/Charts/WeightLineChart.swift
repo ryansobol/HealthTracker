@@ -3,7 +3,6 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightLineChart: View {
-	let goal = 165
 	@Environment(MetricStore.self) private var metricStore
 
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
@@ -26,7 +25,7 @@ struct WeightLineChart: View {
 	var body: some View {
 		Chart {
 			if let selectedDiscreteMetric = self.selectedDiscreteMetric {
-				RuleMark(x: .value("Selected Metric", selectedDiscreteMetric.date, unit: .day))
+				RuleMark(x: .value("Selected Day", selectedDiscreteMetric.date, unit: .day))
 					.selection(
 						label: Text(
 							selectedDiscreteMetric.date,
@@ -40,15 +39,15 @@ struct WeightLineChart: View {
 					)
 			}
 
-			RuleMark(y: .value("Goal", self.goal))
-				.foregroundStyle(.mint)
+			RuleMark(y: .value("Average Weight", self.metricStore.averageWeight))
+				.foregroundStyle(self.chartType.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
 			ForEach(self.metricStore.weightDiscreteMetricByDate.values) { discreteMetric in
 				AreaMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
-					yStart: .value("Value", discreteMetric.value),
-					yEnd: .value("Min value", self.metricStore.minimumWeightDiscreteMetric),
+					yStart: .value("Weight", discreteMetric.value),
+					yEnd: .value("Minimum Weight", self.metricStore.minimumWeight),
 				)
 				.foregroundStyle(
 					Gradient(colors: [self.chartType.metricType.color.opacity(0.5), .clear]),
@@ -56,7 +55,7 @@ struct WeightLineChart: View {
 
 				LineMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
-					y: .value("Value", discreteMetric.value),
+					y: .value("Weight", discreteMetric.value),
 				)
 				.foregroundStyle(self.chartType.metricType.color)
 				.symbol(.circle)

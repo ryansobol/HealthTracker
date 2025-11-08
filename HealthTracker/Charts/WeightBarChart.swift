@@ -31,7 +31,7 @@ struct WeightBarChart: View {
 	var body: some View {
 		Chart {
 			if let selectedAverageMetric = self.selectedAverageMetric {
-				RuleMark(x: .value("Selected Average Metric", selectedAverageMetric.weekday))
+				RuleMark(x: .value("Selected Weekday", selectedAverageMetric.weekday))
 					.selection(
 						label: Text(selectedAverageMetric.weekday.symbol),
 						value: Text(selectedAverageMetric.value, format: .number.precision(.fractionLength(2)))
@@ -46,7 +46,7 @@ struct WeightBarChart: View {
 			ForEach(self.metricStore.weightDiffAverageMetricByWeekday.values) { averageDiffMetric in
 				BarMark(
 					x: .value("Weekday", averageDiffMetric.weekday),
-					y: .value("Average Differece", averageDiffMetric.value),
+					y: .value("Average Weight Differece", averageDiffMetric.value),
 				)
 				.foregroundStyle(
 					averageDiffMetric.value >= 0

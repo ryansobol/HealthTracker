@@ -33,7 +33,7 @@ struct StepBarChart: View {
 	var body: some View {
 		Chart {
 			if let selectedDiscreteMetric = self.selectedDiscreteMetric {
-				RuleMark(x: .value("Selected Metric", selectedDiscreteMetric.date, unit: .day))
+				RuleMark(x: .value("Selected Day", selectedDiscreteMetric.date, unit: .day))
 					.selection(
 						label: Text(
 							selectedDiscreteMetric.date,
@@ -47,7 +47,7 @@ struct StepBarChart: View {
 					)
 			}
 
-			RuleMark(y: .value("Average", self.metricStore.averageSteps))
+			RuleMark(y: .value("Average Steps", self.metricStore.averageSteps))
 				.foregroundStyle(.secondary)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 

@@ -51,7 +51,7 @@ struct ChartCardView<Content: View>: View {
 }
 
 #Preview("With Navigation") {
-	ChartCardView(chartType: .stepBar) {
+	ChartCardView(chartType: .stepBar(averageSteps: 10_000)) {
 		Rectangle()
 			.frame(height: 240)
 			.foregroundColor(.gray)

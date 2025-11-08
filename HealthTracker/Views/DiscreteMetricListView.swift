@@ -32,7 +32,6 @@ struct DiscreteMetricListView: View {
 				)
 			} label: {
 				Text(healthMetric.date, format: .dateTime.month().day().year())
-
 			}
 		}
 		.navigationTitle(self.metricType.title)

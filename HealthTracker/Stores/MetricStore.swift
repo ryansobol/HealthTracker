@@ -20,11 +20,11 @@ final class MetricStore {
 		return self.stepDiscreteMetricByDate.values.lazy.map { $0.value }.average ?? 0
 	}
 
-	var averageWeightDifference: Double {
-		return self.weightDiffAverageMetricByWeekday.values.lazy.map { $0.value }.average ?? 0
+	var averageWeight: Double {
+		return self.weightDiscreteMetricByDate.values.lazy.map { $0.value }.average ?? 0
 	}
 
-	var minimumWeightDiscreteMetric: Double {
+	var minimumWeight: Double {
 		return self.weightDiscreteMetricByDate.values.lazy.map { $0.value }.min() ?? 0
 	}
 
