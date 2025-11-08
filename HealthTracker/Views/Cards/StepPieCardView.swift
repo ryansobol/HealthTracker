@@ -7,14 +7,12 @@ struct StepPieCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		ChartCardView(chartType: self.chartType) {
-			MetricCardView(
-				chartType: self.chartType,
-				isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
-				height: 240,
-			) {
-				StepPieChartView(chartType: self.chartType)
-			}
+		MetricCardView(
+			chartType: self.chartType,
+			isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
+			height: 240,
+		) {
+			StepPieChartView(chartType: self.chartType)
 		}
 	}
 }

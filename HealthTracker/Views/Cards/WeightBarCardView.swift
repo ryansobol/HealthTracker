@@ -7,14 +7,12 @@ struct WeightBarCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		ChartCardView(chartType: self.chartType) {
-			MetricCardView(
-				chartType: self.chartType,
-				isEmpty: self.metricStore.weightDiffAverageMetricByWeekday.isEmpty,
-				height: 150,
-			) {
-				WeightBarChartView(chartType: self.chartType)
-			}
+		MetricCardView(
+			chartType: self.chartType,
+			isEmpty: self.metricStore.weightDiffAverageMetricByWeekday.isEmpty,
+			height: 150,
+		) {
+			WeightBarChartView(chartType: self.chartType)
 		}
 	}
 }

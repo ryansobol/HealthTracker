@@ -7,14 +7,12 @@ struct StepBarCardView: View {
 	var body: some View {
 		let chartType = ChartType.stepBar(averageSteps: self.metricStore.averageSteps)
 
-		ChartCardView(chartType: chartType) {
-			MetricCardView(
-				chartType: chartType,
-				isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
-				height: 150,
-			) {
-				StepBarChartView(chartType: chartType)
-			}
+		MetricCardView(
+			chartType: chartType,
+			isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
+			height: 150,
+		) {
+			StepBarChartView(chartType: chartType)
 		}
 	}
 }
