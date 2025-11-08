@@ -3,8 +3,6 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightBarChartView: View {
-	@Environment(MetricStore.self) private var metricStore
-
 	@State private var selectedAverageMetric: AverageMetric? = nil
 
 	let context: ChartContext
@@ -14,7 +12,7 @@ struct WeightBarChartView: View {
 			get: { self.selectedAverageMetric?.weekday },
 			set: { newValue in
 				self.selectedAverageMetric = newValue.flatMap { weekday in
-					return self.metricStore.weightDiffAverageMetricByWeekday[weekday]
+					return self.context.store.weightDiffAverageMetricByWeekday[weekday]
 				}
 			},
 		)
@@ -43,7 +41,7 @@ struct WeightBarChartView: View {
 					)
 			}
 
-			ForEach(self.metricStore.weightDiffAverageMetricByWeekday.values) { averageDiffMetric in
+			ForEach(self.context.store.weightDiffAverageMetricByWeekday.values) { averageDiffMetric in
 				BarMark(
 					x: .value("Weekday", averageDiffMetric.weekday),
 					y: .value("Average Weight Differece", averageDiffMetric.value),

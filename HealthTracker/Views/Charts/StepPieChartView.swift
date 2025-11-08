@@ -3,8 +3,6 @@ import OrderedCollections
 import SwiftUI
 
 struct StepPieChartView: View {
-	@Environment(MetricStore.self) private var metricStore
-
 	@State private var selectedAverageMetric: AverageMetric? = nil
 
 	let context: ChartContext
@@ -14,7 +12,7 @@ struct StepPieChartView: View {
 			get: { self.selectedAverageMetric?.value },
 			set: { newValue in
 				self.selectedAverageMetric = newValue.flatMap { value in
-					self.metricStore.stepAverageMetricByWeekday.values
+					self.context.store.stepAverageMetricByWeekday.values
 						.first(into: 0.0) { cummulativeValue, averageMetric in
 							cummulativeValue += averageMetric.value
 
@@ -35,7 +33,7 @@ struct StepPieChartView: View {
 
 	var body: some View {
 		Chart {
-			ForEach(self.metricStore.stepAverageMetricByWeekday.values) { averageMetric in
+			ForEach(self.context.store.stepAverageMetricByWeekday.values) { averageMetric in
 				SectorMark(
 					angle: .value("Average Steps", averageMetric.value),
 					innerRadius: .ratio(0.618),
@@ -51,7 +49,7 @@ struct StepPieChartView: View {
 		.chartBackground { _ in
 			self.chartAverage(
 				title: self.selectedAverageMetric?.weekday.symbol ?? "Daily",
-				value: self.selectedAverageMetric?.value ?? self.metricStore.averageSteps,
+				value: self.selectedAverageMetric?.value ?? self.context.store.averageSteps,
 			)
 		}
 		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)

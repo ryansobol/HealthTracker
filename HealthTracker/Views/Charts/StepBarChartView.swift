@@ -3,8 +3,6 @@ import OrderedCollections
 import SwiftUI
 
 struct StepBarChartView: View {
-	@Environment(MetricStore.self) private var metricStore
-
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 
 	let context: ChartContext
@@ -16,7 +14,7 @@ struct StepBarChartView: View {
 				self.selectedDiscreteMetric = newValue.flatMap { date in
 					let normalizedDate = Calendar.current.startOfDay(for: date)
 
-					return self.metricStore.stepDiscreteMetricByDate[normalizedDate]
+					return self.context.store.stepDiscreteMetricByDate[normalizedDate]
 				}
 			},
 		)
@@ -47,11 +45,11 @@ struct StepBarChartView: View {
 					)
 			}
 
-			RuleMark(y: .value("Average Steps", self.metricStore.averageSteps))
+			RuleMark(y: .value("Average Steps", self.context.store.averageSteps))
 				.foregroundStyle(.secondary)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-			ForEach(self.metricStore.stepDiscreteMetricByDate.values) { discreteMetric in
+			ForEach(self.context.store.stepDiscreteMetricByDate.values) { discreteMetric in
 				BarMark(
 					x: .value("Date", discreteMetric.date, unit: .day),
 					y: .value("Steps", discreteMetric.value),

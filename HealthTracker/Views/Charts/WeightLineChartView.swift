@@ -3,8 +3,6 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightLineChartView: View {
-	@Environment(MetricStore.self) private var metricStore
-
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 
 	let context: ChartContext
@@ -16,7 +14,7 @@ struct WeightLineChartView: View {
 				self.selectedDiscreteMetric = newValue.flatMap { date in
 					let normalizedDate = Calendar.current.startOfDay(for: date)
 
-					return self.metricStore.weightDiscreteMetricByDate[normalizedDate]
+					return self.context.store.weightDiscreteMetricByDate[normalizedDate]
 				}
 			},
 		)
@@ -39,15 +37,15 @@ struct WeightLineChartView: View {
 					)
 			}
 
-			RuleMark(y: .value("Average Weight", self.metricStore.averageWeight))
+			RuleMark(y: .value("Average Weight", self.context.store.averageWeight))
 				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
-			ForEach(self.metricStore.weightDiscreteMetricByDate.values) { discreteMetric in
+			ForEach(self.context.store.weightDiscreteMetricByDate.values) { discreteMetric in
 				AreaMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
 					yStart: .value("Weight", discreteMetric.value),
-					yEnd: .value("Minimum Weight", self.metricStore.minimumWeight),
+					yEnd: .value("Minimum Weight", self.context.store.minimumWeight),
 				)
 				.foregroundStyle(
 					Gradient(colors: [self.context.metricType.color.opacity(0.5), .clear]),

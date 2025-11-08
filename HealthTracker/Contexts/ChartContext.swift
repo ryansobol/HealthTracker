@@ -85,4 +85,13 @@ enum ChartContext {
 		case let .weightLine(store): !store.weightDiscreteMetricByDate.isEmpty
 		}
 	}
+
+	var store: MetricStore {
+		return switch self {
+		case let .stepBar(store): store
+		case let .stepPie(store): store
+		case let .weightBar(store): store
+		case let .weightLine(store): store
+		}
+	}
 }
