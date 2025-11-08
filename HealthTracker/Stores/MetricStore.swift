@@ -16,29 +16,16 @@ final class MetricStore {
 
 	// MARK: - Computed Properties
 
-	var averageStepCount: Double {
-		let stepDiscreteMetrics = self.stepDiscreteMetricByDate.values
-
-		guard !stepDiscreteMetrics.isEmpty else {
-			return 0
-		}
-
-		return stepDiscreteMetrics.reduce(0) { $0 + $1.value } / Double(stepDiscreteMetrics.count)
+	var averageSteps: Double {
+		return self.stepDiscreteMetricByDate.values.lazy.map { $0.value }.average ?? 0
 	}
 
 	var averageWeightDifference: Double {
-		let weightDiffAverageMetrics = self.weightDiffAverageMetricByWeekday.values
-
-		guard !weightDiffAverageMetrics.isEmpty else {
-			return 0
-		}
-
-		return weightDiffAverageMetrics
-			.reduce(0) { $0 + $1.value } / Double(weightDiffAverageMetrics.count)
+		return self.weightDiffAverageMetricByWeekday.values.lazy.map { $0.value }.average ?? 0
 	}
 
 	var minimumWeightDiscreteMetric: Double {
-		return self.weightDiscreteMetricByDate.values.map { $0.value }.min() ?? 0
+		return self.weightDiscreteMetricByDate.values.lazy.map { $0.value }.min() ?? 0
 	}
 
 	// MARK: - Fetching

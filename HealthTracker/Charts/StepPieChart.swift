@@ -51,7 +51,7 @@ struct StepPieChart: View {
 		.chartBackground { _ in
 			self.chartAverage(
 				title: self.selectedAverageMetric?.weekday.symbol ?? "Daily",
-				value: self.selectedAverageMetric?.value ?? self.metricStore.averageStepCount,
+				value: self.selectedAverageMetric?.value ?? self.metricStore.averageSteps,
 			)
 		}
 		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)

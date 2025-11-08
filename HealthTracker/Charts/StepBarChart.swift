@@ -47,7 +47,7 @@ struct StepBarChart: View {
 					)
 			}
 
-			RuleMark(y: .value("Average", self.metricStore.averageStepCount))
+			RuleMark(y: .value("Average", self.metricStore.averageSteps))
 				.foregroundStyle(.secondary)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
