@@ -12,18 +12,15 @@ struct MetricCardView<ChartView: View>: View {
 
 	var body: some View {
 		ChartCardView(chartType: self.chartType) {
-			ZStack {
-				EmptyChartView(chartType: self.chartType)
-					.opacity(self.isEmpty ? 1 : 0)
-
-				self.chartView()
-					.scaleEffect(self.isEmpty ? 0.9 : 1.0)
-					.animation(.bouncy(duration: self.durationScaleEffect), value: self.isEmpty)
-					.opacity(self.isEmpty ? 0 : 1)
-
+			Group {
+				if self.isEmpty {
+					EmptyChartView(chartType: self.chartType)
+				}
+				else {
+					self.chartView()
+				}
 			}
 			.frame(height: self.height)
-			.animation(.smooth(duration: self.durationOpacity).delay(0.2), value: self.isEmpty)
 		}
 	}
 }
