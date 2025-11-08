@@ -2,16 +2,14 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightBarCardView: View {
-	let chartType = ChartType.weightBar
-
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
 		MetricCardView(
-			chartType: self.chartType,
+			chartType: .weightBar,
 			isEmpty: self.metricStore.weightDiffAverageMetricByWeekday.isEmpty,
 		) {
-			WeightBarChartView(chartType: self.chartType)
+			WeightBarChartView(chartType: $0)
 		}
 	}
 }

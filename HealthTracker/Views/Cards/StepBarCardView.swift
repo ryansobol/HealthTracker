@@ -5,13 +5,11 @@ struct StepBarCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		let chartType = ChartType.stepBar(averageSteps: self.metricStore.averageSteps)
-
 		MetricCardView(
-			chartType: chartType,
+			chartType: .stepBar(averageSteps: self.metricStore.averageSteps),
 			isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
 		) {
-			StepBarChartView(chartType: chartType)
+			StepBarChartView(chartType: $0)
 		}
 	}
 }

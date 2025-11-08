@@ -7,7 +7,7 @@ struct MetricCardView<ChartView: View>: View {
 	let chartType: ChartType
 	let isEmpty: Bool
 
-	@ViewBuilder let chartView: () -> ChartView
+	@ViewBuilder let chartView: (ChartType) -> ChartView
 
 	var body: some View {
 		ChartCardView(chartType: self.chartType) {
@@ -16,7 +16,7 @@ struct MetricCardView<ChartView: View>: View {
 					EmptyChartView(chartType: self.chartType)
 				}
 				else {
-					self.chartView()
+					self.chartView(self.chartType)
 				}
 			}
 			.frame(height: self.chartType.height)
@@ -33,7 +33,7 @@ struct MetricCardView<ChartView: View>: View {
 			chartType: .stepBar(averageSteps: 10000),
 			isEmpty: isEmpty,
 		) {
-			StepBarChartView(chartType: .stepBar(averageSteps: 10000))
+			StepBarChartView(chartType: $0)
 		}
 
 		Button("Toggle") {

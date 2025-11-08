@@ -6,13 +6,11 @@ struct WeightLineCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		let chartType = ChartType.weightLine(averageWeight: self.metricStore.averageWeight)
-
 		MetricCardView(
-			chartType: chartType,
+			chartType: .weightLine(averageWeight: self.metricStore.averageWeight),
 			isEmpty: self.metricStore.weightDiscreteMetricByDate.isEmpty,
 		) {
-			WeightLineChartView(chartType: chartType)
+			WeightLineChartView(chartType: $0)
 		}
 	}
 }

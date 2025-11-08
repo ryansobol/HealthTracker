@@ -2,16 +2,14 @@ import OrderedCollections
 import SwiftUI
 
 struct StepPieCardView: View {
-	let chartType = ChartType.stepPie
-
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
 		MetricCardView(
-			chartType: self.chartType,
+			chartType: .stepPie,
 			isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
 		) {
-			StepPieChartView(chartType: self.chartType)
+			StepPieChartView(chartType: $0)
 		}
 	}
 }
