@@ -37,7 +37,7 @@ struct WeightBarChart: View {
 						value: Text(selectedAverageMetric.value, format: .number.precision(.fractionLength(2)))
 							.foregroundStyle(
 								selectedAverageMetric.value >= 0
-									? self.chartType.metricType.tint
+									? self.chartType.metricType.color
 									: Color.mint,
 							),
 					)
@@ -50,7 +50,7 @@ struct WeightBarChart: View {
 				)
 				.foregroundStyle(
 					averageDiffMetric.value >= 0
-						? self.chartType.metricType.tint.gradient
+						? self.chartType.metricType.color.gradient
 						: Color.mint.gradient,
 				)
 				.opacity(self.isBarMarkOpaque(for: averageDiffMetric) ? 0.3 : 1.0)

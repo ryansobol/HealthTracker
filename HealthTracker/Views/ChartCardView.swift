@@ -42,7 +42,7 @@ struct ChartCardView<Content: View>: View {
 		VStack(alignment: .leading) {
 			Label(self.chartType.title, systemImage: self.chartType.symbol)
 				.font(.title3.bold())
-				.foregroundStyle(self.chartType.metricType.tint)
+				.foregroundStyle(self.chartType.metricType.color)
 
 			Text(self.chartType.subtitle)
 				.font(.caption)

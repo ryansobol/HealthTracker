@@ -42,7 +42,7 @@ struct StepPieChart: View {
 					outerRadius: self.selectedAverageMetric?.weekday == averageMetric.weekday ? 140 : 110,
 					angularInset: 1,
 				)
-				.foregroundStyle(self.chartType.metricType.tint.gradient)
+				.foregroundStyle(self.chartType.metricType.color.gradient)
 				.cornerRadius(6)
 				.opacity(self.isSectorMarkOpaque(for: averageMetric) ? 0.3 : 1)
 			}

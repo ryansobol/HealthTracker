@@ -8,7 +8,7 @@ enum MetricType: CaseIterable, Identifiable {
 		return self
 	}
 
-	var tint: Color {
+	var color: Color {
 		return switch self {
 		case .steps: .pink
 		case .weight: .indigo

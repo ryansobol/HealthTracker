@@ -43,7 +43,7 @@ struct StepBarChart: View {
 							selectedDiscreteMetric.value,
 							format: .number.precision(.fractionLength(0)),
 						)
-						.foregroundStyle(self.chartType.metricType.tint),
+						.foregroundStyle(self.chartType.metricType.color),
 					)
 			}
 
@@ -56,7 +56,7 @@ struct StepBarChart: View {
 					x: .value("Date", discreteMetric.date, unit: .day),
 					y: .value("Steps", discreteMetric.value),
 				)
-				.foregroundStyle(self.chartType.metricType.tint.gradient)
+				.foregroundStyle(self.chartType.metricType.color.gradient)
 				.opacity(self.isBarMarkOpaque(for: discreteMetric) ? 0.3 : 1.0)
 			}
 		}

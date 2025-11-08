@@ -36,7 +36,7 @@ struct WeightLineChart: View {
 							selectedDiscreteMetric.value,
 							format: .number.precision(.fractionLength(1)),
 						)
-						.foregroundStyle(self.chartType.metricType.tint),
+						.foregroundStyle(self.chartType.metricType.color),
 					)
 			}
 
@@ -51,14 +51,14 @@ struct WeightLineChart: View {
 					yEnd: .value("Min value", self.metricStore.minimumWeightDiscreteMetric),
 				)
 				.foregroundStyle(
-					Gradient(colors: [self.chartType.metricType.tint.opacity(0.5), .clear]),
+					Gradient(colors: [self.chartType.metricType.color.opacity(0.5), .clear]),
 				)
 
 				LineMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
 					y: .value("Value", discreteMetric.value),
 				)
-				.foregroundStyle(self.chartType.metricType.tint)
+				.foregroundStyle(self.chartType.metricType.color)
 				.symbol(.circle)
 			}
 			.interpolationMethod(.catmullRom)

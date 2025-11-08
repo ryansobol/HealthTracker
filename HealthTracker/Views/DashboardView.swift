@@ -44,7 +44,7 @@ struct DashboardView: View {
 				)
 			}
 		}
-		.tint(self.selectedMetricType.tint)
+		.tint(self.selectedMetricType.color)
 		.fullScreenCover(isPresented: self.$isHealthKitAuthorizationPresented, onDismiss: {
 			Task {
 				do {
