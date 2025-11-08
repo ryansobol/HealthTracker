@@ -5,7 +5,7 @@ struct EmptyChartView: View {
 
 	var body: some View {
 		ContentUnavailableView {
-			Image(systemName: self.context.chartSymbol)
+			Image(systemName: self.context.symbolChart)
 				.font(.largeTitle)
 				.foregroundStyle(.secondary)
 				.padding(.bottom, 4)

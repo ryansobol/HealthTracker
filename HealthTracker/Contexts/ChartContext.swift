@@ -25,7 +25,7 @@ enum ChartContext {
 		}
 	}
 
-	var symbol: String {
+	var symbolTitle: String {
 		return switch self {
 		case .stepBar: "figure.walk"
 		case .stepPie: "calendar"
@@ -34,7 +34,7 @@ enum ChartContext {
 		}
 	}
 
-	var chartSymbol: String {
+	var symbolChart: String {
 		return switch self {
 		case .stepBar: "chart.bar"
 		case .stepPie: "chart.pie"

@@ -40,7 +40,7 @@ struct ChartContentCardView<Content: View>: View {
 
 	var titles: some View {
 		VStack(alignment: .leading) {
-			Label(self.context.title, systemImage: self.context.symbol)
+			Label(self.context.title, systemImage: self.context.symbolTitle)
 				.font(.title3.bold())
 				.foregroundStyle(self.context.metricType.color)
 
