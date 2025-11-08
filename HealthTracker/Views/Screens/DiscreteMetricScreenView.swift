@@ -2,7 +2,7 @@ import OrderedCollections
 import OSLog
 import SwiftUI
 
-struct DiscreteMetricListView: View {
+struct DiscreteMetricScreenView: View {
 	private let logger = Logger(category: Self.self)
 
 	@Environment(MetricStore.self) private var metricStore
@@ -122,7 +122,7 @@ struct DiscreteMetricListView: View {
 	@Previewable @State var metricStore = MetricStore()
 
 	NavigationStack {
-		DiscreteMetricListView(
+		DiscreteMetricScreenView(
 			metricType: .weight,
 			isHealthKitAuthorizationPresented: .constant(false),
 		)

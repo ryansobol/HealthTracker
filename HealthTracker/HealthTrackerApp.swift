@@ -6,7 +6,7 @@ struct HealthTrackerApp: App {
 
 	var body: some Scene {
 		WindowGroup {
-			DashboardView()
+			DashboardScreenView()
 				.environment(self.metricStore)
 		}
 	}

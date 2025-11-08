@@ -2,7 +2,7 @@ import Charts
 import OSLog
 import SwiftUI
 
-struct DashboardView: View {
+struct DashboardScreenView: View {
 	private let logger = Logger(category: Self.self)
 
 	@Environment(MetricStore.self) private var metricStore
@@ -38,7 +38,7 @@ struct DashboardView: View {
 			.padding()
 			.navigationTitle("Dashboard")
 			.navigationDestination(for: MetricType.self) { metric in
-				DiscreteMetricListView(
+				DiscreteMetricScreenView(
 					metricType: metric,
 					isHealthKitAuthorizationPresented: self.$isHealthKitAuthorizationPresented,
 				)
@@ -59,7 +59,7 @@ struct DashboardView: View {
 				}
 			}
 		}, content: {
-			HealthKitAuthorizationView()
+			HealthKitAuthorizationScreenView()
 		})
 		.alert(for: self.$appError)
 		.task {
@@ -88,6 +88,6 @@ struct DashboardView: View {
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
 
-	DashboardView()
+	DashboardScreenView()
 		.environment(metricStore)
 }

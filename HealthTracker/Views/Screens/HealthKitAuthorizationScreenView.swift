@@ -1,7 +1,7 @@
 import HealthKitUI
 import SwiftUI
 
-struct HealthKitAuthorizationView: View {
+struct HealthKitAuthorizationScreenView: View {
 	@Environment(\.dismiss) private var dismiss
 	@Environment(MetricStore.self) private var metricStore
 
@@ -60,6 +60,6 @@ struct HealthKitAuthorizationView: View {
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
 
-	HealthKitAuthorizationView()
+	HealthKitAuthorizationScreenView()
 		.environment(metricStore)
 }
