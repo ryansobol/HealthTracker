@@ -4,7 +4,39 @@ import OrderedCollections
 
 @Observable
 final class MetricStore {
+	// MARK: - Configuration
+
+	private struct Configuration {
+		let calculateAverages: (OrderedDictionary<Date, DiscreteMetric>.Values)
+			-> OrderedDictionary<Weekday, AverageMetric>
+
+		let extractValue: (HKStatistics) -> Double
+
+		static let steps = Configuration(
+			calculateAverages: { discreteMetrics in
+				AverageMetric.calculate(from: discreteMetrics)
+			},
+			extractValue: { statistic in
+				statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0
+			},
+		)
+
+		static let weight = Configuration(
+			calculateAverages: { discreteMetrics in
+				AverageMetric.calculateDifferences(from: discreteMetrics)
+			},
+			extractValue: { statistic in
+				statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0
+			},
+		)
+	}
+
 	// MARK: - Stored Properties
+
+	private let configurations: [MetricType: Configuration] = [
+		.steps: .steps,
+		.weight: .weight,
+	]
 
 	let healthKitService = HealthKitService()
 
@@ -42,45 +74,55 @@ final class MetricStore {
 	private func fetchStepMetrics() async throws -> Void {
 		let statistics = try await self.healthKitService.fetchStepStatistics(daysAgo: 28)
 
-		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
-			minimumCapacity: statistics.count,
+		let (discreteMetricsByDate, averageMetricsByDate) = self.transform(
+			statistics: statistics,
+			metricType: .steps,
 		)
 
-		self.stepDiscreteMetricByDate =
-			statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
-				let discreteMetric = DiscreteMetric(
-					date: statistic.startDate,
-					value: statistic.sumQuantity()?.doubleValue(for: .count()) ?? 0,
-				)
+		self.stepDiscreteMetricByDate = discreteMetricsByDate
 
-				dictionary[statistic.startDate] = discreteMetric
-			}
-
-		self.stepAverageMetricByWeekday = AverageMetric.calculate(
-			from: self.stepDiscreteMetricByDate.values,
-		)
+		self.stepAverageMetricByWeekday = averageMetricsByDate
 	}
 
 	private func fetchWeightMetrics() async throws -> Void {
 		let statistics = try await self.healthKitService.fetchWeightStatistics(daysAgo: 28)
 
+		let (discreteMetricsByDate, averageMetricsByDate) = self.transform(
+			statistics: statistics,
+			metricType: .weight,
+		)
+
+		self.weightDiscreteMetricByDate = discreteMetricsByDate
+
+		self.weightDiffAverageMetricByWeekday = averageMetricsByDate
+	}
+
+	private func transform(statistics: [HKStatistics], metricType: MetricType)
+		-> (
+			discreteMetrics: OrderedDictionary<Date, DiscreteMetric>,
+			averageMetrics: OrderedDictionary<Weekday, AverageMetric>,
+		)
+	{
+		guard let config = self.configurations[metricType] else {
+			fatalError("No configuration for metric type: \(metricType)")
+		}
+
 		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
 			minimumCapacity: statistics.count,
 		)
 
-		self.weightDiscreteMetricByDate =
-			statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
-				let discreteMetric = DiscreteMetric(
-					date: statistic.startDate,
-					value: statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0,
-				)
+		let discreteMetrics = statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
+			let discreteMetric = DiscreteMetric(
+				date: statistic.startDate,
+				value: config.extractValue(statistic),
+			)
 
-				dictionary[statistic.startDate] = discreteMetric
-			}
+			dictionary[statistic.startDate] = discreteMetric
+		}
 
-		self.weightDiffAverageMetricByWeekday = AverageMetric.calculateDifferences(
-			from: self.weightDiscreteMetricByDate.values,
-		)
+		let averageMetrics = config.calculateAverages(discreteMetrics.values)
+
+		return (discreteMetrics, averageMetrics)
 	}
 
 	// MARK: - Creation
