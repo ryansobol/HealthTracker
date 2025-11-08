@@ -23,10 +23,6 @@ struct WeightLineChart: View {
 		)
 	}
 
-	var minValue: Double {
-		return self.metricStore.weightDiscreteMetricByDate.values.map { $0.value }.min() ?? 0
-	}
-
 	var body: some View {
 		Chart {
 			if let selectedDiscreteMetric = self.selectedDiscreteMetric {
@@ -52,7 +48,7 @@ struct WeightLineChart: View {
 				AreaMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
 					yStart: .value("Value", discreteMetric.value),
-					yEnd: .value("Min value", self.minValue),
+					yEnd: .value("Min value", self.metricStore.minimumWeightDiscreteMetric),
 				)
 				.foregroundStyle(
 					Gradient(colors: [self.chartType.metricType.tint.opacity(0.5), .clear]),

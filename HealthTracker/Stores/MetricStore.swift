@@ -37,6 +37,10 @@ final class MetricStore {
 			.reduce(0) { $0 + $1.value } / Double(weightDiffAverageMetrics.count)
 	}
 
+	var minimumWeightDiscreteMetric: Double {
+		return self.weightDiscreteMetricByDate.values.map { $0.value }.min() ?? 0
+	}
+
 	// MARK: - Fetching
 
 	func fetchMetrics() async throws -> Void {
