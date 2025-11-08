@@ -7,17 +7,20 @@ struct HealthKitService {
 		let quantityType: HKQuantityType
 		let unit: HKUnit
 		let statisticsOptions: HKStatisticsOptions
+		let fakeValueGenerator: (Int) -> Double
 
 		static let steps = Configuration(
 			quantityType: HKQuantityType(.stepCount),
 			unit: .count(),
 			statisticsOptions: .cumulativeSum,
+			fakeValueGenerator: { _ in .random(in: 4000 ... 20000) },
 		)
 
 		static let weight = Configuration(
 			quantityType: HKQuantityType(.bodyMass),
 			unit: .pound(),
 			statisticsOptions: .mostRecent,
+			fakeValueGenerator: { day in .random(in: 160 + Double(day / 3) ... 165 + Double(day / 3)) },
 		)
 	}
 
@@ -53,16 +56,18 @@ struct HealthKitService {
 	// MARK: - Fetching
 
 	@concurrent
-	func fetchStepStatistics() async throws -> [HKStatistics] {
-		return try await self.fetchStatistics(for: .steps)
+	func fetchStepStatistics(daysAgo: Int) async throws -> [HKStatistics] {
+		return try await self.fetchStatistics(for: .steps, daysAgo: daysAgo)
 	}
 
 	@concurrent
-	func fetchWeightStatistics() async throws -> [HKStatistics] {
-		return try await self.fetchStatistics(for: .weight)
+	func fetchWeightStatistics(daysAgo: Int) async throws -> [HKStatistics] {
+		return try await self.fetchStatistics(for: .weight, daysAgo: daysAgo)
 	}
 
-	private func fetchStatistics(for metricType: MetricType) async throws -> [HKStatistics] {
+	private func fetchStatistics(for metricType: MetricType, daysAgo: Int)
+		async throws -> [HKStatistics]
+	{
 		guard let config = self.configurations[metricType] else {
 			fatalError("No configuration for metric type: \(metricType)")
 		}
@@ -72,7 +77,6 @@ struct HealthKitService {
 		}
 
 		let fromDate = Date.now
-		let daysAgo = 28
 
 		guard let dateInterval = DateInterval(from: fromDate, daysAgo: daysAgo) else {
 			fatalError("No date interval from \(fromDate) to \(daysAgo) days ago")
@@ -112,7 +116,7 @@ struct HealthKitService {
 		try await self.createSample(metricType: .weight, date: date, value: value)
 	}
 
-	private func createSample(metricType: MetricType, date: Date, value: Double) async throws {
+	private func createSample(metricType: MetricType, date: Date, value: Double) async throws -> Void {
 		guard let config = self.configurations[metricType] else {
 			fatalError("No configuration for metric type: \(metricType)")
 		}
@@ -121,69 +125,45 @@ struct HealthKitService {
 			throw AppError.sharingNotAuthorized(metricType: metricType)
 		}
 
+		let sample = self.buildSample(config: config, date: date, value: value)
+
+		try await self.store.save(sample)
+	}
+
+	private func buildSample(config: Configuration, date: Date, value: Double) -> HKQuantitySample {
 		let quantity = HKQuantity(unit: config.unit, doubleValue: value)
 
-		let sample = HKQuantitySample(
+		return HKQuantitySample(
 			type: config.quantityType,
 			quantity: quantity,
 			start: date,
 			end: date,
 		)
-
-		try await self.store.save(sample)
 	}
 
 	// MARK: - Fake Data Creation
 
-	func createFakeSamples() async throws -> Void {
-		for (metricType, config) in self.configurations {
+	func createFakeSamples(daysAgo: Int) async throws {
+		let today = Date.now
+
+		let configsSamples = try configurations.flatMap { metricType, config in
 			guard self.isSharingAuthorized(for: config.quantityType) else {
 				throw AppError.sharingNotAuthorized(metricType: metricType)
 			}
+
+			var configSamples = [HKQuantitySample]()
+
+			configSamples.reserveCapacity(daysAgo)
+
+			return (0 ..< daysAgo).reduce(into: configSamples) { samples, day in
+				let date = Calendar.current.date(byAdding: .day, value: -day, to: today)!
+				let value = config.fakeValueGenerator(day)
+				let sample = self.buildSample(config: config, date: date, value: value)
+
+				samples.append(sample)
+			}
 		}
 
-		let days = 28
-		var fakeSamples = [HKQuantitySample]()
-
-		fakeSamples.reserveCapacity(days * 2)
-
-		for i in 0 ..< days {
-			let startDate = Calendar.current.date(byAdding: .day, value: -i, to: .now)!
-			let endDate = Calendar.current.date(byAdding: .second, value: i, to: startDate)!
-
-			let stepConfig = self.configurations[.steps]!
-
-			let stepQuantity = HKQuantity(
-				unit: .count(),
-				doubleValue: .random(in: 4000 ... 20000),
-			)
-
-			let stepSample = HKQuantitySample(
-				type: stepConfig.quantityType,
-				quantity: stepQuantity,
-				start: startDate,
-				end: endDate,
-			)
-
-			fakeSamples.append(stepSample)
-
-			let weightConfig = self.configurations[.weight]!
-
-			let weightQuantity = HKQuantity(
-				unit: .pound(),
-				doubleValue: .random(in: 160 + Double(i / 3) ... 165 + Double(i / 3)),
-			)
-
-			let weightSample = HKQuantitySample(
-				type: weightConfig.quantityType,
-				quantity: weightQuantity,
-				start: startDate,
-				end: endDate,
-			)
-
-			fakeSamples.append(weightSample)
-		}
-
-		try! await self.store.save(fakeSamples)
+		try await self.store.save(configsSamples)
 	}
 }

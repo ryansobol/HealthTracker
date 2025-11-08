@@ -40,7 +40,7 @@ final class MetricStore {
 	}
 
 	private func fetchStepMetrics() async throws -> Void {
-		let statistics = try await self.healthKitService.fetchStepStatistics()
+		let statistics = try await self.healthKitService.fetchStepStatistics(daysAgo: 28)
 
 		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
 			minimumCapacity: statistics.count,
@@ -62,7 +62,7 @@ final class MetricStore {
 	}
 
 	private func fetchWeightMetrics() async throws -> Void {
-		let statistics = try await self.healthKitService.fetchWeightStatistics()
+		let statistics = try await self.healthKitService.fetchWeightStatistics(daysAgo: 28)
 
 		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
 			minimumCapacity: statistics.count,
@@ -100,6 +100,6 @@ final class MetricStore {
 	}
 
 	func createFakeMetrics() async throws -> Void {
-		try await self.healthKitService.createFakeSamples()
+		try await self.healthKitService.createFakeSamples(daysAgo: 28)
 	}
 }
