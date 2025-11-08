@@ -1,9 +1,10 @@
 import Foundation
+import OrderedCollections
 
 enum ChartContext {
 	case stepBar(store: MetricStore)
-	case stepPie
-	case weightBar
+	case stepPie(store: MetricStore)
+	case weightBar(store: MetricStore)
 	case weightLine(store: MetricStore)
 
 	var metricType: MetricType {
@@ -73,6 +74,15 @@ enum ChartContext {
 		case .stepPie: 240
 		case .weightBar: 150
 		case .weightLine: 150
+		}
+	}
+
+	var hasData: Bool {
+		return switch self {
+		case let .stepBar(store): !store.stepDiscreteMetricByDate.isEmpty
+		case let .stepPie(store): !store.stepDiscreteMetricByDate.isEmpty
+		case let .weightBar(store): !store.weightDiffAverageMetricByWeekday.isEmpty
+		case let .weightLine(store): !store.weightDiscreteMetricByDate.isEmpty
 		}
 	}
 }

@@ -5,16 +5,15 @@ struct MetricCardView: View {
 	let durationScaleEffect = 0.1
 
 	let chartContext: ChartContext
-	let isEmpty: Bool
 
 	var body: some View {
 		ChartCardView(chartContext: self.chartContext) {
 			Group {
-				if self.isEmpty {
-					EmptyChartView(chartContext: self.chartContext)
+				if self.chartContext.hasData {
+					self.chartView
 				}
 				else {
-					self.chartView
+					EmptyChartView(chartContext: self.chartContext)
 				}
 			}
 			.frame(height: self.chartContext.height)
@@ -32,23 +31,22 @@ struct MetricCardView: View {
 	}
 }
 
-#Preview {
-	@Previewable @State var isEmpty = true
+#Preview("With Metrics") {
 	@Previewable @State var metricStore = MetricStore()
 
 	VStack {
-		MetricCardView(
-			chartContext: .stepBar(store: metricStore),
-			isEmpty: isEmpty,
-		)
-
-		Button("Toggle") {
-			isEmpty.toggle()
-		}
-		.buttonStyle(.borderedProminent)
+		MetricCardView(chartContext: .stepBar(store: metricStore))
 	}
 	.task {
 		try! await metricStore.fetchMetrics()
 	}
 	.environment(metricStore)
+}
+
+#Preview("Without Metrics") {
+	@Previewable @State var metricStore = MetricStore()
+
+	VStack {
+		MetricCardView(chartContext: .stepBar(store: metricStore))
+	}
 }

@@ -6,10 +6,7 @@ struct WeightLineCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		MetricCardView(
-			chartContext: .weightLine(store: self.metricStore),
-			isEmpty: self.metricStore.weightDiscreteMetricByDate.isEmpty,
-		)
+		MetricCardView(chartContext: .weightLine(store: self.metricStore))
 	}
 }
 

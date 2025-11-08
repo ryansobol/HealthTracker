@@ -5,10 +5,7 @@ struct WeightBarCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		MetricCardView(
-			chartContext: .weightBar,
-			isEmpty: self.metricStore.weightDiffAverageMetricByWeekday.isEmpty,
-		)
+		MetricCardView(chartContext: .weightBar(store: self.metricStore))
 	}
 }
 

@@ -21,5 +21,7 @@ struct EmptyChartView: View {
 }
 
 #Preview {
-	EmptyChartView(chartContext: .stepPie)
+	@Previewable @State var metricStore = MetricStore()
+
+	EmptyChartView(chartContext: .stepPie(store: metricStore))
 }

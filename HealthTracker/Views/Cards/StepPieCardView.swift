@@ -5,10 +5,7 @@ struct StepPieCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		MetricCardView(
-			chartContext: .stepPie,
-			isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
-		)
+		MetricCardView(chartContext: .stepPie(store: self.metricStore))
 	}
 }
 
