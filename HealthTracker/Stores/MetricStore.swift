@@ -88,20 +88,12 @@ final class MetricStore {
 	func createMetric(metricType: MetricType, date: Date, value: Double) async throws -> Void {
 		switch metricType {
 		case .steps:
-			try await self.healthKitService.createStepSample(
-				metricType: metricType,
-				date: date,
-				value: value,
-			)
+			try await self.healthKitService.createStepSample(date: date, value: value)
 
 			try await self.fetchStepMetrics()
 
 		case .weight:
-			try await self.healthKitService.createWeightSample(
-				metricType: metricType,
-				date: date,
-				value: value,
-			)
+			try await self.healthKitService.createWeightSample(date: date, value: value)
 
 			try await self.fetchWeightMetrics()
 		}
