@@ -92,3 +92,19 @@ extension OrderedDictionary where Key: Comparable & Sendable {
 		return self.sorted(by: <)
 	}
 }
+
+extension OrderedDictionary where Value == DiscreteMetric {
+	/// Returns the average of all discrete metric values in the dictionary.
+	///
+	/// - Returns: The average value, or `0` if the dictionary is empty.
+	var averageValue: Double {
+		return self.values.lazy.map { $0.value }.average ?? 0
+	}
+
+	/// Returns the minimum of all discrete metric values in the dictionary.
+	///
+	/// - Returns: The minimum value, or `0` if the dictionary is empty.
+	var minimumValue: Double {
+		return self.values.lazy.map { $0.value }.min() ?? 0
+	}
+}

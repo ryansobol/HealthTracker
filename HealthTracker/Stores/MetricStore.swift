@@ -17,15 +17,15 @@ final class MetricStore {
 	// MARK: - Computed Properties
 
 	var averageSteps: Double {
-		return self.stepDiscreteMetricByDate.values.lazy.map { $0.value }.average ?? 0
+		return self.stepDiscreteMetricByDate.averageValue
 	}
 
 	var averageWeight: Double {
-		return self.weightDiscreteMetricByDate.values.lazy.map { $0.value }.average ?? 0
+		return self.weightDiscreteMetricByDate.averageValue
 	}
 
 	var minimumWeight: Double {
-		return self.weightDiscreteMetricByDate.values.lazy.map { $0.value }.min() ?? 0
+		return self.weightDiscreteMetricByDate.minimumValue
 	}
 
 	// MARK: - Fetching
