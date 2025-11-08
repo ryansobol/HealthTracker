@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct EmptyChartView: View {
-	let chartContext: ChartContext
+	let context: ChartContext
 
 	var body: some View {
 		ContentUnavailableView {
-			Image(systemName: self.chartContext.chartSymbol)
+			Image(systemName: self.context.chartSymbol)
 				.font(.largeTitle)
 				.foregroundStyle(.secondary)
 				.padding(.bottom, 4)
@@ -13,7 +13,7 @@ struct EmptyChartView: View {
 			Text("No Data")
 				.font(.callout.bold())
 
-			Text("No \(self.chartContext.metricType.title.lowercased()) data collected from HealthKit")
+			Text("No \(self.context.metricType.title.lowercased()) data collected from HealthKit")
 				.font(.footnote)
 				.foregroundStyle(.secondary)
 		}
@@ -23,5 +23,5 @@ struct EmptyChartView: View {
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
 
-	EmptyChartView(chartContext: .stepPie(store: metricStore))
+	EmptyChartView(context: .stepPie(store: metricStore))
 }

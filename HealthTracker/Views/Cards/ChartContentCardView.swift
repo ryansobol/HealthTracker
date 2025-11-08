@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ChartContentCardView<Content: View>: View {
-	let chartContext: ChartContext
+	let context: ChartContext
 
 	@ViewBuilder let content: () -> Content
 
@@ -22,8 +22,8 @@ struct ChartContentCardView<Content: View>: View {
 
 	@ViewBuilder
 	var header: some View {
-		if self.chartContext.hasNavigation {
-			NavigationLink(value: self.chartContext.metricType) {
+		if self.context.hasNavigation {
+			NavigationLink(value: self.context.metricType) {
 				HStack {
 					self.titles
 
@@ -40,11 +40,11 @@ struct ChartContentCardView<Content: View>: View {
 
 	var titles: some View {
 		VStack(alignment: .leading) {
-			Label(self.chartContext.title, systemImage: self.chartContext.symbol)
+			Label(self.context.title, systemImage: self.context.symbol)
 				.font(.title3.bold())
-				.foregroundStyle(self.chartContext.metricType.color)
+				.foregroundStyle(self.context.metricType.color)
 
-			Text(self.chartContext.subtitle)
+			Text(self.context.subtitle)
 				.font(.caption)
 		}
 	}
@@ -53,7 +53,7 @@ struct ChartContentCardView<Content: View>: View {
 #Preview("With Navigation") {
 	@Previewable @State var metricStore = MetricStore()
 
-	ChartContentCardView(chartContext: .stepBar(store: metricStore)) {
+	ChartContentCardView(context: .stepBar(store: metricStore)) {
 		Rectangle()
 			.frame(height: 240)
 			.foregroundColor(.gray)
@@ -63,7 +63,7 @@ struct ChartContentCardView<Content: View>: View {
 #Preview("Without Navigation") {
 	@Previewable @State var metricStore = MetricStore()
 
-	ChartContentCardView(chartContext: .stepPie(store: metricStore)) {
+	ChartContentCardView(context: .stepPie(store: metricStore)) {
 		Rectangle()
 			.frame(height: 240)
 			.foregroundColor(.gray)

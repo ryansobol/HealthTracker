@@ -1,32 +1,32 @@
 import SwiftUI
 
 struct ChartCardView: View {
-	let durationOpacity = 0.15
-	let durationScaleEffect = 0.1
+	private let durationOpacity = 0.15
+	private let durationScaleEffect = 0.1
 
-	let chartContext: ChartContext
+	let context: ChartContext
 
 	var body: some View {
-		ChartContentCardView(chartContext: self.chartContext) {
+		ChartContentCardView(context: self.context) {
 			Group {
-				if self.chartContext.hasData {
+				if self.context.hasData {
 					self.chartView
 				}
 				else {
-					EmptyChartView(chartContext: self.chartContext)
+					EmptyChartView(context: self.context)
 				}
 			}
-			.frame(height: self.chartContext.height)
+			.frame(height: self.context.height)
 		}
 	}
 
 	@ViewBuilder
 	private var chartView: some View {
-		switch self.chartContext {
-		case .stepBar: StepBarChartView(chartContext: self.chartContext)
-		case .stepPie: StepPieChartView(chartContext: self.chartContext)
-		case .weightBar: WeightBarChartView(chartContext: self.chartContext)
-		case .weightLine: WeightLineChartView(chartContext: self.chartContext)
+		switch self.context {
+		case .stepBar: StepBarChartView(context: self.context)
+		case .stepPie: StepPieChartView(context: self.context)
+		case .weightBar: WeightBarChartView(context: self.context)
+		case .weightLine: WeightLineChartView(context: self.context)
 		}
 	}
 }
@@ -35,7 +35,7 @@ struct ChartCardView: View {
 	@Previewable @State var metricStore = MetricStore()
 
 	VStack {
-		ChartCardView(chartContext: .stepBar(store: metricStore))
+		ChartCardView(context: .stepBar(store: metricStore))
 	}
 	.task {
 		try! await metricStore.fetchMetrics()
@@ -47,6 +47,6 @@ struct ChartCardView: View {
 	@Previewable @State var metricStore = MetricStore()
 
 	VStack {
-		ChartCardView(chartContext: .stepBar(store: metricStore))
+		ChartCardView(context: .stepBar(store: metricStore))
 	}
 }

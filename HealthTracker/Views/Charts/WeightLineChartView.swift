@@ -7,7 +7,7 @@ struct WeightLineChartView: View {
 
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 
-	let chartContext: ChartContext
+	let context: ChartContext
 
 	private var selectedDateBinding: Binding<Date?> {
 		return Binding(
@@ -35,12 +35,12 @@ struct WeightLineChartView: View {
 							selectedDiscreteMetric.value,
 							format: .number.precision(.fractionLength(1)),
 						)
-						.foregroundStyle(self.chartContext.metricType.color),
+						.foregroundStyle(self.context.metricType.color),
 					)
 			}
 
 			RuleMark(y: .value("Average Weight", self.metricStore.averageWeight))
-				.foregroundStyle(self.chartContext.metricType.color)
+				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 
 			ForEach(self.metricStore.weightDiscreteMetricByDate.values) { discreteMetric in
@@ -50,14 +50,14 @@ struct WeightLineChartView: View {
 					yEnd: .value("Minimum Weight", self.metricStore.minimumWeight),
 				)
 				.foregroundStyle(
-					Gradient(colors: [self.chartContext.metricType.color.opacity(0.5), .clear]),
+					Gradient(colors: [self.context.metricType.color.opacity(0.5), .clear]),
 				)
 
 				LineMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
 					y: .value("Weight", discreteMetric.value),
 				)
-				.foregroundStyle(self.chartContext.metricType.color)
+				.foregroundStyle(self.context.metricType.color)
 				.symbol(.circle)
 			}
 			.interpolationMethod(.catmullRom)
@@ -84,7 +84,7 @@ struct WeightLineChartView: View {
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
 
-	ChartCardView(chartContext: .weightLine(store: metricStore))
+	ChartCardView(context: .weightLine(store: metricStore))
 		.task {
 			try! await metricStore.fetchMetrics()
 		}

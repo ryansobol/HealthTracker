@@ -7,7 +7,7 @@ struct WeightBarChartView: View {
 
 	@State private var selectedAverageMetric: AverageMetric? = nil
 
-	let chartContext: ChartContext
+	let context: ChartContext
 
 	private var selectedWeekdayBinding: Binding<Weekday?> {
 		return Binding(
@@ -37,7 +37,7 @@ struct WeightBarChartView: View {
 						value: Text(selectedAverageMetric.value, format: .number.precision(.fractionLength(2)))
 							.foregroundStyle(
 								selectedAverageMetric.value >= 0
-									? self.chartContext.metricType.color
+									? self.context.metricType.color
 									: Color.mint,
 							),
 					)
@@ -50,7 +50,7 @@ struct WeightBarChartView: View {
 				)
 				.foregroundStyle(
 					averageDiffMetric.value >= 0
-						? self.chartContext.metricType.color.gradient
+						? self.context.metricType.color.gradient
 						: Color.mint.gradient,
 				)
 				.opacity(self.isBarMarkOpaque(for: averageDiffMetric) ? 0.3 : 1.0)
@@ -86,7 +86,7 @@ struct WeightBarChartView: View {
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
 
-	ChartCardView(chartContext: .weightBar(store: metricStore))
+	ChartCardView(context: .weightBar(store: metricStore))
 		.task {
 			try! await metricStore.fetchMetrics()
 		}
