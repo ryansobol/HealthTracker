@@ -32,18 +32,15 @@ struct WeightBarChart: View {
 		Chart {
 			if let selectedAverageMetric = self.selectedAverageMetric {
 				RuleMark(x: .value("Selected Average Metric", selectedAverageMetric.weekday))
-					.foregroundStyle(.gray.opacity(0.3))
-					.offset(y: -10)
-					.annotation(
-						position: .top,
-						spacing: 0,
-						overflowResolution: .init(
-							x: .fit(to: .chart),
-							y: .disabled,
-						),
-					) {
-						self.annotationView(selectedAverageMetric)
-					}
+					.selection(
+						label: Text(selectedAverageMetric.weekday.symbol),
+						value: Text(selectedAverageMetric.value, format: .number.precision(.fractionLength(2)))
+							.foregroundStyle(
+								selectedAverageMetric.value >= 0
+									? self.chartType.metricType.tint
+									: Color.mint,
+							),
+					)
 			}
 
 			ForEach(self.metricStore.weightDiffAverageMetricByWeekday.values) { averageDiffMetric in
@@ -83,28 +80,6 @@ struct WeightBarChart: View {
 		}
 		.animation(.smooth(duration: 0.05), value: self.selectedAverageMetric?.weekday)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
-	}
-
-	func annotationView(_ selectedAverageMetric: AverageMetric) -> some View {
-		VStack(alignment: .leading) {
-			Text(selectedAverageMetric.weekday.symbol)
-				.font(.footnote.bold())
-				.foregroundStyle(.secondary)
-
-			Text(selectedAverageMetric.value, format: .number.precision(.fractionLength(2)))
-				.fontWeight(.heavy)
-				.foregroundStyle(
-					selectedAverageMetric.value >= 0
-						? self.chartType.metricType.tint
-						: Color.mint
-				)
-		}
-		.padding(12)
-		.background {
-			RoundedRectangle(cornerRadius: 4)
-				.fill(Color(.secondarySystemBackground))
-				.shadow(color: .secondary.opacity(0.1), radius: 2, x: 2, y: 2)
-		}
 	}
 }
 

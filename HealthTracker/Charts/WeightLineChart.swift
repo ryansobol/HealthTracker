@@ -31,18 +31,17 @@ struct WeightLineChart: View {
 		Chart {
 			if let selectedDiscreteMetric = self.selectedDiscreteMetric {
 				RuleMark(x: .value("Selected Metric", selectedDiscreteMetric.date, unit: .day))
-					.foregroundStyle(.gray.opacity(0.3))
-					.offset(y: -10)
-					.annotation(
-						position: .top,
-						spacing: 0,
-						overflowResolution: .init(
-							x: .fit(to: .chart),
-							y: .disabled,
+					.selection(
+						label: Text(
+							selectedDiscreteMetric.date,
+							format: .dateTime.weekday(.abbreviated).month(.abbreviated).day(),
 						),
-					) {
-						self.annotationView(selectedDiscreteMetric)
-					}
+						value: Text(
+							selectedDiscreteMetric.value,
+							format: .number.precision(.fractionLength(1)),
+						)
+						.foregroundStyle(self.chartType.metricType.tint),
+					)
 			}
 
 			RuleMark(y: .value("Goal", self.goal))
@@ -56,7 +55,7 @@ struct WeightLineChart: View {
 					yEnd: .value("Min value", self.minValue),
 				)
 				.foregroundStyle(
-					Gradient(colors: [self.chartType.metricType.tint.opacity(0.5), .clear])
+					Gradient(colors: [self.chartType.metricType.tint.opacity(0.5), .clear]),
 				)
 
 				LineMark(
@@ -84,27 +83,6 @@ struct WeightLineChart: View {
 			}
 		}
 		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date)
-	}
-
-	func annotationView(_ selectedDiscreteMetric: DiscreteMetric) -> some View {
-		VStack(alignment: .leading) {
-			Text(
-				selectedDiscreteMetric.date,
-				format: .dateTime.weekday(.abbreviated).month(.abbreviated).day(),
-			)
-			.font(.footnote.bold())
-			.foregroundStyle(.secondary)
-
-			Text(selectedDiscreteMetric.value, format: .number.precision(.fractionLength(1)))
-				.fontWeight(.heavy)
-				.foregroundStyle(self.chartType.metricType.tint)
-		}
-		.padding(12)
-		.background {
-			RoundedRectangle(cornerRadius: 4)
-				.fill(Color(.secondarySystemBackground))
-				.shadow(color: .secondary.opacity(0.1), radius: 2, x: 2, y: 2)
-		}
 	}
 }
 
