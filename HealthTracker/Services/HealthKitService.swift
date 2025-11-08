@@ -37,12 +37,12 @@ struct HealthKitService {
 			throw AuthorizationRequestNecessaryError(metricType: .steps)
 		}
 
-		let calendar = Calendar.current
-		let today = calendar.startOfDay(for: .now)
-		let endDate = calendar.date(byAdding: .day, value: 1, to: today)!
-		let startDate = calendar.date(byAdding: .day, value: -28, to: endDate)
+		let dateInterval = DateInterval(from: .now, daysAgo: 28)!
 
-		let queryPredicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate)
+		let queryPredicate = HKQuery.predicateForSamples(
+			withStart: dateInterval.start,
+			end: dateInterval.end,
+		)
 
 		let samplePredicate = HKSamplePredicate.quantitySample(
 			type: HKQuantityType(.stepCount),
@@ -52,7 +52,7 @@ struct HealthKitService {
 		let statisticsCollectionQuery = HKStatisticsCollectionQueryDescriptor(
 			predicate: samplePredicate,
 			options: .cumulativeSum,
-			anchorDate: endDate,
+			anchorDate: dateInterval.end,
 			intervalComponents: .init(day: 1),
 		)
 
@@ -67,12 +67,12 @@ struct HealthKitService {
 			throw AuthorizationRequestNecessaryError(metricType: .weight)
 		}
 
-		let calendar = Calendar.current
-		let today = calendar.startOfDay(for: .now)
-		let endDate = calendar.date(byAdding: .day, value: 1, to: today)!
-		let startDate = calendar.date(byAdding: .day, value: -28, to: endDate)
+		let dateInterval = DateInterval(from: .now, daysAgo: 28)!
 
-		let queryPredicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate)
+		let queryPredicate = HKQuery.predicateForSamples(
+			withStart: dateInterval.start,
+			end: dateInterval.end,
+		)
 
 		let samplePredicate = HKSamplePredicate.quantitySample(
 			type: HKQuantityType(.bodyMass),
@@ -82,7 +82,7 @@ struct HealthKitService {
 		let statisticsCollectionQuery = HKStatisticsCollectionQueryDescriptor(
 			predicate: samplePredicate,
 			options: .mostRecent,
-			anchorDate: endDate,
+			anchorDate: dateInterval.end,
 			intervalComponents: .init(day: 1),
 		)
 
