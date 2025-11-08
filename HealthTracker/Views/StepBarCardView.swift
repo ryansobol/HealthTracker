@@ -7,26 +7,7 @@ struct StepBarCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		VStack {
-			NavigationLink(value: self.chartType.metricType) {
-				HStack {
-					VStack(alignment: .leading) {
-						Label("Steps", systemImage: "figure.walk")
-							.font(.title3.bold())
-							.foregroundStyle(self.chartType.metricType.tint)
-
-						Text("Avg: \(Int(self.metricStore.averageStepCount)) steps")
-							.font(.caption)
-					}
-
-					Spacer()
-
-					Image(systemName: "chevron.right")
-				}
-			}
-			.foregroundStyle(.secondary)
-			.padding(.bottom, 12)
-
+		ChartCardView(chartType: self.chartType) {
 			Group {
 				if self.metricStore.stepDiscreteMetricByDate.isEmpty {
 					EmptyChart(
@@ -40,11 +21,6 @@ struct StepBarCardView: View {
 				}
 			}
 			.frame(height: 150)
-		}
-		.padding()
-		.background {
-			RoundedRectangle(cornerRadius: 12)
-				.fill(Color(.secondarySystemBackground))
 		}
 	}
 

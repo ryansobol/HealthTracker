@@ -7,17 +7,7 @@ struct StepPieCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		VStack(alignment: .leading) {
-			VStack(alignment: .leading) {
-				Label("Averages", systemImage: "calendar")
-					.font(.title3.bold())
-					.foregroundStyle(self.chartType.metricType.tint)
-
-				Text("Last 28 Days")
-					.font(.caption)
-					.foregroundStyle(.secondary)
-			}
-
+		ChartCardView(chartType: self.chartType) {
 			Group {
 				if self.metricStore.stepDiscreteMetricByDate.isEmpty {
 					EmptyChart(
@@ -31,11 +21,6 @@ struct StepPieCardView: View {
 				}
 			}
 			.frame(height: 240)
-		}
-		.padding()
-		.background {
-			RoundedRectangle(cornerRadius: 12)
-				.fill(Color(.secondarySystemBackground))
 		}
 	}
 }

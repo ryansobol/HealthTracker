@@ -8,26 +8,7 @@ struct WeightLineCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		VStack {
-			NavigationLink(value: self.chartType.metricType) {
-				HStack {
-					VStack(alignment: .leading) {
-						Label("Weight", systemImage: "figure")
-							.font(.title3.bold())
-							.foregroundStyle(self.chartType.metricType.tint)
-
-						Text("Avg: 180 lbs")
-							.font(.caption)
-					}
-
-					Spacer()
-
-					Image(systemName: "chevron.right")
-				}
-			}
-			.foregroundStyle(.secondary)
-			.padding(.bottom, 12)
-
+		ChartCardView(chartType: self.chartType) {
 			Group {
 				if self.metricStore.weightDiscreteMetricByDate.isEmpty {
 					EmptyChart(
@@ -41,11 +22,6 @@ struct WeightLineCardView: View {
 				}
 			}
 			.frame(height: 150)
-		}
-		.padding()
-		.background {
-			RoundedRectangle(cornerRadius: 12)
-				.fill(Color(.secondarySystemBackground))
 		}
 	}
 

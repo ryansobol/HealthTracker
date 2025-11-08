@@ -7,22 +7,7 @@ struct WeightBarCardView: View {
 	@Environment(MetricStore.self) private var metricStore
 
 	var body: some View {
-		VStack {
-			HStack {
-				VStack(alignment: .leading) {
-					Label("Average Change", systemImage: "figure")
-						.font(.title3.bold())
-						.foregroundStyle(self.chartType.metricType.tint)
-
-					Text("Last 28 Days")
-						.font(.caption)
-				}
-
-				Spacer()
-			}
-			.foregroundStyle(.secondary)
-			.padding(.bottom, 12)
-
+		ChartCardView(chartType: self.chartType) {
 			Group {
 				if self.metricStore.weightDiffAverageMetricByWeekday.isEmpty {
 					EmptyChart(
@@ -36,11 +21,6 @@ struct WeightBarCardView: View {
 				}
 			}
 			.frame(height: 150)
-		}
-		.padding()
-		.background {
-			RoundedRectangle(cornerRadius: 12)
-				.fill(Color(.secondarySystemBackground))
 		}
 	}
 
