@@ -71,8 +71,8 @@ final class MetricStore {
 		}
 	}
 
-	private func fetchStepMetrics() async throws -> Void {
-		let statistics = try await self.healthKitService.fetchStepStatistics(daysAgo: 28)
+	private func fetchStepMetrics(daysAgo: Int = 28) async throws -> Void {
+		let statistics = try await self.healthKitService.fetchStepStatistics(daysAgo: daysAgo)
 
 		let (discreteMetricsByDate, averageMetricsByDate) = self.transform(
 			statistics: statistics,
@@ -84,8 +84,8 @@ final class MetricStore {
 		self.stepAverageMetricByWeekday = averageMetricsByDate
 	}
 
-	private func fetchWeightMetrics() async throws -> Void {
-		let statistics = try await self.healthKitService.fetchWeightStatistics(daysAgo: 28)
+	private func fetchWeightMetrics(daysAgo: Int = 28) async throws -> Void {
+		let statistics = try await self.healthKitService.fetchWeightStatistics(daysAgo: daysAgo)
 
 		let (discreteMetricsByDate, averageMetricsByDate) = self.transform(
 			statistics: statistics,
@@ -141,7 +141,7 @@ final class MetricStore {
 		}
 	}
 
-	func createFakeMetrics() async throws -> Void {
-		try await self.healthKitService.createFakeSamples(daysAgo: 28)
+	func createFakeMetrics(daysAgo: Int = 28) async throws -> Void {
+		try await self.healthKitService.createFakeSamples(daysAgo: daysAgo)
 	}
 }
