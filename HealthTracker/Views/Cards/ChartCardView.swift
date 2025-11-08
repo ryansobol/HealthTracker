@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ChartCardView<Content: View>: View {
-	let chartType: ChartType
+	let chartContext: ChartContext
 
 	@ViewBuilder let content: () -> Content
 
@@ -22,8 +22,8 @@ struct ChartCardView<Content: View>: View {
 
 	@ViewBuilder
 	var header: some View {
-		if self.chartType.hasNavigation {
-			NavigationLink(value: self.chartType.metricType) {
+		if self.chartContext.hasNavigation {
+			NavigationLink(value: self.chartContext.metricType) {
 				HStack {
 					self.titles
 
@@ -40,18 +40,18 @@ struct ChartCardView<Content: View>: View {
 
 	var titles: some View {
 		VStack(alignment: .leading) {
-			Label(self.chartType.title, systemImage: self.chartType.symbol)
+			Label(self.chartContext.title, systemImage: self.chartContext.symbol)
 				.font(.title3.bold())
-				.foregroundStyle(self.chartType.metricType.color)
+				.foregroundStyle(self.chartContext.metricType.color)
 
-			Text(self.chartType.subtitle)
+			Text(self.chartContext.subtitle)
 				.font(.caption)
 		}
 	}
 }
 
 #Preview("With Navigation") {
-	ChartCardView(chartType: .stepBar(averageSteps: 10000)) {
+	ChartCardView(chartContext: .stepBar(averageSteps: 10000)) {
 		Rectangle()
 			.frame(height: 240)
 			.foregroundColor(.gray)
@@ -59,7 +59,7 @@ struct ChartCardView<Content: View>: View {
 }
 
 #Preview("Without Navigation") {
-	ChartCardView(chartType: .stepPie) {
+	ChartCardView(chartContext: .stepPie) {
 		Rectangle()
 			.frame(height: 240)
 			.foregroundColor(.gray)

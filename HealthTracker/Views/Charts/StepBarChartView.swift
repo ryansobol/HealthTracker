@@ -7,7 +7,7 @@ struct StepBarChartView: View {
 
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 
-	let chartType: ChartType
+	let chartContext: ChartContext
 
 	private var selectedDateBinding: Binding<Date?> {
 		return Binding(
@@ -43,7 +43,7 @@ struct StepBarChartView: View {
 							selectedDiscreteMetric.value,
 							format: .number.precision(.fractionLength(0)),
 						)
-						.foregroundStyle(self.chartType.metricType.color),
+						.foregroundStyle(self.chartContext.metricType.color),
 					)
 			}
 
@@ -56,7 +56,7 @@ struct StepBarChartView: View {
 					x: .value("Date", discreteMetric.date, unit: .day),
 					y: .value("Steps", discreteMetric.value),
 				)
-				.foregroundStyle(self.chartType.metricType.color.gradient)
+				.foregroundStyle(self.chartContext.metricType.color.gradient)
 				.opacity(self.isBarMarkOpaque(for: discreteMetric) ? 0.3 : 1.0)
 			}
 		}

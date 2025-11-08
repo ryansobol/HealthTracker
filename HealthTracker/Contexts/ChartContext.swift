@@ -1,6 +1,6 @@
 import Foundation
 
-enum ChartType {
+enum ChartContext {
 	case stepBar(averageSteps: Double)
 	case stepPie
 	case weightBar

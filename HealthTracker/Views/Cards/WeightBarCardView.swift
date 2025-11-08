@@ -6,7 +6,7 @@ struct WeightBarCardView: View {
 
 	var body: some View {
 		MetricCardView(
-			chartType: .weightBar,
+			chartContext: .weightBar,
 			isEmpty: self.metricStore.weightDiffAverageMetricByWeekday.isEmpty,
 		)
 	}

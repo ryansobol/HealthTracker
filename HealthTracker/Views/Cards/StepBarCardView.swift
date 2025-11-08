@@ -6,7 +6,7 @@ struct StepBarCardView: View {
 
 	var body: some View {
 		MetricCardView(
-			chartType: .stepBar(averageSteps: self.metricStore.averageSteps),
+			chartContext: .stepBar(averageSteps: self.metricStore.averageSteps),
 			isEmpty: self.metricStore.stepDiscreteMetricByDate.isEmpty,
 		)
 	}

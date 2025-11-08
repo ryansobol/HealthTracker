@@ -4,30 +4,30 @@ struct MetricCardView: View {
 	let durationOpacity = 0.15
 	let durationScaleEffect = 0.1
 
-	let chartType: ChartType
+	let chartContext: ChartContext
 	let isEmpty: Bool
 
 	var body: some View {
-		ChartCardView(chartType: self.chartType) {
+		ChartCardView(chartContext: self.chartContext) {
 			Group {
 				if self.isEmpty {
-					EmptyChartView(chartType: self.chartType)
+					EmptyChartView(chartContext: self.chartContext)
 				}
 				else {
 					self.chartView
 				}
 			}
-			.frame(height: self.chartType.height)
+			.frame(height: self.chartContext.height)
 		}
 	}
 
 	@ViewBuilder
 	private var chartView: some View {
-		switch self.chartType {
-		case .stepBar: StepBarChartView(chartType: self.chartType)
-		case .stepPie: StepPieChartView(chartType: self.chartType)
-		case .weightBar: WeightBarChartView(chartType: self.chartType)
-		case .weightLine: WeightLineChartView(chartType: self.chartType)
+		switch self.chartContext {
+		case .stepBar: StepBarChartView(chartContext: self.chartContext)
+		case .stepPie: StepPieChartView(chartContext: self.chartContext)
+		case .weightBar: WeightBarChartView(chartContext: self.chartContext)
+		case .weightLine: WeightLineChartView(chartContext: self.chartContext)
 		}
 	}
 }
@@ -38,7 +38,7 @@ struct MetricCardView: View {
 
 	VStack {
 		MetricCardView(
-			chartType: .stepBar(averageSteps: 10000),
+			chartContext: .stepBar(averageSteps: 10000),
 			isEmpty: isEmpty,
 		)
 

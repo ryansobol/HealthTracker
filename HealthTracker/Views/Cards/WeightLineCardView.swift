@@ -7,7 +7,7 @@ struct WeightLineCardView: View {
 
 	var body: some View {
 		MetricCardView(
-			chartType: .weightLine(averageWeight: self.metricStore.averageWeight),
+			chartContext: .weightLine(averageWeight: self.metricStore.averageWeight),
 			isEmpty: self.metricStore.weightDiscreteMetricByDate.isEmpty,
 		)
 	}
