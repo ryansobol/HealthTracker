@@ -3,7 +3,10 @@ import SwiftUI
 
 struct HealthKitAuthorizationScreenView: View {
 	@Environment(\.dismiss) private var dismiss
-	@Environment(MetricStore.self) private var metricStore
+	@Environment(\.hkHealthStore) private var hkHealthStore
+
+	@Environment(StepStore.self) private var stepStore
+	@Environment(WeightStore.self) private var weightStore
 
 	@State private var areHealthKitPermissionsPresented = false
 
@@ -38,9 +41,9 @@ struct HealthKitAuthorizationScreenView: View {
 		}
 		.padding(30)
 		.healthDataAccessRequest(
-			store: self.metricStore.healthKitService.store,
-			shareTypes: self.metricStore.healthKitService.types,
-			readTypes: self.metricStore.healthKitService.types,
+			store: self.hkHealthStore,
+			shareTypes: [self.stepStore.quantityType, self.weightStore.quantityType],
+			readTypes: [self.stepStore.quantityType, self.weightStore.quantityType],
 			trigger: self.areHealthKitPermissionsPresented,
 		) { result in
 			Task { @MainActor in
@@ -58,8 +61,9 @@ struct HealthKitAuthorizationScreenView: View {
 }
 
 #Preview {
-	@Previewable @State var metricStore = MetricStore()
+	let hkHealthStore = HKHealthStore()
 
 	HealthKitAuthorizationScreenView()
-		.environment(metricStore)
+		.environment(StepStore(hkHealthStore: hkHealthStore))
+		.environment(WeightStore(hkHealthStore: hkHealthStore))
 }

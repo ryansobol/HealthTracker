@@ -6,6 +6,8 @@ struct DashboardScreenView: View {
 	private let logger = Logger(category: Self.self)
 
 	@Environment(MetricStore.self) private var metricStore
+	@Environment(StepStore.self) private var stepStore
+	@Environment(WeightStore.self) private var weightStore
 
 	@State private var appError: AppError? = nil
 	@State private var isHealthKitAuthorizationPresented = false
@@ -49,10 +51,20 @@ struct DashboardScreenView: View {
 			Task {
 				do {
 					#if targetEnvironment(simulator)
-						try await self.metricStore.createFakeMetrics()
+						try await withThrowingTaskGroup { group in
+							group.addTask { try await self.stepStore.createFakeMetrics() }
+							group.addTask { try await self.weightStore.createFakeMetrics() }
+
+							try await group.waitForAll()
+						}
 					#endif
 
-					try await self.metricStore.fetchMetrics()
+					try await withThrowingTaskGroup { group in
+						group.addTask { try await self.stepStore.fetchMetrics() }
+						group.addTask { try await self.weightStore.fetchMetrics() }
+
+						try await group.waitForAll()
+					}
 				}
 				catch {
 					self.logger.error("\(error)")
@@ -87,7 +99,11 @@ struct DashboardScreenView: View {
 
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
+	@Previewable @State var stepStore = StepStore()
+	@Previewable @State var weightStore = WeightStore()
 
 	DashboardScreenView()
 		.environment(metricStore)
+		.environment(stepStore)
+		.environment(weightStore)
 }

@@ -38,7 +38,11 @@ final class MetricStore {
 		.weight: .weight,
 	]
 
-	let healthKitService = HealthKitService()
+	let healthKitService: HealthKitService
+
+	init(hkHealthStore: HKHealthStore = .init()) {
+		self.healthKitService = HealthKitService(hkHealthStore: hkHealthStore)
+	}
 
 	var stepDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 	var weightDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()

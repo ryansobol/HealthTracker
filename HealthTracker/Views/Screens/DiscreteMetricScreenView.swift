@@ -5,7 +5,8 @@ import SwiftUI
 struct DiscreteMetricScreenView: View {
 	private let logger = Logger(category: Self.self)
 
-	@Environment(MetricStore.self) private var metricStore
+	@Environment(StepStore.self) private var stepStore
+	@Environment(WeightStore.self) private var weightStore
 
 	@State private var appError: AppError? = nil
 	@State private var newDate = Date.now
@@ -18,8 +19,8 @@ struct DiscreteMetricScreenView: View {
 
 	var discreteMetrics: OrderedDictionary<Date, DiscreteMetric>.Values {
 		return switch self.metricType {
-		case .steps: self.metricStore.stepDiscreteMetricByDate.values
-		case .weight: self.metricStore.weightDiscreteMetricByDate.values
+		case .steps: self.stepStore.stepDiscreteMetricByDate.values
+		case .weight: self.weightStore.weightDiscreteMetricByDate.values
 		}
 	}
 
@@ -78,11 +79,19 @@ struct DiscreteMetricScreenView: View {
 	private func addData() -> Void {
 		Task {
 			do {
-				try await self.metricStore.createMetric(
-					metricType: self.metricType,
-					date: self.newDate,
-					value: self.validateNewValue(),
-				)
+				switch self.metricType {
+				case .steps:
+					try await self.stepStore.createMetric(
+						date: self.newDate,
+						value: self.validateNewValue(),
+					)
+
+				case .weight:
+					try await self.weightStore.createMetric(
+						date: self.newDate,
+						value: self.validateNewValue(),
+					)
+				}
 			}
 			catch is AuthorizationRequestNecessaryError {
 				self.isHealthKitAuthorizationPresented = true
@@ -119,7 +128,8 @@ struct DiscreteMetricScreenView: View {
 }
 
 #Preview {
-	@Previewable @State var metricStore = MetricStore()
+	@Previewable @State var stepStore = StepStore()
+	@Previewable @State var weightStore = WeightStore()
 
 	NavigationStack {
 		DiscreteMetricScreenView(
@@ -128,7 +138,9 @@ struct DiscreteMetricScreenView: View {
 		)
 	}
 	.task {
-		try! await metricStore.fetchMetrics()
+		try! await stepStore.fetchMetrics()
+		try! await weightStore.fetchMetrics()
 	}
-	.environment(metricStore)
+	.environment(stepStore)
+	.environment(weightStore)
 }

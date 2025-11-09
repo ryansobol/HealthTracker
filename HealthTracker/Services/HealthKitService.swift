@@ -31,10 +31,11 @@ struct HealthKitService {
 		.weight: .weight,
 	]
 
-	let store = HKHealthStore()
+	let store: HKHealthStore
 	let types: Set<HKQuantityType>
 
-	init() {
+	init(hkHealthStore: HKHealthStore) {
+		self.store = hkHealthStore
 		self.types = Set(self.configurations.values.map { $0.quantityType })
 	}
 
