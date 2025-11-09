@@ -13,24 +13,29 @@ struct HealthKitService {
 
 	// MARK: - Authorization
 
-	private func isAuthorizationRequestUnnecessary(for type: HKQuantityType) async throws -> Bool {
-		let result = try await self.store.statusForAuthorizationRequest(
-			toShare: Set([type]),
-			read: Set([type]),
-		)
+	private var isAuthorizationRequestUnnecessary: Bool {
+		get async throws {
+			let types = Set([self.context.quantityType])
 
-		return result == .unnecessary
+			let result = try await self.store.statusForAuthorizationRequest(
+				toShare: types,
+				read: types,
+			)
+
+			return result == .unnecessary
+
+		}
 	}
 
-	private nonisolated func isSharingAuthorized(for type: HKQuantityType) -> Bool {
-		return self.store.authorizationStatus(for: type) == .sharingAuthorized
+	private nonisolated var isSharingAuthorized: Bool {
+		return self.store.authorizationStatus(for: self.context.quantityType) == .sharingAuthorized
 	}
 
 	// MARK: - Fetching
 
 	@concurrent
 	func fetchStatistics(daysAgo: Int) async throws -> [HKStatistics] {
-		guard try await self.isAuthorizationRequestUnnecessary(for: self.context.quantityType) else {
+		guard try await self.isAuthorizationRequestUnnecessary else {
 			throw AuthorizationRequestNecessaryError(metricType: self.context.metricType)
 		}
 
@@ -66,7 +71,7 @@ struct HealthKitService {
 
 	@concurrent
 	func createSample(date: Date, value: Double) async throws -> Void {
-		guard self.isSharingAuthorized(for: self.context.quantityType) else {
+		guard self.isSharingAuthorized else {
 			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
 		}
 
@@ -90,7 +95,7 @@ struct HealthKitService {
 
 //	@concurrent
 	func createFakeSamples(daysAgo: Int) async throws -> Void {
-		guard self.isSharingAuthorized(for: self.context.quantityType) else {
+		guard self.isSharingAuthorized else {
 			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
 		}
 
