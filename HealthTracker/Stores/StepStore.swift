@@ -21,7 +21,7 @@ final class StepStore: MetricStore {
 	// MARK: - Fetching
 
 	func fetchMetrics(daysAgo: Int = 28) async throws -> Void {
-		let statistics = try await self.healthKitService.fetchStepStatistics(daysAgo: daysAgo)
+		let statistics = try await self.healthKitService.fetchStatistics(daysAgo: daysAgo)
 
 		let (discreteMetricsByDate, averageMetricsByDate) = self.transform(
 			statistics: statistics,
@@ -72,12 +72,12 @@ final class StepStore: MetricStore {
 	// MARK: - Creation
 
 	func createMetric(date: Date, value: Double) async throws -> Void {
-		try await self.healthKitService.createStepSample(date: date, value: value)
+		try await self.healthKitService.createSample(date: date, value: value)
 
 		try await self.fetchMetrics()
 	}
 
 	func createFakeMetrics(daysAgo: Int = 28) async throws -> Void {
-		try await self.healthKitService.createFakeStepSamples(daysAgo: daysAgo)
+		try await self.healthKitService.createFakeSamples(daysAgo: daysAgo)
 	}
 }

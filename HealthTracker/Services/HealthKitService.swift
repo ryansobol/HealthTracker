@@ -29,16 +29,7 @@ struct HealthKitService {
 	// MARK: - Fetching
 
 	@concurrent
-	func fetchStepStatistics(daysAgo: Int) async throws -> [HKStatistics] {
-		return try await self.fetchStatistics(daysAgo: daysAgo)
-	}
-
-	@concurrent
-	func fetchWeightStatistics(daysAgo: Int) async throws -> [HKStatistics] {
-		return try await self.fetchStatistics(daysAgo: daysAgo)
-	}
-
-	private func fetchStatistics(daysAgo: Int) async throws -> [HKStatistics] {
+	func fetchStatistics(daysAgo: Int) async throws -> [HKStatistics] {
 		guard try await self.isAuthorizationRequestUnnecessary(for: self.context.quantityType) else {
 			throw AuthorizationRequestNecessaryError(metricType: self.context.metricType)
 		}
@@ -74,30 +65,21 @@ struct HealthKitService {
 	// MARK: - Creation
 
 	@concurrent
-	func createStepSample(date: Date, value: Double) async throws -> Void {
-		try await self.createSample(date: date, value: value)
-	}
-
-	@concurrent
-	func createWeightSample(date: Date, value: Double) async throws -> Void {
-		try await self.createSample(date: date, value: value)
-	}
-
-	private func createSample(date: Date, value: Double) async throws -> Void {
+	func createSample(date: Date, value: Double) async throws -> Void {
 		guard self.isSharingAuthorized(for: self.context.quantityType) else {
 			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
 		}
 
-		let sample = self.buildSample(config: self.context, date: date, value: value)
+		let sample = self.buildSample(date: date, value: value)
 
 		try await self.store.save(sample)
 	}
 
-	private func buildSample(config: HealthKitServiceContext, date: Date, value: Double) -> HKQuantitySample {
-		let quantity = HKQuantity(unit: config.unit, doubleValue: value)
+	private nonisolated func buildSample(date: Date, value: Double) -> HKQuantitySample {
+		let quantity = HKQuantity(unit: self.context.unit, doubleValue: value)
 
 		return HKQuantitySample(
-			type: config.quantityType,
+			type: self.context.quantityType,
 			quantity: quantity,
 			start: date,
 			end: date,
@@ -106,16 +88,7 @@ struct HealthKitService {
 
 	// MARK: - Fake Data Creation
 
-	@concurrent
-	func createFakeStepSamples(daysAgo: Int) async throws -> Void {
-		try await self.createFakeSamples(daysAgo: daysAgo)
-	}
-
-	@concurrent
-	func createFakeWeightSamples(daysAgo: Int) async throws -> Void {
-		try await self.createFakeSamples(daysAgo: daysAgo)
-	}
-
+//	@concurrent
 	func createFakeSamples(daysAgo: Int) async throws -> Void {
 		guard self.isSharingAuthorized(for: self.context.quantityType) else {
 			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
@@ -130,7 +103,7 @@ struct HealthKitService {
 		let fakeQuantitySamples = (0 ..< daysAgo).reduce(into: quantitySamples) { samples, day in
 			let date = Calendar.current.date(byAdding: .day, value: -day, to: today)!
 			let value = self.context.fakeValueGenerator(day)
-			let sample = self.buildSample(config: self.context, date: date, value: value)
+			let sample = self.buildSample(date: date, value: value)
 
 			samples.append(sample)
 		}
