@@ -3,7 +3,7 @@ import Observation
 import OrderedCollections
 
 @Observable
-final class WeightStore {
+final class WeightStore: MetricStore {
 	// MARK: - Stored Properties
 
 	let healthKitService: HealthKitService
@@ -14,30 +14,22 @@ final class WeightStore {
 
 	let quantityType = HKQuantityType(.bodyMass)
 
-	var weightDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
+	var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 
-	var weightDiffAverageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
+	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
 
 	// MARK: - Computed Properties
 
-	var averageWeight: Double {
-		return self.weightDiscreteMetricByDate.averageValue
+	var average: Double {
+		return self.discreteMetricByDate.averageValue
 	}
 
-	var maximumWeight: Double {
-		return self.weightDiscreteMetricByDate.maximumValue
+	var maximum: Double {
+		return self.discreteMetricByDate.maximumValue
 	}
 
-	var minimumWeight: Double {
-		return self.weightDiscreteMetricByDate.minimumValue
-	}
-
-	var maximumWeightDiff: Double {
-		return self.weightDiffAverageMetricByWeekday.maximumValue
-	}
-
-	var minimumWeightDiff: Double {
-		return self.weightDiffAverageMetricByWeekday.minimumValue
+	var minimum: Double {
+		return self.discreteMetricByDate.minimumValue
 	}
 
 	// MARK: - Fetching
@@ -50,9 +42,9 @@ final class WeightStore {
 			metricType: .weight,
 		)
 
-		self.weightDiscreteMetricByDate = discreteMetricsByDate
+		self.discreteMetricByDate = discreteMetricsByDate
 
-		self.weightDiffAverageMetricByWeekday = averageMetricsByDate
+		self.averageMetricByWeekday = averageMetricsByDate
 	}
 
 	private func transform(statistics: [HKStatistics], metricType: MetricType)

@@ -21,5 +21,5 @@ struct EmptyChartView<Context: ChartViewContext>: View {
 }
 
 #Preview {
-	EmptyChartView(context: StepPieViewContext(store: MetricStore()))
+	EmptyChartView(context: StepPieViewContext(store: StepStore()))
 }

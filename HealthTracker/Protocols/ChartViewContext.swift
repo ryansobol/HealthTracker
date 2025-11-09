@@ -3,7 +3,9 @@ import OrderedCollections
 import SwiftUI
 
 protocol ChartViewContext {
-	var store: MetricStore { get }
+	associatedtype Store: MetricStore
+	var store: Store { get }
+
 	var metricType: MetricType { get }
 	var title: String { get }
 	var symbolTitle: String { get }

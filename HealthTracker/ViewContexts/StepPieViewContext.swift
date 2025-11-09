@@ -3,7 +3,7 @@ import OrderedCollections
 import SwiftUI
 
 struct StepPieViewContext: ChartViewContext {
-	let store: MetricStore
+	let store: StepStore
 
 	let metricType = MetricType.steps
 	let title = "Averages"
@@ -14,7 +14,7 @@ struct StepPieViewContext: ChartViewContext {
 	let height: CGFloat = 240
 
 	var hasData: Bool {
-		return !self.store.stepDiscreteMetricByDate.isEmpty
+		return !self.store.averageMetricByWeekday.isEmpty
 	}
 
 	var chartView: some View {

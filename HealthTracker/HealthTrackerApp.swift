@@ -7,7 +7,6 @@ struct HealthTrackerApp: App {
 	var body: some Scene {
 		WindowGroup {
 			DashboardScreenView()
-				.environment(MetricStore())
 				.environment(StepStore(hkHealthStore: self.hkHealthStore))
 				.environment(WeightStore(hkHealthStore: self.hkHealthStore))
 		}

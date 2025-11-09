@@ -3,7 +3,7 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightBarViewContext: ChartViewContext {
-	let store: MetricStore
+	let store: WeightStore
 
 	let metricType = MetricType.weight
 	let title = "Average Change"
@@ -14,7 +14,7 @@ struct WeightBarViewContext: ChartViewContext {
 	let height: CGFloat = 150
 
 	var hasData: Bool {
-		return !self.store.weightDiffAverageMetricByWeekday.isEmpty
+		return !self.store.averageMetricByWeekday.isEmpty
 	}
 
 	var chartView: some View {

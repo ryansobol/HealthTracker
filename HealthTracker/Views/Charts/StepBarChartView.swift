@@ -15,7 +15,7 @@ struct StepBarChartView<Context: ChartViewContext>: View {
 				self.selectedDiscreteMetric = newValue.flatMap { date in
 					let normalizedDate = Calendar.current.startOfDay(for: date)
 
-					return self.context.store.stepDiscreteMetricByDate[normalizedDate]
+					return self.context.store.discreteMetricByDate[normalizedDate]
 				}
 			},
 		)
@@ -39,7 +39,7 @@ struct StepBarChartView<Context: ChartViewContext>: View {
 
 	private var chartYScaleDomain: ClosedRange<Double> {
 		let minValue = 0.0
-		let maxValue = self.context.store.maximumSteps
+		let maxValue = self.context.store.maximum
 
 		let range = maxValue - minValue
 		let padding = range * 0.01
@@ -70,12 +70,12 @@ struct StepBarChartView<Context: ChartViewContext>: View {
 					)
 			}
 
-			RuleMark(y: .value("Average Steps", self.context.store.averageSteps))
+			RuleMark(y: .value("Average Steps", self.context.store.average))
 				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 				.opacity(self.isAnimated ? 1 : 0)
 
-			ForEach(self.context.store.stepDiscreteMetricByDate.values) { discreteMetric in
+			ForEach(self.context.store.discreteMetricByDate.values) { discreteMetric in
 				BarMark(
 					x: .value("Date", discreteMetric.date, unit: .day),
 					y: .value("Steps", self.isAnimated ? discreteMetric.value : 0),
@@ -104,7 +104,7 @@ struct StepBarChartView<Context: ChartViewContext>: View {
 		.chartYScale(domain: self.chartYScaleDomain)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date.weekday)
-		.onChange(of: self.context.store.stepDiscreteMetricByDate, initial: true) { _, newValue in
+		.onChange(of: self.context.store.discreteMetricByDate, initial: true) { _, newValue in
 			guard !self.isAnimated else {
 				return
 			}
@@ -119,10 +119,10 @@ struct StepBarChartView<Context: ChartViewContext>: View {
 }
 
 #Preview {
-	@Previewable @State var metricStore = MetricStore()
+	@Previewable @State var stepStore = StepStore()
 
-	ChartCardView(context: StepBarViewContext(store: metricStore))
+	ChartCardView(context: StepBarViewContext(store: stepStore))
 		.task {
-			try! await metricStore.fetchMetrics()
+			try! await stepStore.fetchMetrics()
 		}
 }

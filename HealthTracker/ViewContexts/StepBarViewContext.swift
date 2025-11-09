@@ -3,7 +3,7 @@ import OrderedCollections
 import SwiftUI
 
 struct StepBarViewContext: ChartViewContext {
-	let store: MetricStore
+	let store: StepStore
 
 	let metricType = MetricType.steps
 	let title = "Steps"
@@ -13,11 +13,11 @@ struct StepBarViewContext: ChartViewContext {
 	let height: CGFloat = 150
 
 	var subtitle: String {
-		return "Average \(self.store.averageSteps.formatted(.number.precision(.fractionLength(0)))) steps"
+		return "Average \(self.store.average.formatted(.number.precision(.fractionLength(0)))) steps"
 	}
 
 	var hasData: Bool {
-		return !self.store.stepDiscreteMetricByDate.isEmpty
+		return !self.store.discreteMetricByDate.isEmpty
 	}
 
 	var chartView: some View {

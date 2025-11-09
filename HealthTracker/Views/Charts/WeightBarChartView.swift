@@ -13,7 +13,7 @@ struct WeightBarChartView<Context: ChartViewContext>: View {
 			get: { self.selectedAverageMetric?.weekday },
 			set: { newValue in
 				self.selectedAverageMetric = newValue.flatMap { weekday in
-					return self.context.store.weightDiffAverageMetricByWeekday[weekday]
+					return self.context.store.averageMetricByWeekday[weekday]
 				}
 			},
 		)
@@ -36,8 +36,10 @@ struct WeightBarChartView<Context: ChartViewContext>: View {
 	}
 
 	private var chartYScaleDomain: ClosedRange<Double> {
-		let minValue = self.context.store.minimumWeightDiff
-		let maxValue = self.context.store.maximumWeightDiff
+		let averageMetricByWeekday = self.context.store.averageMetricByWeekday
+
+		let minValue = averageMetricByWeekday.minimumValue
+		let maxValue = averageMetricByWeekday.maximumValue
 
 		let range = maxValue - minValue
 		let padding = range * 0.5
@@ -66,7 +68,7 @@ struct WeightBarChartView<Context: ChartViewContext>: View {
 					)
 			}
 
-			ForEach(self.context.store.weightDiffAverageMetricByWeekday.values) { averageDiffMetric in
+			ForEach(self.context.store.averageMetricByWeekday.values) { averageDiffMetric in
 				BarMark(
 					x: .value("Weekday", averageDiffMetric.weekday),
 					y: .value("Average Weight Differece", self.isAnimated ? averageDiffMetric.value : 0),
@@ -105,7 +107,7 @@ struct WeightBarChartView<Context: ChartViewContext>: View {
 		.animation(.smooth(duration: 0.05), value: self.selectedAverageMetric?.weekday)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
-		.onChange(of: self.context.store.weightDiffAverageMetricByWeekday, initial: true) { _, newValue in
+		.onChange(of: self.context.store.averageMetricByWeekday, initial: true) { _, newValue in
 			guard !self.isAnimated else {
 				return
 			}
@@ -120,10 +122,10 @@ struct WeightBarChartView<Context: ChartViewContext>: View {
 }
 
 #Preview {
-	@Previewable @State var metricStore = MetricStore()
+	@Previewable @State var weightStore = WeightStore()
 
-	ChartCardView(context: WeightBarViewContext(store: metricStore))
+	ChartCardView(context: WeightBarViewContext(store: weightStore))
 		.task {
-			try! await metricStore.fetchMetrics()
+			try! await weightStore.fetchMetrics()
 		}
 }

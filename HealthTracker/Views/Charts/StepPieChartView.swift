@@ -13,7 +13,7 @@ struct StepPieChartView<Context: ChartViewContext>: View {
 			get: { self.selectedAverageMetric?.value },
 			set: { newValue in
 				self.selectedAverageMetric = newValue.flatMap { value in
-					self.context.store.stepAverageMetricByWeekday.values
+					self.context.store.averageMetricByWeekday.values
 						.first(into: 0.0) { cummulativeValue, averageMetric in
 							cummulativeValue += averageMetric.value
 
@@ -50,7 +50,7 @@ struct StepPieChartView<Context: ChartViewContext>: View {
 
 	var body: some View {
 		Chart {
-			ForEach(self.context.store.stepAverageMetricByWeekday.values) { averageMetric in
+			ForEach(self.context.store.averageMetricByWeekday.values) { averageMetric in
 				SectorMark(
 					angle: .value("Average Steps", self.isAnimated ? averageMetric.value : 0),
 					innerRadius: .ratio(0.618),
@@ -66,13 +66,13 @@ struct StepPieChartView<Context: ChartViewContext>: View {
 		.chartBackground { _ in
 			self.chartAverage(
 				title: self.selectedAverageMetric?.weekday.symbol ?? "Daily",
-				value: self.selectedAverageMetric?.value ?? self.context.store.averageSteps,
+				value: self.selectedAverageMetric?.value ?? self.context.store.average,
 			)
 		}
 		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
-		.onChange(of: self.context.store.stepAverageMetricByWeekday, initial: true) { _, newValue in
+		.onChange(of: self.context.store.averageMetricByWeekday, initial: true) { _, newValue in
 			guard !self.isAnimated else {
 				return
 			}
@@ -100,10 +100,10 @@ struct StepPieChartView<Context: ChartViewContext>: View {
 }
 
 #Preview {
-	@Previewable @State var metricStore = MetricStore()
+	@Previewable @State var stepStore = StepStore()
 
-	ChartCardView(context: StepPieViewContext(store: metricStore))
+	ChartCardView(context: StepPieViewContext(store: stepStore))
 		.task {
-			try! await metricStore.fetchMetrics()
+			try! await stepStore.fetchMetrics()
 		}
 }

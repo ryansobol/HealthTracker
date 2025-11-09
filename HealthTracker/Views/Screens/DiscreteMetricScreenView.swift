@@ -19,8 +19,8 @@ struct DiscreteMetricScreenView: View {
 
 	var discreteMetrics: OrderedDictionary<Date, DiscreteMetric>.Values {
 		return switch self.metricType {
-		case .steps: self.stepStore.stepDiscreteMetricByDate.values
-		case .weight: self.weightStore.weightDiscreteMetricByDate.values
+		case .steps: self.stepStore.discreteMetricByDate.values
+		case .weight: self.weightStore.discreteMetricByDate.values
 		}
 	}
 

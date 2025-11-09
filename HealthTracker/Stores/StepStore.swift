@@ -3,7 +3,7 @@ import Observation
 import OrderedCollections
 
 @Observable
-final class StepStore {
+final class StepStore: MetricStore {
 	// MARK: - Stored Properties
 
 	let healthKitService: HealthKitService
@@ -14,18 +14,22 @@ final class StepStore {
 
 	let quantityType = HKQuantityType(.stepCount)
 
-	var stepDiscreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
+	var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 
-	var stepAverageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
+	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
 
 	// MARK: - Computed Properties
 
-	var averageSteps: Double {
-		return self.stepDiscreteMetricByDate.averageValue
+	var average: Double {
+		return self.discreteMetricByDate.averageValue
 	}
 
-	var maximumSteps: Double {
-		return self.stepDiscreteMetricByDate.maximumValue
+	var maximum: Double {
+		return self.discreteMetricByDate.maximumValue
+	}
+
+	var minimum: Double {
+		return self.discreteMetricByDate.minimumValue
 	}
 
 	// MARK: - Fetching
@@ -38,9 +42,9 @@ final class StepStore {
 			metricType: .steps,
 		)
 
-		self.stepDiscreteMetricByDate = discreteMetricsByDate
+		self.discreteMetricByDate = discreteMetricsByDate
 
-		self.stepAverageMetricByWeekday = averageMetricsByDate
+		self.averageMetricByWeekday = averageMetricsByDate
 	}
 
 	private func transform(statistics: [HKStatistics], metricType: MetricType)

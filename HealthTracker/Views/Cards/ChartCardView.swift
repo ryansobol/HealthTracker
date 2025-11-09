@@ -19,14 +19,14 @@ struct ChartCardView<Context: ChartViewContext>: View {
 }
 
 #Preview("With Metrics") {
-	@Previewable @State var metricStore = MetricStore()
+	@Previewable @State var stepStore = StepStore()
 
-	ChartCardView(context: StepBarViewContext(store: metricStore))
+	ChartCardView(context: StepBarViewContext(store: stepStore))
 		.task {
-			try! await metricStore.fetchMetrics()
+			try! await stepStore.fetchMetrics()
 		}
 }
 
 #Preview("Without Metrics") {
-	ChartCardView(context: StepBarViewContext(store: MetricStore()))
+	ChartCardView(context: StepBarViewContext(store: StepStore()))
 }

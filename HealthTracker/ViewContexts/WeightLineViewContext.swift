@@ -3,7 +3,7 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightLineViewContext: ChartViewContext {
-	let store: MetricStore
+	let store: WeightStore
 
 	let metricType = MetricType.weight
 	let title = "Weight"
@@ -13,11 +13,11 @@ struct WeightLineViewContext: ChartViewContext {
 	let height: CGFloat = 150
 
 	var subtitle: String {
-		return "Average \(self.store.averageWeight.formatted(.number.precision(.fractionLength(1)))) lbs"
+		return "Average \(self.store.average.formatted(.number.precision(.fractionLength(1)))) lbs"
 	}
 
 	var hasData: Bool {
-		return !self.store.weightDiscreteMetricByDate.isEmpty
+		return !self.store.discreteMetricByDate.isEmpty
 	}
 
 	var chartView: some View {
