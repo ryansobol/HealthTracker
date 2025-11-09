@@ -2,7 +2,7 @@ import Foundation
 import OrderedCollections
 import SwiftUI
 
-protocol ChartContext {
+protocol ChartViewContext {
 	var store: MetricStore { get }
 	var metricType: MetricType { get }
 	var title: String { get }

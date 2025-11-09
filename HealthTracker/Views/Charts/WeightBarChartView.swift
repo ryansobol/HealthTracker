@@ -2,7 +2,7 @@ import Charts
 import OrderedCollections
 import SwiftUI
 
-struct WeightBarChartView<Context: ChartContext>: View {
+struct WeightBarChartView<Context: ChartViewContext>: View {
 	@State private var isAnimated = false
 	@State private var selectedAverageMetric: AverageMetric? = nil
 
@@ -122,7 +122,7 @@ struct WeightBarChartView<Context: ChartContext>: View {
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
 
-	ChartCardView(context: WeightBarContext(store: metricStore))
+	ChartCardView(context: WeightBarViewContext(store: metricStore))
 		.task {
 			try! await metricStore.fetchMetrics()
 		}

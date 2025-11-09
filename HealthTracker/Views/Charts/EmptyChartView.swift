@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct EmptyChartView<Context: ChartContext>: View {
+struct EmptyChartView<Context: ChartViewContext>: View {
 	let context: Context
 
 	var body: some View {
@@ -21,5 +21,5 @@ struct EmptyChartView<Context: ChartContext>: View {
 }
 
 #Preview {
-	EmptyChartView(context: StepPieContext(store: MetricStore()))
+	EmptyChartView(context: StepPieViewContext(store: MetricStore()))
 }

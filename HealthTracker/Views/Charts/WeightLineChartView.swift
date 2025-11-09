@@ -2,7 +2,7 @@ import Charts
 import OrderedCollections
 import SwiftUI
 
-struct WeightLineChartView<Context: ChartContext>: View {
+struct WeightLineChartView<Context: ChartViewContext>: View {
 	@State private var isAnimated = false
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 
@@ -115,7 +115,7 @@ struct WeightLineChartView<Context: ChartContext>: View {
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
 
-	ChartCardView(context: WeightLineContext(store: metricStore))
+	ChartCardView(context: WeightLineViewContext(store: metricStore))
 		.task {
 			try! await metricStore.fetchMetrics()
 		}

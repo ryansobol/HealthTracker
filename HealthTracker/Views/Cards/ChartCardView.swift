@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ChartCardView<Context: ChartContext>: View {
+struct ChartCardView<Context: ChartViewContext>: View {
 	let context: Context
 
 	var body: some View {
@@ -21,12 +21,12 @@ struct ChartCardView<Context: ChartContext>: View {
 #Preview("With Metrics") {
 	@Previewable @State var metricStore = MetricStore()
 
-	ChartCardView(context: StepBarContext(store: metricStore))
+	ChartCardView(context: StepBarViewContext(store: metricStore))
 		.task {
 			try! await metricStore.fetchMetrics()
 		}
 }
 
 #Preview("Without Metrics") {
-	ChartCardView(context: StepBarContext(store: MetricStore()))
+	ChartCardView(context: StepBarViewContext(store: MetricStore()))
 }

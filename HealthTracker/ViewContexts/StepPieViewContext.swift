@@ -2,7 +2,7 @@ import Foundation
 import OrderedCollections
 import SwiftUI
 
-struct StepPieContext: ChartContext {
+struct StepPieViewContext: ChartViewContext {
 	let store: MetricStore
 
 	let metricType = MetricType.steps

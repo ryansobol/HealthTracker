@@ -2,7 +2,7 @@ import Foundation
 import OrderedCollections
 import SwiftUI
 
-struct WeightLineContext: ChartContext {
+struct WeightLineViewContext: ChartViewContext {
 	let store: MetricStore
 
 	let metricType = MetricType.weight
