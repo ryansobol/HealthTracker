@@ -51,9 +51,7 @@ struct ChartContentCardView<Content: View>: View {
 }
 
 #Preview("With Navigation") {
-	@Previewable @State var metricStore = MetricStore()
-
-	ChartContentCardView(context: .stepBar(store: metricStore)) {
+	ChartContentCardView(context: .stepBar(store: MetricStore())) {
 		Rectangle()
 			.frame(height: 240)
 			.foregroundColor(.gray)
@@ -61,9 +59,7 @@ struct ChartContentCardView<Content: View>: View {
 }
 
 #Preview("Without Navigation") {
-	@Previewable @State var metricStore = MetricStore()
-
-	ChartContentCardView(context: .stepPie(store: metricStore)) {
+	ChartContentCardView(context: .stepPie(store: MetricStore())) {
 		Rectangle()
 			.frame(height: 240)
 			.foregroundColor(.gray)

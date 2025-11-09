@@ -107,5 +107,4 @@ struct StepPieChartView: View {
 		.task {
 			try! await metricStore.fetchMetrics()
 		}
-		.environment(metricStore)
 }

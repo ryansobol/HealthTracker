@@ -41,9 +41,5 @@ struct ChartCardView: View {
 }
 
 #Preview("Without Metrics") {
-	@Previewable @State var metricStore = MetricStore()
-
-	VStack {
-		ChartCardView(context: .stepBar(store: metricStore))
-	}
+	ChartCardView(context: .stepBar(store: MetricStore()))
 }

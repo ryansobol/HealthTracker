@@ -126,5 +126,4 @@ struct WeightBarChartView: View {
 		.task {
 			try! await metricStore.fetchMetrics()
 		}
-		.environment(metricStore)
 }
