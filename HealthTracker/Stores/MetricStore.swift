@@ -158,6 +158,11 @@ final class MetricStore {
 	}
 
 	func createFakeMetrics(daysAgo: Int = 28) async throws -> Void {
-		try await self.healthKitService.createFakeSamples(daysAgo: daysAgo)
+		try await withThrowingTaskGroup { group in
+			group.addTask { try await self.healthKitService.createFakeStepSamples(daysAgo: daysAgo) }
+			group.addTask { try await self.healthKitService.createFakeWeightSamples(daysAgo: daysAgo) }
+
+			try await group.waitForAll()
+		}
 	}
 }
