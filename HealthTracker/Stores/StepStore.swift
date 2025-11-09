@@ -9,7 +9,7 @@ final class StepStore: MetricStore {
 	let healthKitService: HealthKitService
 
 	init(hkHealthStore: HKHealthStore = .init()) {
-		self.healthKitService = HealthKitService(hkHealthStore: hkHealthStore)
+		self.healthKitService = HealthKitService(store: hkHealthStore, context: .steps)
 	}
 
 	let quantityType = HKQuantityType(.stepCount)

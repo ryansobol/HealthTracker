@@ -1,42 +1,19 @@
 import HealthKit
 
 struct HealthKitService {
-	// MARK: - Configuration
-
-	private struct Configuration {
-		let quantityType: HKQuantityType
-		let unit: HKUnit
-		let statisticsOptions: HKStatisticsOptions
-		let fakeValueGenerator: (Int) -> Double
-
-		static let steps = Configuration(
-			quantityType: HKQuantityType(.stepCount),
-			unit: .count(),
-			statisticsOptions: .cumulativeSum,
-			fakeValueGenerator: { _ in .random(in: 4000 ... 20000) },
-		)
-
-		static let weight = Configuration(
-			quantityType: HKQuantityType(.bodyMass),
-			unit: .pound(),
-			statisticsOptions: .mostRecent,
-			fakeValueGenerator: { day in .random(in: 160 + Double(day / 3) ... 165 + Double(day / 3)) },
-		)
-	}
-
 	// MARK: - Properties
 
-	private let configurations: [MetricType: Configuration] = [
+	private let contexts: [MetricType: HealthKitServiceContext] = [
 		.steps: .steps,
 		.weight: .weight,
 	]
 
+	let context: HealthKitServiceContext
 	let store: HKHealthStore
-	let types: Set<HKQuantityType>
 
-	init(hkHealthStore: HKHealthStore) {
-		self.store = hkHealthStore
-		self.types = Set(self.configurations.values.map { $0.quantityType })
+	init(store: HKHealthStore, context: HealthKitServiceContext) {
+		self.context = context
+		self.store = store
 	}
 
 	// MARK: - Authorization
@@ -69,7 +46,7 @@ struct HealthKitService {
 	private func fetchStatistics(for metricType: MetricType, daysAgo: Int)
 		async throws -> [HKStatistics]
 	{
-		guard let config = self.configurations[metricType] else {
+		guard let config = self.contexts[metricType] else {
 			fatalError("No configuration for metric type: \(metricType)")
 		}
 
@@ -118,7 +95,7 @@ struct HealthKitService {
 	}
 
 	private func createSample(metricType: MetricType, date: Date, value: Double) async throws -> Void {
-		guard let config = self.configurations[metricType] else {
+		guard let config = self.contexts[metricType] else {
 			fatalError("No configuration for metric type: \(metricType)")
 		}
 
@@ -131,7 +108,7 @@ struct HealthKitService {
 		try await self.store.save(sample)
 	}
 
-	private func buildSample(config: Configuration, date: Date, value: Double) -> HKQuantitySample {
+	private func buildSample(config: HealthKitServiceContext, date: Date, value: Double) -> HKQuantitySample {
 		let quantity = HKQuantity(unit: config.unit, doubleValue: value)
 
 		return HKQuantitySample(
@@ -155,7 +132,7 @@ struct HealthKitService {
 	}
 
 	func createFakeSamples(metricType: MetricType, daysAgo: Int) async throws -> Void {
-		guard let config = self.configurations[metricType] else {
+		guard let config = self.contexts[metricType] else {
 			fatalError("No configuration for metric type: \(metricType)")
 		}
 
