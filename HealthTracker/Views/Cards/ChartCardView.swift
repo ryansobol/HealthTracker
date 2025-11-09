@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct ChartCardView: View {
-	let context: ChartContext
+struct ChartCardView<Context: ChartContext>: View {
+	let context: Context
 
 	var body: some View {
 		ChartContentCardView(context: self.context) {
 			Group {
 				if self.context.hasData {
-					self.chartView
+					self.context.chartView
 				}
 				else {
 					EmptyChartView(context: self.context)
@@ -16,30 +16,17 @@ struct ChartCardView: View {
 			.frame(height: self.context.height)
 		}
 	}
-
-	@ViewBuilder
-	private var chartView: some View {
-		switch self.context {
-		case .stepBar: StepBarChartView(context: self.context)
-		case .stepPie: StepPieChartView(context: self.context)
-		case .weightBar: WeightBarChartView(context: self.context)
-		case .weightLine: WeightLineChartView(context: self.context)
-		}
-	}
 }
 
 #Preview("With Metrics") {
 	@Previewable @State var metricStore = MetricStore()
 
-	VStack {
-		ChartCardView(context: .stepBar(store: metricStore))
-	}
-	.task {
-		try! await metricStore.fetchMetrics()
-	}
-	.environment(metricStore)
+	ChartCardView(context: StepBarContext(store: metricStore))
+		.task {
+			try! await metricStore.fetchMetrics()
+		}
 }
 
 #Preview("Without Metrics") {
-	ChartCardView(context: .stepBar(store: MetricStore()))
+	ChartCardView(context: StepBarContext(store: MetricStore()))
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct ChartContentCardView<Content: View>: View {
-	let context: ChartContext
+struct ChartContentCardView<Context: ChartContext, Content: View>: View {
+	let context: Context
 
 	@ViewBuilder let content: () -> Content
 
@@ -51,7 +51,7 @@ struct ChartContentCardView<Content: View>: View {
 }
 
 #Preview("With Navigation") {
-	ChartContentCardView(context: .stepBar(store: MetricStore())) {
+	ChartContentCardView(context: StepBarContext(store: MetricStore())) {
 		Rectangle()
 			.frame(height: 240)
 			.foregroundColor(.gray)
@@ -59,7 +59,7 @@ struct ChartContentCardView<Content: View>: View {
 }
 
 #Preview("Without Navigation") {
-	ChartContentCardView(context: .stepPie(store: MetricStore())) {
+	ChartContentCardView(context: StepPieContext(store: MetricStore())) {
 		Rectangle()
 			.frame(height: 240)
 			.foregroundColor(.gray)

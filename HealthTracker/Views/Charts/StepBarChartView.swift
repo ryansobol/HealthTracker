@@ -2,11 +2,11 @@ import Charts
 import OrderedCollections
 import SwiftUI
 
-struct StepBarChartView: View {
+struct StepBarChartView<Context: ChartContext>: View {
 	@State private var isAnimated = false
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 
-	let context: ChartContext
+	let context: Context
 
 	private var selectedDateBinding: Binding<Date?> {
 		return Binding(
@@ -121,7 +121,7 @@ struct StepBarChartView: View {
 #Preview {
 	@Previewable @State var metricStore = MetricStore()
 
-	ChartCardView(context: .stepBar(store: metricStore))
+	ChartCardView(context: StepBarContext(store: metricStore))
 		.task {
 			try! await metricStore.fetchMetrics()
 		}
