@@ -16,14 +16,9 @@ struct HealthKitService {
 	private var isAuthorizationRequestUnnecessary: Bool {
 		get async throws {
 			let types = Set([self.context.quantityType])
-
-			let result = try await self.store.statusForAuthorizationRequest(
-				toShare: types,
-				read: types,
-			)
+			let result = try await self.store.statusForAuthorizationRequest(toShare: types, read: types)
 
 			return result == .unnecessary
-
 		}
 	}
 
@@ -67,18 +62,7 @@ struct HealthKitService {
 		return statisticsCollection.statistics()
 	}
 
-	// MARK: - Creation
-
-	@concurrent
-	func createSample(date: Date, value: Double) async throws -> Void {
-		guard self.isSharingAuthorized else {
-			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
-		}
-
-		let sample = self.buildSample(date: date, value: value)
-
-		try await self.store.save(sample)
-	}
+	// MARK: - Building
 
 	private nonisolated func buildSample(date: Date, value: Double) -> HKQuantitySample {
 		let quantity = HKQuantity(unit: self.context.unit, doubleValue: value)
@@ -91,7 +75,18 @@ struct HealthKitService {
 		)
 	}
 
-	// MARK: - Fake Data Creation
+	// MARK: - Creation
+
+	@concurrent
+	func createSample(date: Date, value: Double) async throws -> Void {
+		guard self.isSharingAuthorized else {
+			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
+		}
+
+		let sample = self.buildSample(date: date, value: value)
+
+		try await self.store.save(sample)
+	}
 
 //	@concurrent
 	func createFakeSamples(daysAgo: Int) async throws -> Void {
