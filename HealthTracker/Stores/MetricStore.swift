@@ -52,12 +52,28 @@ final class MetricStore {
 		return self.stepDiscreteMetricByDate.averageValue
 	}
 
+	var maximumSteps: Double {
+		return self.stepDiscreteMetricByDate.maximumValue
+	}
+	
 	var averageWeight: Double {
 		return self.weightDiscreteMetricByDate.averageValue
 	}
 
+	var maximumWeight: Double {
+		return self.weightDiscreteMetricByDate.maximumValue
+	}
+
 	var minimumWeight: Double {
 		return self.weightDiscreteMetricByDate.minimumValue
+	}
+
+	var maximumWeightDiff: Double {
+		return self.weightDiffAverageMetricByWeekday.maximumValue
+	}
+
+	var minimumWeightDiff: Double {
+		return self.weightDiffAverageMetricByWeekday.minimumValue
 	}
 
 	// MARK: - Fetching

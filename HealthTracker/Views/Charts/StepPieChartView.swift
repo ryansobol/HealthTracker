@@ -3,6 +3,7 @@ import OrderedCollections
 import SwiftUI
 
 struct StepPieChartView: View {
+	@State private var isAnimated = false
 	@State private var selectedAverageMetric: AverageMetric? = nil
 
 	let context: ChartContext
@@ -31,18 +32,35 @@ struct StepPieChartView: View {
 		return selectedAverageMetric.weekday != averageMetric.weekday
 	}
 
+
+	private func opacitySectorMark(for averageMetric: AverageMetric) -> Double {
+		guard self.isAnimated else {
+			return 0.0
+		}
+
+		guard let selectedAverageMetric = self.selectedAverageMetric else {
+			return 1.0
+		}
+
+		if selectedAverageMetric.weekday == averageMetric.weekday {
+			return 1.0
+		}
+
+		return 0.3
+	}
+
 	var body: some View {
 		Chart {
 			ForEach(self.context.store.stepAverageMetricByWeekday.values) { averageMetric in
 				SectorMark(
-					angle: .value("Average Steps", averageMetric.value),
+					angle: .value("Average Steps", self.isAnimated ? averageMetric.value : 0),
 					innerRadius: .ratio(0.618),
 					outerRadius: self.selectedAverageMetric?.weekday == averageMetric.weekday ? 140 : 110,
 					angularInset: 1,
 				)
 				.foregroundStyle(self.context.metricType.color.gradient)
 				.cornerRadius(6)
-				.opacity(self.isSectorMarkOpaque(for: averageMetric) ? 0.3 : 1)
+				.opacity(self.opacitySectorMark(for: averageMetric))
 			}
 		}
 		.chartAngleSelection(value: self.selectedValueBinding)
@@ -53,7 +71,15 @@ struct StepPieChartView: View {
 			)
 		}
 		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)
+		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
+		.onAppear {
+			guard !self.isAnimated else {
+				return
+			}
+
+			self.isAnimated = true
+		}
 	}
 
 	private func chartAverage(title: String, value: Double) -> some View {

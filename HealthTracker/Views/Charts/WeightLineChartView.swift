@@ -3,6 +3,7 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightLineChartView: View {
+	@State private var isAnimated = false
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 
 	let context: ChartContext
@@ -18,6 +19,22 @@ struct WeightLineChartView: View {
 				}
 			},
 		)
+	}
+
+	private var chartYScaleDomain: ClosedRange<Double> {
+		let minValue = self.context.store.minimumWeight
+		let maxValue = self.context.store.maximumWeight
+
+		let range = maxValue - minValue
+		let padding = range * 0.2
+
+		let paddedMin = minValue - padding
+		let paddedMax = maxValue + padding
+
+		let niceMin = floor(paddedMin)
+		let niceMax = ceil(paddedMax)
+
+		return niceMin...niceMax
 	}
 
 	var body: some View {
@@ -40,11 +57,12 @@ struct WeightLineChartView: View {
 			RuleMark(y: .value("Average Weight", self.context.store.averageWeight))
 				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
+				.opacity(self.isAnimated ? 1 : 0)
 
 			ForEach(self.context.store.weightDiscreteMetricByDate.values) { discreteMetric in
 				AreaMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
-					yStart: .value("Weight", discreteMetric.value),
+					yStart: .value("Weight", self.isAnimated ? discreteMetric.value : self.context.store.minimumWeight),
 					yEnd: .value("Minimum Weight", self.context.store.minimumWeight),
 				)
 				.foregroundStyle(
@@ -53,7 +71,7 @@ struct WeightLineChartView: View {
 
 				LineMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
-					y: .value("Weight", discreteMetric.value),
+					y: .value("Weight", self.isAnimated ? discreteMetric.value : self.context.store.minimumWeight),
 				)
 				.foregroundStyle(self.context.metricType.color)
 				.symbol(.circle)
@@ -61,7 +79,6 @@ struct WeightLineChartView: View {
 			.interpolationMethod(.catmullRom)
 		}
 		.chartXSelection(value: self.selectedDateBinding)
-		.chartYScale(domain: .automatic(includesZero: false))
 		.chartXAxis {
 			AxisMarks { _ in
 				AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
@@ -75,7 +92,16 @@ struct WeightLineChartView: View {
 				AxisValueLabel()
 			}
 		}
+		.chartYScale(domain: self.chartYScaleDomain)
+		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date)
+		.onAppear {
+			guard !self.isAnimated else {
+				return
+			}
+
+			self.isAnimated = true
+		}
 	}
 }
 

@@ -101,7 +101,37 @@ extension OrderedDictionary where Value == DiscreteMetric {
 		return self.values.lazy.map { $0.value }.average ?? 0
 	}
 
+	/// Returns the maximum of all discrete metric values in the dictionary.
+	///
+	/// - Returns: The maximum value, or `0` if the dictionary is empty.
+	var maximumValue: Double {
+		return self.values.lazy.map { $0.value }.max() ?? 0
+	}
+
 	/// Returns the minimum of all discrete metric values in the dictionary.
+	///
+	/// - Returns: The minimum value, or `0` if the dictionary is empty.
+	var minimumValue: Double {
+		return self.values.lazy.map { $0.value }.min() ?? 0
+	}
+}
+
+extension OrderedDictionary where Value == AverageMetric {
+	/// Returns the average of all average metric values in the dictionary.
+	///
+	/// - Returns: The average value, or `0` if the dictionary is empty.
+	var averageValue: Double {
+		return self.values.lazy.map { $0.value }.average ?? 0
+	}
+
+	/// Returns the maximum of all average metric values in the dictionary.
+	///
+	/// - Returns: The maximum value, or `0` if the dictionary is empty.
+	var maximumValue: Double {
+		return self.values.lazy.map { $0.value }.max() ?? 0
+	}
+
+	/// Returns the minimum of all average metric values in the dictionary.
 	///
 	/// - Returns: The minimum value, or `0` if the dictionary is empty.
 	var minimumValue: Double {

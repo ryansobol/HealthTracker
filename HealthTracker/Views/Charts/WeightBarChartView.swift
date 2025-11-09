@@ -3,6 +3,7 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightBarChartView: View {
+	@State private var isAnimated = false
 	@State private var selectedAverageMetric: AverageMetric? = nil
 
 	let context: ChartContext
@@ -18,12 +19,36 @@ struct WeightBarChartView: View {
 		)
 	}
 
-	private func isBarMarkOpaque(for averageMetric: AverageMetric) -> Bool {
-		guard let selectedAverageMetric = self.selectedAverageMetric else {
-			return false
+	private func opacityBarkMark(for averageMetric: AverageMetric) -> Double {
+		guard self.isAnimated else {
+			return 0.0
 		}
 
-		return selectedAverageMetric.weekday != averageMetric.weekday
+		guard let selectedAverageMetric = self.selectedAverageMetric else {
+			return 1.0
+		}
+
+		if selectedAverageMetric.weekday == averageMetric.weekday {
+			return 1.0
+		}
+
+		return 0.3
+	}
+
+	private var chartYScaleDomain: ClosedRange<Double> {
+		let minValue = self.context.store.minimumWeightDiff
+		let maxValue = self.context.store.maximumWeightDiff
+
+		let range = maxValue - minValue
+		let padding = range * 0.5
+
+		let paddedMin = minValue - padding
+		let paddedMax = maxValue + padding
+
+		let niceMin = floor(paddedMin)
+		let niceMax = ceil(paddedMax)
+
+		return niceMin...niceMax
 	}
 
 	var body: some View {
@@ -44,14 +69,14 @@ struct WeightBarChartView: View {
 			ForEach(self.context.store.weightDiffAverageMetricByWeekday.values) { averageDiffMetric in
 				BarMark(
 					x: .value("Weekday", averageDiffMetric.weekday),
-					y: .value("Average Weight Differece", averageDiffMetric.value),
+					y: .value("Average Weight Differece", self.isAnimated ? averageDiffMetric.value : 0),
 				)
 				.foregroundStyle(
 					averageDiffMetric.value >= 0
 						? self.context.metricType.color.gradient
 						: Color.mint.gradient,
 				)
-				.opacity(self.isBarMarkOpaque(for: averageDiffMetric) ? 0.3 : 1.0)
+				.opacity(self.opacityBarkMark(for: averageDiffMetric))
 			}
 		}
 		.chartXSelection(value: self.selectedWeekdayBinding)
@@ -76,8 +101,17 @@ struct WeightBarChartView: View {
 				)
 			}
 		}
+		.chartYScale(domain: self.chartYScaleDomain)
 		.animation(.smooth(duration: 0.05), value: self.selectedAverageMetric?.weekday)
+		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
+		.onAppear {
+			guard !self.isAnimated else {
+				return
+			}
+
+			self.isAnimated = true
+		}
 	}
 }
 

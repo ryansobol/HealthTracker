@@ -3,6 +3,7 @@ import OrderedCollections
 import SwiftUI
 
 struct StepBarChartView: View {
+	@State private var isAnimated = false
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 
 	let context: ChartContext
@@ -20,12 +21,36 @@ struct StepBarChartView: View {
 		)
 	}
 
-	private func isBarMarkOpaque(for discreteMetric: DiscreteMetric) -> Bool {
-		guard let selectedDiscreteMetric = self.selectedDiscreteMetric else {
-			return false
+	private func opacityBarMark(for discreteMetric: DiscreteMetric) -> Double {
+		guard self.isAnimated else {
+			return 0.0
 		}
 
-		return selectedDiscreteMetric.date != discreteMetric.date
+		guard let selectedDiscreteMetric = self.selectedDiscreteMetric else {
+			return 1.0
+		}
+
+		if selectedDiscreteMetric.date == discreteMetric.date {
+			return 1.0
+		}
+
+		return 0.3
+	}
+
+	private var chartYScaleDomain: ClosedRange<Double> {
+		let minValue = 0.0
+		let maxValue = self.context.store.maximumSteps
+
+		let range = maxValue - minValue
+		let padding = range * 0.01
+
+		let paddedMin = minValue - padding
+		let paddedMax = maxValue + padding
+
+		let niceMin = floor(paddedMin)
+		let niceMax = ceil(paddedMax)
+
+		return niceMin...niceMax
 	}
 
 	var body: some View {
@@ -46,16 +71,17 @@ struct StepBarChartView: View {
 			}
 
 			RuleMark(y: .value("Average Steps", self.context.store.averageSteps))
-				.foregroundStyle(.secondary)
+				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
+				.opacity(self.isAnimated ? 1 : 0)
 
 			ForEach(self.context.store.stepDiscreteMetricByDate.values) { discreteMetric in
 				BarMark(
 					x: .value("Date", discreteMetric.date, unit: .day),
-					y: .value("Steps", discreteMetric.value),
+					y: .value("Steps", self.isAnimated ? discreteMetric.value : 0),
 				)
 				.foregroundStyle(self.context.metricType.color.gradient)
-				.opacity(self.isBarMarkOpaque(for: discreteMetric) ? 0.3 : 1.0)
+				.opacity(self.opacityBarMark(for: discreteMetric))
 			}
 		}
 		.chartXSelection(value: self.selectedDateBinding)
@@ -75,7 +101,16 @@ struct StepBarChartView: View {
 				)
 			}
 		}
+		.chartYScale(domain: self.chartYScaleDomain)
+		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date.weekday)
+		.onAppear {
+			guard !self.isAnimated else {
+				return
+			}
+
+			self.isAnimated = true
+		}
 	}
 }
 
