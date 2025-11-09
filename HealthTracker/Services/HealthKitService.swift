@@ -30,19 +30,17 @@ struct HealthKitService {
 
 	@concurrent
 	func fetchStepStatistics(daysAgo: Int) async throws -> [HKStatistics] {
-		return try await self.fetchStatistics(for: .steps, daysAgo: daysAgo)
+		return try await self.fetchStatistics(daysAgo: daysAgo)
 	}
 
 	@concurrent
 	func fetchWeightStatistics(daysAgo: Int) async throws -> [HKStatistics] {
-		return try await self.fetchStatistics(for: .weight, daysAgo: daysAgo)
+		return try await self.fetchStatistics(daysAgo: daysAgo)
 	}
 
-	private func fetchStatistics(for metricType: MetricType, daysAgo: Int)
-		async throws -> [HKStatistics]
-	{
+	private func fetchStatistics(daysAgo: Int) async throws -> [HKStatistics] {
 		guard try await self.isAuthorizationRequestUnnecessary(for: self.context.quantityType) else {
-			throw AuthorizationRequestNecessaryError(metricType: metricType)
+			throw AuthorizationRequestNecessaryError(metricType: self.context.metricType)
 		}
 
 		let today = Date.now
@@ -77,17 +75,17 @@ struct HealthKitService {
 
 	@concurrent
 	func createStepSample(date: Date, value: Double) async throws -> Void {
-		try await self.createSample(metricType: .steps, date: date, value: value)
+		try await self.createSample(date: date, value: value)
 	}
 
 	@concurrent
 	func createWeightSample(date: Date, value: Double) async throws -> Void {
-		try await self.createSample(metricType: .weight, date: date, value: value)
+		try await self.createSample(date: date, value: value)
 	}
 
-	private func createSample(metricType: MetricType, date: Date, value: Double) async throws -> Void {
+	private func createSample(date: Date, value: Double) async throws -> Void {
 		guard self.isSharingAuthorized(for: self.context.quantityType) else {
-			throw AppError.sharingNotAuthorized(metricType: metricType)
+			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
 		}
 
 		let sample = self.buildSample(config: self.context, date: date, value: value)
@@ -110,17 +108,17 @@ struct HealthKitService {
 
 	@concurrent
 	func createFakeStepSamples(daysAgo: Int) async throws -> Void {
-		try await self.createFakeSamples(metricType: .steps, daysAgo: daysAgo)
+		try await self.createFakeSamples(daysAgo: daysAgo)
 	}
 
 	@concurrent
 	func createFakeWeightSamples(daysAgo: Int) async throws -> Void {
-		try await self.createFakeSamples(metricType: .weight, daysAgo: daysAgo)
+		try await self.createFakeSamples(daysAgo: daysAgo)
 	}
 
-	func createFakeSamples(metricType: MetricType, daysAgo: Int) async throws -> Void {
+	func createFakeSamples(daysAgo: Int) async throws -> Void {
 		guard self.isSharingAuthorized(for: self.context.quantityType) else {
-			throw AppError.sharingNotAuthorized(metricType: metricType)
+			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
 		}
 
 		let today = Date.now
