@@ -1,6 +1,6 @@
 import Foundation
 
-struct DiscreteMetric: Identifiable {
+struct DiscreteMetric: Identifiable, Equatable {
 	let id = UUID()
 
 	let date: Date

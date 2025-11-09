@@ -73,8 +73,12 @@ struct StepPieChartView: View {
 		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
-		.onAppear {
+		.onChange(of: self.context.store.stepAverageMetricByWeekday, initial: true) { _, newValue in
 			guard !self.isAnimated else {
+				return
+			}
+
+			if newValue.isEmpty {
 				return
 			}
 

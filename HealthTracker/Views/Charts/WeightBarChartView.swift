@@ -105,8 +105,12 @@ struct WeightBarChartView: View {
 		.animation(.smooth(duration: 0.05), value: self.selectedAverageMetric?.weekday)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
-		.onAppear {
+		.onChange(of: self.context.store.weightDiffAverageMetricByWeekday, initial: true) { _, newValue in
 			guard !self.isAnimated else {
+				return
+			}
+
+			if newValue.isEmpty {
 				return
 			}
 

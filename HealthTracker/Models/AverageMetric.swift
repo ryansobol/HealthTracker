@@ -1,7 +1,7 @@
 import Foundation
 import OrderedCollections
 
-struct AverageMetric: Identifiable {
+struct AverageMetric: Identifiable, Equatable {
 	let id = UUID()
 
 	let weekday: Weekday

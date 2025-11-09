@@ -95,8 +95,12 @@ struct WeightLineChartView: View {
 		.chartYScale(domain: self.chartYScaleDomain)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date)
-		.onAppear {
+		.onChange(of: self.context.store.weightDiscreteMetricByDate, initial: true) { _, newValue in
 			guard !self.isAnimated else {
+				return
+			}
+
+			if newValue.isEmpty {
 				return
 			}
 
