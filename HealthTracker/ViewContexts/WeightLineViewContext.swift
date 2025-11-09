@@ -12,7 +12,7 @@ struct WeightLineViewContext: ChartViewContext {
 	let height: CGFloat = 150
 
 	var subtitle: String {
-		return "Average \(self.store.average.formatted(.number.precision(.fractionLength(1)))) lbs"
+		return "Average \(self.store.discreteMetricAverage.formatted(.number.precision(.fractionLength(1)))) lbs"
 	}
 
 	var hasData: Bool {

@@ -18,20 +18,6 @@ final class WeightStore: MetricStore {
 
 	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
 
-	// MARK: - Computed Properties
-
-	var average: Double {
-		return self.discreteMetricByDate.averageValue
-	}
-
-	var maximum: Double {
-		return self.discreteMetricByDate.maximumValue
-	}
-
-	var minimum: Double {
-		return self.discreteMetricByDate.minimumValue
-	}
-
 	// MARK: - Fetching
 
 	func fetchMetrics(daysAgo: Int = 28) async throws -> Void {

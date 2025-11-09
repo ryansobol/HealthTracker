@@ -66,7 +66,7 @@ struct StepPieChartView<Context: ChartViewContext>: View {
 		.chartBackground { _ in
 			self.chartAverage(
 				title: self.selectedAverageMetric?.weekday.symbol ?? "Daily",
-				value: self.selectedAverageMetric?.value ?? self.context.store.average,
+				value: self.selectedAverageMetric?.value ?? self.context.store.discreteMetricAverage,
 			)
 		}
 		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)

@@ -12,7 +12,7 @@ struct StepBarViewContext: ChartViewContext {
 	let height: CGFloat = 150
 
 	var subtitle: String {
-		return "Average \(self.store.average.formatted(.number.precision(.fractionLength(0)))) steps"
+		return "Average \(self.store.discreteMetricAverage.formatted(.number.precision(.fractionLength(0)))) steps"
 	}
 
 	var hasData: Bool {

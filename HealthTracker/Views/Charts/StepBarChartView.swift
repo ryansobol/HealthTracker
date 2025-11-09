@@ -39,7 +39,7 @@ struct StepBarChartView<Context: ChartViewContext>: View {
 
 	private var chartYScaleDomain: ClosedRange<Double> {
 		let minValue = 0.0
-		let maxValue = self.context.store.maximum
+		let maxValue = self.context.store.discreteMetricMaximum
 
 		let range = maxValue - minValue
 		let padding = range * 0.01
@@ -70,7 +70,7 @@ struct StepBarChartView<Context: ChartViewContext>: View {
 					)
 			}
 
-			RuleMark(y: .value("Average Steps", self.context.store.average))
+			RuleMark(y: .value("Average Steps", self.context.store.discreteMetricAverage))
 				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 				.opacity(self.isAnimated ? 1 : 0)

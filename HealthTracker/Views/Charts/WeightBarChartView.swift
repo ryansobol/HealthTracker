@@ -36,10 +36,8 @@ struct WeightBarChartView<Context: ChartViewContext>: View {
 	}
 
 	private var chartYScaleDomain: ClosedRange<Double> {
-		let averageMetricByWeekday = self.context.store.averageMetricByWeekday
-
-		let minValue = averageMetricByWeekday.minimumValue
-		let maxValue = averageMetricByWeekday.maximumValue
+		let minValue = self.context.store.averageMetricMinimum
+		let maxValue = self.context.store.averageMetricMaximum
 
 		let range = maxValue - minValue
 		let padding = range * 0.5
