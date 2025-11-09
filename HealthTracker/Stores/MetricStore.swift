@@ -55,7 +55,7 @@ final class MetricStore {
 	var maximumSteps: Double {
 		return self.stepDiscreteMetricByDate.maximumValue
 	}
-	
+
 	var averageWeight: Double {
 		return self.weightDiscreteMetricByDate.averageValue
 	}

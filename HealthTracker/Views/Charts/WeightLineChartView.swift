@@ -34,7 +34,7 @@ struct WeightLineChartView: View {
 		let niceMin = floor(paddedMin)
 		let niceMax = ceil(paddedMax)
 
-		return niceMin...niceMax
+		return niceMin ... niceMax
 	}
 
 	var body: some View {
@@ -62,7 +62,10 @@ struct WeightLineChartView: View {
 			ForEach(self.context.store.weightDiscreteMetricByDate.values) { discreteMetric in
 				AreaMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
-					yStart: .value("Weight", self.isAnimated ? discreteMetric.value : self.context.store.minimumWeight),
+					yStart: .value(
+						"Weight",
+						self.isAnimated ? discreteMetric.value : self.context.store.minimumWeight,
+					),
 					yEnd: .value("Minimum Weight", self.context.store.minimumWeight),
 				)
 				.foregroundStyle(

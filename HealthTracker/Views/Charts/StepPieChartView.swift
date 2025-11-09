@@ -32,7 +32,6 @@ struct StepPieChartView: View {
 		return selectedAverageMetric.weekday != averageMetric.weekday
 	}
 
-
 	private func opacitySectorMark(for averageMetric: AverageMetric) -> Double {
 		guard self.isAnimated else {
 			return 0.0

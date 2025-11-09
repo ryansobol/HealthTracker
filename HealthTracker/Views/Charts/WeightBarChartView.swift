@@ -48,7 +48,7 @@ struct WeightBarChartView: View {
 		let niceMin = floor(paddedMin)
 		let niceMax = ceil(paddedMax)
 
-		return niceMin...niceMax
+		return niceMin ... niceMax
 	}
 
 	var body: some View {
