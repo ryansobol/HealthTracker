@@ -3,11 +3,6 @@ import HealthKit
 struct HealthKitService {
 	// MARK: - Properties
 
-	private let contexts: [MetricType: HealthKitServiceContext] = [
-		.steps: .steps,
-		.weight: .weight,
-	]
-
 	let context: HealthKitServiceContext
 	let store: HKHealthStore
 
@@ -46,11 +41,7 @@ struct HealthKitService {
 	private func fetchStatistics(for metricType: MetricType, daysAgo: Int)
 		async throws -> [HKStatistics]
 	{
-		guard let config = self.contexts[metricType] else {
-			fatalError("No configuration for metric type: \(metricType)")
-		}
-
-		guard try await self.isAuthorizationRequestUnnecessary(for: config.quantityType) else {
+		guard try await self.isAuthorizationRequestUnnecessary(for: self.context.quantityType) else {
 			throw AuthorizationRequestNecessaryError(metricType: metricType)
 		}
 
@@ -66,13 +57,13 @@ struct HealthKitService {
 		)
 
 		let samplePredicate = HKSamplePredicate.quantitySample(
-			type: config.quantityType,
+			type: self.context.quantityType,
 			predicate: queryPredicate,
 		)
 
 		let statisticsCollectionQuery = HKStatisticsCollectionQueryDescriptor(
 			predicate: samplePredicate,
-			options: config.statisticsOptions,
+			options: self.context.statisticsOptions,
 			anchorDate: dateInterval.end,
 			intervalComponents: .init(day: 1),
 		)
@@ -95,15 +86,11 @@ struct HealthKitService {
 	}
 
 	private func createSample(metricType: MetricType, date: Date, value: Double) async throws -> Void {
-		guard let config = self.contexts[metricType] else {
-			fatalError("No configuration for metric type: \(metricType)")
-		}
-
-		guard self.isSharingAuthorized(for: config.quantityType) else {
+		guard self.isSharingAuthorized(for: self.context.quantityType) else {
 			throw AppError.sharingNotAuthorized(metricType: metricType)
 		}
 
-		let sample = self.buildSample(config: config, date: date, value: value)
+		let sample = self.buildSample(config: self.context, date: date, value: value)
 
 		try await self.store.save(sample)
 	}
@@ -132,11 +119,7 @@ struct HealthKitService {
 	}
 
 	func createFakeSamples(metricType: MetricType, daysAgo: Int) async throws -> Void {
-		guard let config = self.contexts[metricType] else {
-			fatalError("No configuration for metric type: \(metricType)")
-		}
-
-		guard self.isSharingAuthorized(for: config.quantityType) else {
+		guard self.isSharingAuthorized(for: self.context.quantityType) else {
 			throw AppError.sharingNotAuthorized(metricType: metricType)
 		}
 
@@ -148,8 +131,8 @@ struct HealthKitService {
 
 		let fakeQuantitySamples = (0 ..< daysAgo).reduce(into: quantitySamples) { samples, day in
 			let date = Calendar.current.date(byAdding: .day, value: -day, to: today)!
-			let value = config.fakeValueGenerator(day)
-			let sample = self.buildSample(config: config, date: date, value: value)
+			let value = self.context.fakeValueGenerator(day)
+			let sample = self.buildSample(config: self.context, date: date, value: value)
 
 			samples.append(sample)
 		}
