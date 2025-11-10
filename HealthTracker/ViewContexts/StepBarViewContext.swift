@@ -10,7 +10,7 @@ struct StepBarViewContext: ChartViewContextual {
 
 	let hasNavigation = true
 
-	var hasData: Bool {
+	var hasMetrics: Bool {
 		return !self.store.discreteMetricByDate.isEmpty
 	}
 

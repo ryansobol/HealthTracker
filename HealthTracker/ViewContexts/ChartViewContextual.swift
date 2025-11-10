@@ -5,7 +5,7 @@ protocol ChartViewContextual {
 	associatedtype MetricStore: MetricStorable
 
 	var chartView: ChartView { get }
-	var hasData: Bool { get }
+	var hasMetrics: Bool { get }
 	var hasNavigation: Bool { get }
 	var height: CGFloat { get }
 	var store: MetricStore { get }

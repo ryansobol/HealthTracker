@@ -6,7 +6,7 @@ struct ChartCardView<Context: ChartViewContextual>: View {
 	var body: some View {
 		ChartContentCardView(context: self.context) {
 			Group {
-				if self.context.hasData {
+				if self.context.hasMetrics {
 					self.context.chartView
 				}
 				else {

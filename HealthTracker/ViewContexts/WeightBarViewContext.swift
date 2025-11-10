@@ -10,7 +10,7 @@ struct WeightBarViewContext: ChartViewContextual {
 
 	let hasNavigation = false
 
-	var hasData: Bool {
+	var hasMetrics: Bool {
 		return !self.store.averageMetricByWeekday.isEmpty
 	}
 

@@ -9,7 +9,7 @@ struct WeightLineViewContext: ChartViewContextual {
 		return WeightLineChartView(context: self)
 	}
 
-	var hasData: Bool {
+	var hasMetrics: Bool {
 		return !self.store.discreteMetricByDate.isEmpty
 	}
 
