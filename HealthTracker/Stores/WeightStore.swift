@@ -1,6 +1,6 @@
 import HealthKit
 
-final class WeightStore: BaseStore, MetricStorable {
+final class WeightStore: MetricStoreBase, MetricStorable {
 	typealias Context = WeightStoreContext
 
 	let healthKitService: HealthKitService

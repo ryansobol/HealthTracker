@@ -3,7 +3,7 @@ import Observation
 import OrderedCollections
 
 @Observable
-class BaseStore {
+class MetricStoreBase {
 	var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
 
