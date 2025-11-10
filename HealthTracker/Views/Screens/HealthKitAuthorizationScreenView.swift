@@ -42,8 +42,14 @@ struct HealthKitAuthorizationScreenView: View {
 		.padding(30)
 		.healthDataAccessRequest(
 			store: self.hkHealthStore,
-			shareTypes: [self.stepStore.quantityType, self.weightStore.quantityType],
-			readTypes: [self.stepStore.quantityType, self.weightStore.quantityType],
+			shareTypes: [
+				self.stepStore.healthKitService.context.quantityType,
+				self.weightStore.healthKitService.context.quantityType,
+			],
+			readTypes: [
+				self.stepStore.healthKitService.context.quantityType,
+				self.weightStore.healthKitService.context.quantityType,
+			],
 			trigger: self.areHealthKitPermissionsPresented,
 		) { result in
 			Task { @MainActor in

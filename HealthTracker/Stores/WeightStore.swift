@@ -16,8 +16,6 @@ final class WeightStore: MetricStore {
 		self.healthKitService = HealthKitService(store: hkHealthStore, context: .weight)
 	}
 
-	let quantityType = HKQuantityType(.bodyMass)
-
 	var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 
 	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()

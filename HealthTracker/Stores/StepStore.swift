@@ -16,8 +16,6 @@ final class StepStore: MetricStore {
 		self.healthKitService = HealthKitService(store: hkHealthStore, context: .steps)
 	}
 
-	let quantityType = HKQuantityType(.stepCount)
-
 	var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 
 	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
