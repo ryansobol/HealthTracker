@@ -86,11 +86,15 @@ struct DiscreteMetricScreenView: View {
 						value: self.validateNewValue(),
 					)
 
+					try await self.stepStore.fetchMetrics()
+
 				case .weight:
 					try await self.weightStore.createMetric(
 						date: self.newDate,
 						value: self.validateNewValue(),
 					)
+
+					try await self.weightStore.fetchMetrics()
 				}
 			}
 			catch is AuthorizationRequestNecessaryError {

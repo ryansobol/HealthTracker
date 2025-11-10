@@ -18,62 +18,28 @@ final class WeightStore: MetricStore {
 
 	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
 
-	// MARK: - Fetching
+	// MARK: - Derivations
 
-	func fetchMetrics(daysAgo: Int = 28) async throws -> Void {
-		let statistics = try await self.healthKitService.fetchStatistics(daysAgo: daysAgo)
-
-		let (discreteMetricsByDate, averageMetricsByDate) = self.transform(statistics: statistics)
-
-		self.discreteMetricByDate = discreteMetricsByDate
-		self.averageMetricByWeekday = averageMetricsByDate
-	}
-
-	private func transform(statistics: [HKStatistics])
-		-> (
-			discreteMetrics: OrderedDictionary<Date, DiscreteMetric>,
-			averageMetrics: OrderedDictionary<Weekday, AverageMetric>,
-		)
+	func deriveDiscreteMetricByDate(from statistics: some Collection<HKStatistics>)
+		-> OrderedDictionary<Date, DiscreteMetric>
 	{
 		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
 			minimumCapacity: statistics.count,
 		)
 
-		let discreteMetrics = statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
+		return statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
 			let discreteMetric = DiscreteMetric(
 				date: statistic.startDate,
-				value: self.extractValue(from: statistic),
+				value: statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0.0,
 			)
 
-			dictionary[statistic.startDate] = discreteMetric
+			dictionary[discreteMetric.date] = discreteMetric
 		}
-
-		let averageMetrics = self.calculateAverages(from: discreteMetrics.values)
-
-		return (discreteMetrics, averageMetrics)
 	}
 
-	private func extractValue(from statistic: HKStatistics) -> Double {
-		return statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0
-	}
-
-	private func calculateAverages(
-		from discreteMetrics: OrderedDictionary<Date, DiscreteMetric>.Values,
-	)
+	func deriveAverageMetricByWeekday(from discreteMetrics: some Collection<DiscreteMetric>)
 		-> OrderedDictionary<Weekday, AverageMetric>
 	{
 		return AverageMetric.calculateDifferences(from: discreteMetrics)
-	}
-
-	// MARK: - Creation
-
-	func createMetric(date: Date, value: Double) async throws -> Void {
-		try await self.healthKitService.createSample(date: date, value: value)
-
-		try await self.fetchMetrics()
-	}
-
-	func createFakeMetrics(daysAgo: Int = 28) async throws -> Void {
-		try await self.healthKitService.createFakeSamples(daysAgo: daysAgo)
 	}
 }
