@@ -23,17 +23,13 @@ final class WeightStore: MetricStore {
 	func fetchMetrics(daysAgo: Int = 28) async throws -> Void {
 		let statistics = try await self.healthKitService.fetchStatistics(daysAgo: daysAgo)
 
-		let (discreteMetricsByDate, averageMetricsByDate) = self.transform(
-			statistics: statistics,
-			metricType: .weight,
-		)
+		let (discreteMetricsByDate, averageMetricsByDate) = self.transform(statistics: statistics)
 
 		self.discreteMetricByDate = discreteMetricsByDate
-
 		self.averageMetricByWeekday = averageMetricsByDate
 	}
 
-	private func transform(statistics: [HKStatistics], metricType: MetricType)
+	private func transform(statistics: [HKStatistics])
 		-> (
 			discreteMetrics: OrderedDictionary<Date, DiscreteMetric>,
 			averageMetrics: OrderedDictionary<Weekday, AverageMetric>,
