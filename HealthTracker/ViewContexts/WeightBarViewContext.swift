@@ -3,8 +3,6 @@ import SwiftUI
 
 struct WeightBarViewContext: ChartViewContext {
 	let store: WeightStore
-
-	let metricType = MetricType.weight
 	let title = "Average Change"
 	let symbolTitle = "figure"
 	let symbolChart = "chart.bar"

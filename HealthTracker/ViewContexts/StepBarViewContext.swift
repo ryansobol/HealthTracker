@@ -3,13 +3,14 @@ import SwiftUI
 
 struct StepBarViewContext: ChartViewContext {
 	let store: StepStore
-
-	let metricType = MetricType.step
-	let title = MetricType.step.title
 	let symbolTitle = "figure.walk"
 	let symbolChart = "chart.bar"
 	let hasNavigation = true
 	let height: CGFloat = 150
+
+	var title: String {
+		return self.metricType.title
+	}
 
 	var subtitle: String {
 		let value = self.store.discreteMetricAverage.formatted(.number.precision(.fractionLength(0)))

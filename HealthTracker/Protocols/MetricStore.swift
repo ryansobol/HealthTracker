@@ -11,6 +11,14 @@ protocol MetricStore: AnyObject {
 	var averageMetricByWeekday: OrderedDictionary<Weekday, AverageMetric> { get set }
 }
 
+// MARK: - MetricType
+
+extension MetricStore {
+	var metricType: MetricType {
+		return Context.metricType
+	}
+}
+
 // MARK: - Fetching
 
 extension MetricStore {

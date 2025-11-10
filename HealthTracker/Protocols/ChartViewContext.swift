@@ -2,9 +2,9 @@ import SwiftUI
 
 protocol ChartViewContext {
 	associatedtype Store: MetricStore
-	var store: Store { get }
+	associatedtype ChartView: View
 
-	var metricType: MetricType { get }
+	var store: Store { get }
 	var title: String { get }
 	var symbolTitle: String { get }
 	var symbolChart: String { get }
@@ -12,7 +12,11 @@ protocol ChartViewContext {
 	var hasNavigation: Bool { get }
 	var height: CGFloat { get }
 	var hasData: Bool { get }
-
-	associatedtype ChartView: View
 	var chartView: ChartView { get }
+}
+
+extension ChartViewContext {
+	var metricType: MetricType {
+		return self.store.metricType
+	}
 }

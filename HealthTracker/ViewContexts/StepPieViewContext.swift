@@ -3,8 +3,6 @@ import SwiftUI
 
 struct StepPieViewContext: ChartViewContext {
 	let store: StepStore
-
-	let metricType = MetricType.step
 	let title = "Averages"
 	let symbolTitle = "calendar"
 	let symbolChart = "chart.pie"
