@@ -2,13 +2,13 @@ import SwiftUI
 
 protocol ChartViewContextual {
 	associatedtype ChartView: View
-	associatedtype Store: MetricStorable
+	associatedtype MetricStore: MetricStorable
 
 	var chartView: ChartView { get }
 	var hasData: Bool { get }
 	var hasNavigation: Bool { get }
 	var height: CGFloat { get }
-	var store: Store { get }
+	var store: MetricStore { get }
 	var subtitle: String { get }
 	var symbolChart: String { get }
 	var symbolTitle: String { get }
