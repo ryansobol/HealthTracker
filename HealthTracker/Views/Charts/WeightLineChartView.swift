@@ -66,9 +66,9 @@ struct WeightLineChartView<Context: ChartViewContext>: View {
 					x: .value("Day", discreteMetric.date, unit: .day),
 					yStart: .value(
 						title,
-						self.isAnimated ? discreteMetric.value : self.context.store.discreteMetricMinimum,
+						self.isAnimated ? discreteMetric.value : self.chartYScaleDomain.lowerBound,
 					),
-					yEnd: .value("Minimum \(title)", self.context.store.discreteMetricMinimum),
+					yEnd: .value("Minimum \(title)", self.chartYScaleDomain.lowerBound),
 				)
 				.foregroundStyle(
 					Gradient(colors: [self.context.metricType.color.opacity(0.5), .clear]),
