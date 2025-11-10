@@ -3,12 +3,11 @@ import HealthKit
 import OrderedCollections
 
 protocol MetricStore: AnyObject {
+	associatedtype Context: StoreContext
+
 	var healthKitService: HealthKitService { get }
 
 	var discreteMetricByDate: OrderedDictionary<Date, DiscreteMetric> { get set }
-
-	func deriveDiscreteMetricByDate(from statistics: some Collection<HKStatistics>)
-		-> OrderedDictionary<Date, DiscreteMetric>
 
 	var averageMetricByWeekday: OrderedDictionary<Weekday, AverageMetric> { get set }
 
@@ -25,6 +24,23 @@ extension MetricStore {
 		self.averageMetricByWeekday = self.deriveAverageMetricByWeekday(
 			from: self.discreteMetricByDate.values,
 		)
+	}
+
+	private func deriveDiscreteMetricByDate(from statistics: some Collection<HKStatistics>)
+		-> OrderedDictionary<Date, DiscreteMetric>
+	{
+		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
+			minimumCapacity: statistics.count,
+		)
+
+		return statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
+			let discreteMetric = DiscreteMetric(
+				date: statistic.startDate,
+				value: Context.selectQuantity(from: statistic),
+			)
+
+			dictionary[discreteMetric.date] = discreteMetric
+		}
 	}
 
 	func createMetric(date: Date, value: Double) async throws -> Void {
