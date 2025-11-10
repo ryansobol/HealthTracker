@@ -10,10 +10,9 @@ protocol MetricStore: AnyObject {
 	var discreteMetricByDate: OrderedDictionary<Date, DiscreteMetric> { get set }
 
 	var averageMetricByWeekday: OrderedDictionary<Weekday, AverageMetric> { get set }
-
-	func deriveAverageMetricByWeekday(from discreteMetrics: some Collection<DiscreteMetric>)
-		-> OrderedDictionary<Weekday, AverageMetric>
 }
+
+// MARK: - Fetching
 
 extension MetricStore {
 	func fetchMetrics(daysAgo: Int = 28) async throws -> Void {
@@ -22,11 +21,11 @@ extension MetricStore {
 		self.discreteMetricByDate = self.deriveDiscreteMetricByDate(from: statistics)
 
 		self.averageMetricByWeekday = self.deriveAverageMetricByWeekday(
-			from: self.discreteMetricByDate.values,
+			from: Array(self.discreteMetricByDate.values),
 		)
 	}
 
-	private func deriveDiscreteMetricByDate(from statistics: some Collection<HKStatistics>)
+	private func deriveDiscreteMetricByDate(from statistics: [HKStatistics])
 		-> OrderedDictionary<Date, DiscreteMetric>
 	{
 		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
@@ -43,6 +42,22 @@ extension MetricStore {
 		}
 	}
 
+	func deriveAverageMetricByWeekday(from discreteMetrics: [DiscreteMetric])
+		-> OrderedDictionary<Weekday, AverageMetric>
+	{
+		let discreteMetricsForAveraging = Context.selectDiscreteMetricsForAveraging(
+			from: discreteMetrics,
+		)
+
+		return OrderedDictionary(grouping: discreteMetricsForAveraging) { $0.date.weekday }
+			.mapValues { AverageMetric(weekday: $0, discreteMetrics: $1) }
+			.sorted()
+	}
+}
+
+// MARK: - Creation
+
+extension MetricStore {
 	func createMetric(date: Date, value: Double) async throws -> Void {
 		try await self.healthKitService.createSample(date: date, value: value)
 	}
@@ -51,6 +66,8 @@ extension MetricStore {
 		try await self.healthKitService.createFakeSamples(daysAgo: daysAgo)
 	}
 }
+
+// MARK: - Statistics
 
 extension MetricStore {
 	var discreteMetricAverage: Double {

@@ -21,12 +21,4 @@ final class StepStore: MetricStore {
 	var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
 
 	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
-
-	// MARK: - Derivations
-
-	func deriveAverageMetricByWeekday(from discreteMetrics: some Collection<DiscreteMetric>)
-		-> OrderedDictionary<Weekday, AverageMetric>
-	{
-		return AverageMetric.calculate(from: discreteMetrics)
-	}
 }
