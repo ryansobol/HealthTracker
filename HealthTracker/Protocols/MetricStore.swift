@@ -25,17 +25,17 @@ extension MetricStore {
 		)
 	}
 
-	private func deriveDiscreteMetricByDate(from statistics: [HKStatistics])
+	private func deriveDiscreteMetricByDate(from statisticsArray: [HKStatistics])
 		-> OrderedDictionary<Date, DiscreteMetric>
 	{
 		let discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>(
-			minimumCapacity: statistics.count,
+			minimumCapacity: statisticsArray.count,
 		)
 
-		return statistics.reduce(into: discreteMetricByDate) { dictionary, statistic in
+		return statisticsArray.reduce(into: discreteMetricByDate) { dictionary, statistics in
 			let discreteMetric = DiscreteMetric(
-				date: statistic.startDate,
-				value: Context.selectQuantity(from: statistic),
+				date: statistics.startDate,
+				value: Context.metricType.quantity(for: statistics),
 			)
 
 			dictionary[discreteMetric.date] = discreteMetric

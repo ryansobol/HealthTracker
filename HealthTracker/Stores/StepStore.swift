@@ -13,7 +13,7 @@ final class StepStore: MetricStore {
 	let healthKitService: HealthKitService
 
 	init(hkHealthStore: HKHealthStore = .init()) {
-		self.healthKitService = HealthKitService(store: hkHealthStore, context: Context.serviceContext)
+		self.healthKitService = HealthKitService(store: hkHealthStore, metricType: Context.metricType)
 	}
 
 	var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()

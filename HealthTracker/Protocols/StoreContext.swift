@@ -1,9 +1,7 @@
 import HealthKit
 
 protocol StoreContext {
-	static var serviceContext: HealthKitServiceContext { get }
-
-	static func selectQuantity(from statistic: HKStatistics) -> Double
+	static var metricType: MetricType { get }
 
 	static func selectDiscreteMetricsForAveraging(from discreteMetrics: [DiscreteMetric])
 		-> [DiscreteMetric]

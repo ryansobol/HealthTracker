@@ -5,9 +5,6 @@ struct HealthKitAuthorizationScreenView: View {
 	@Environment(\.dismiss) private var dismiss
 	@Environment(\.hkHealthStore) private var hkHealthStore
 
-	@Environment(StepStore.self) private var stepStore
-	@Environment(WeightStore.self) private var weightStore
-
 	@State private var areHealthKitPermissionsPresented = false
 
 	let description = """
@@ -43,12 +40,12 @@ struct HealthKitAuthorizationScreenView: View {
 		.healthDataAccessRequest(
 			store: self.hkHealthStore,
 			shareTypes: [
-				self.stepStore.healthKitService.context.quantityType,
-				self.weightStore.healthKitService.context.quantityType,
+				StepStore.Context.metricType.quantityType,
+				WeightStore.Context.metricType.quantityType,
 			],
 			readTypes: [
-				self.stepStore.healthKitService.context.quantityType,
-				self.weightStore.healthKitService.context.quantityType,
+				StepStore.Context.metricType.quantityType,
+				WeightStore.Context.metricType.quantityType,
 			],
 			trigger: self.areHealthKitPermissionsPresented,
 		) { result in

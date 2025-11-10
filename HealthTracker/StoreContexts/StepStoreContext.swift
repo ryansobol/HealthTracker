@@ -1,11 +1,7 @@
 import HealthKit
 
 enum StepStoreContext: StoreContext {
-	static let serviceContext = HealthKitServiceContext.steps
-
-	static func selectQuantity(from statistic: HKStatistics) -> Double {
-		return statistic.sumQuantity()?.doubleValue(for: self.serviceContext.unit) ?? 0.0
-	}
+	static let metricType = MetricType.steps
 
 	static func selectDiscreteMetricsForAveraging(from discreteMetrics: [DiscreteMetric])
 		-> [DiscreteMetric]
