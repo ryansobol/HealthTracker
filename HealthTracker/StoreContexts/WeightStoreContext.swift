@@ -1,8 +1,10 @@
 import HealthKit
 
 enum WeightStoreContext: StoreContext {
+	static let serviceContext = HealthKitServiceContext.weight
+
 	static func selectQuantity(from statistic: HKStatistics) -> Double {
-		return statistic.mostRecentQuantity()?.doubleValue(for: .pound()) ?? 0.0
+		return statistic.mostRecentQuantity()?.doubleValue(for: self.serviceContext.unit) ?? 0.0
 	}
 
 	static func selectDiscreteMetricsForAveraging(from discreteMetrics: [DiscreteMetric])
