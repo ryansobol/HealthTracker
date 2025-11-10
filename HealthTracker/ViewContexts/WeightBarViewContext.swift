@@ -2,8 +2,8 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightBarViewContext: ChartViewContextual {
-	let store: WeightStore
-	
+	let metricStore: WeightStore
+
 	var chartView: some View {
 		return WeightBarChartView(context: self)
 	}
@@ -11,7 +11,7 @@ struct WeightBarViewContext: ChartViewContextual {
 	let hasNavigation = false
 
 	var hasMetrics: Bool {
-		return !self.store.averageMetricByWeekday.isEmpty
+		return !self.metricStore.averageMetricByWeekday.isEmpty
 	}
 
 	let height: CGFloat = 150

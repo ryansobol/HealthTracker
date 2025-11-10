@@ -2,7 +2,7 @@ import OrderedCollections
 import SwiftUI
 
 struct StepPieViewContext: ChartViewContextual {
-	let store: StepStore
+	let metricStore: StepStore
 
 	var chartView: some View {
 		return StepPieChartView(context: self)
@@ -11,7 +11,7 @@ struct StepPieViewContext: ChartViewContextual {
 	let hasNavigation = false
 
 	var hasMetrics: Bool {
-		return !self.store.averageMetricByWeekday.isEmpty
+		return !self.metricStore.averageMetricByWeekday.isEmpty
 	}
 
 	let height: CGFloat = 240

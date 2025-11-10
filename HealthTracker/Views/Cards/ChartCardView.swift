@@ -21,12 +21,12 @@ struct ChartCardView<Context: ChartViewContextual>: View {
 #Preview("With Metrics") {
 	@Previewable @State var stepStore = StepStore()
 
-	ChartCardView(context: StepBarViewContext(store: stepStore))
+	ChartCardView(context: StepBarViewContext(metricStore: stepStore))
 		.task {
 			try! await stepStore.fetchMetrics()
 		}
 }
 
 #Preview("Without Metrics") {
-	ChartCardView(context: StepBarViewContext(store: StepStore()))
+	ChartCardView(context: StepBarViewContext(metricStore: StepStore()))
 }

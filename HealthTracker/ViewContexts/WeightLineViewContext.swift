@@ -3,14 +3,14 @@ import OrderedCollections
 import SwiftUI
 
 struct WeightLineViewContext: ChartViewContextual {
-	let store: WeightStore
-	
+	let metricStore: WeightStore
+
 	var chartView: some View {
 		return WeightLineChartView(context: self)
 	}
 
 	var hasMetrics: Bool {
-		return !self.store.discreteMetricByDate.isEmpty
+		return !self.metricStore.discreteMetricByDate.isEmpty
 	}
 
 	let hasNavigation = true
@@ -18,7 +18,9 @@ struct WeightLineViewContext: ChartViewContextual {
 	let height: CGFloat = 150
 
 	var subtitle: String {
-		let value = self.store.discreteMetricAverage.formatted(.number.precision(.fractionLength(1)))
+		let value = self.metricStore.discreteMetricAverage
+			.formatted(.number.precision(.fractionLength(1)))
+
 		let unit = self.metricType.unit.unitString
 
 		return "Average \(value) \(unit)"

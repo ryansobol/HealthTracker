@@ -8,7 +8,7 @@ protocol ChartViewContextual {
 	var hasMetrics: Bool { get }
 	var hasNavigation: Bool { get }
 	var height: CGFloat { get }
-	var store: MetricStore { get }
+	var metricStore: MetricStore { get }
 	var subtitle: String { get }
 	var symbolChart: String { get }
 	var symbolTitle: String { get }
@@ -19,6 +19,6 @@ protocol ChartViewContextual {
 
 extension ChartViewContextual {
 	var metricType: MetricType {
-		return self.store.metricType
+		return self.metricStore.metricType
 	}
 }

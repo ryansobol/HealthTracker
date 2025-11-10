@@ -13,7 +13,7 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 			get: { self.selectedAverageMetric?.value },
 			set: { newValue in
 				self.selectedAverageMetric = newValue.flatMap { value in
-					self.context.store.averageMetricByWeekday.values
+					self.context.metricStore.averageMetricByWeekday.values
 						.first(into: 0.0) { cummulativeValue, averageMetric in
 							cummulativeValue += averageMetric.value
 
@@ -52,7 +52,7 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 		Chart {
 			let title = self.context.metricType.title
 
-			ForEach(self.context.store.averageMetricByWeekday.values) { averageMetric in
+			ForEach(self.context.metricStore.averageMetricByWeekday.values) { averageMetric in
 				SectorMark(
 					angle: .value("Average \(title)", self.isAnimated ? averageMetric.value : 0),
 					innerRadius: .ratio(0.618),
@@ -68,13 +68,13 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 		.chartBackground { _ in
 			self.chartAverage(
 				title: self.selectedAverageMetric?.weekday.symbol ?? "Daily",
-				value: self.selectedAverageMetric?.value ?? self.context.store.discreteMetricAverage,
+				value: self.selectedAverageMetric?.value ?? self.context.metricStore.discreteMetricAverage,
 			)
 		}
 		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
-		.onChange(of: self.context.store.averageMetricByWeekday, initial: true) { _, newValue in
+		.onChange(of: self.context.metricStore.averageMetricByWeekday, initial: true) { _, newValue in
 			guard !self.isAnimated else {
 				return
 			}
@@ -104,7 +104,7 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 #Preview {
 	@Previewable @State var stepStore = StepStore()
 
-	ChartCardView(context: StepPieViewContext(store: stepStore))
+	ChartCardView(context: StepPieViewContext(metricStore: stepStore))
 		.task {
 			try! await stepStore.fetchMetrics()
 		}

@@ -2,8 +2,8 @@ import OrderedCollections
 import SwiftUI
 
 struct StepBarViewContext: ChartViewContextual {
-	let store: StepStore
-	
+	let metricStore: StepStore
+
 	var chartView: some View {
 		return StepBarChartView(context: self)
 	}
@@ -11,13 +11,15 @@ struct StepBarViewContext: ChartViewContextual {
 	let hasNavigation = true
 
 	var hasMetrics: Bool {
-		return !self.store.discreteMetricByDate.isEmpty
+		return !self.metricStore.discreteMetricByDate.isEmpty
 	}
 
 	let height: CGFloat = 150
 
 	var subtitle: String {
-		let value = self.store.discreteMetricAverage.formatted(.number.precision(.fractionLength(0)))
+		let value = self.metricStore.discreteMetricAverage
+			.formatted(.number.precision(.fractionLength(0)))
+
 		let unit = self.title.lowercased()
 
 		return "Average \(value) \(unit)"

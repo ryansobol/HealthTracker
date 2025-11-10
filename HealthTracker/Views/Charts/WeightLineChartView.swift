@@ -15,15 +15,15 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 				self.selectedDiscreteMetric = newValue.flatMap { date in
 					let normalizedDate = Calendar.current.startOfDay(for: date)
 
-					return self.context.store.discreteMetricByDate[normalizedDate]
+					return self.context.metricStore.discreteMetricByDate[normalizedDate]
 				}
 			},
 		)
 	}
 
 	private var chartYScaleDomain: ClosedRange<Double> {
-		let minValue = self.context.store.discreteMetricMinimum
-		let maxValue = self.context.store.discreteMetricMaximum
+		let minValue = self.context.metricStore.discreteMetricMinimum
+		let maxValue = self.context.metricStore.discreteMetricMaximum
 
 		let range = maxValue - minValue
 		let padding = range * 0.2
@@ -56,12 +56,12 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 
 			let title = self.context.metricType.title
 
-			RuleMark(y: .value("Average \(title)", self.context.store.discreteMetricAverage))
+			RuleMark(y: .value("Average \(title)", self.context.metricStore.discreteMetricAverage))
 				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 				.opacity(self.isAnimated ? 1 : 0)
 
-			ForEach(self.context.store.discreteMetricByDate.values) { discreteMetric in
+			ForEach(self.context.metricStore.discreteMetricByDate.values) { discreteMetric in
 				AreaMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
 					yStart: .value(
@@ -78,7 +78,7 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 					x: .value("Day", discreteMetric.date, unit: .day),
 					y: .value(
 						title,
-						self.isAnimated ? discreteMetric.value : self.context.store.discreteMetricMinimum,
+						self.isAnimated ? discreteMetric.value : self.context.metricStore.discreteMetricMinimum,
 					),
 				)
 				.foregroundStyle(self.context.metricType.color)
@@ -103,7 +103,7 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 		.chartYScale(domain: self.chartYScaleDomain)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date)
-		.onChange(of: self.context.store.discreteMetricByDate, initial: true) { _, newValue in
+		.onChange(of: self.context.metricStore.discreteMetricByDate, initial: true) { _, newValue in
 			guard !self.isAnimated else {
 				return
 			}
@@ -120,7 +120,7 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 #Preview {
 	@Previewable @State var weightStore = WeightStore()
 
-	ChartCardView(context: WeightLineViewContext(store: weightStore))
+	ChartCardView(context: WeightLineViewContext(metricStore: weightStore))
 		.task {
 			try! await weightStore.fetchMetrics()
 		}

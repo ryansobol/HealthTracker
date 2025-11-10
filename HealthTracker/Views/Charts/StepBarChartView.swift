@@ -15,7 +15,7 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 				self.selectedDiscreteMetric = newValue.flatMap { date in
 					let normalizedDate = Calendar.current.startOfDay(for: date)
 
-					return self.context.store.discreteMetricByDate[normalizedDate]
+					return self.context.metricStore.discreteMetricByDate[normalizedDate]
 				}
 			},
 		)
@@ -39,7 +39,7 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 
 	private var chartYScaleDomain: ClosedRange<Double> {
 		let minValue = 0.0
-		let maxValue = self.context.store.discreteMetricMaximum
+		let maxValue = self.context.metricStore.discreteMetricMaximum
 
 		let range = maxValue - minValue
 		let padding = range * 0.01
@@ -72,12 +72,12 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 
 			let title = self.context.metricType.title
 
-			RuleMark(y: .value("Average \(title)", self.context.store.discreteMetricAverage))
+			RuleMark(y: .value("Average \(title)", self.context.metricStore.discreteMetricAverage))
 				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 				.opacity(self.isAnimated ? 1 : 0)
 
-			ForEach(self.context.store.discreteMetricByDate.values) { discreteMetric in
+			ForEach(self.context.metricStore.discreteMetricByDate.values) { discreteMetric in
 				BarMark(
 					x: .value("Date", discreteMetric.date, unit: .day),
 					y: .value(title, self.isAnimated ? discreteMetric.value : 0),
@@ -106,7 +106,7 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 		.chartYScale(domain: self.chartYScaleDomain)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date.weekday)
-		.onChange(of: self.context.store.discreteMetricByDate, initial: true) { _, newValue in
+		.onChange(of: self.context.metricStore.discreteMetricByDate, initial: true) { _, newValue in
 			guard !self.isAnimated else {
 				return
 			}
@@ -123,7 +123,7 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 #Preview {
 	@Previewable @State var stepStore = StepStore()
 
-	ChartCardView(context: StepBarViewContext(store: stepStore))
+	ChartCardView(context: StepBarViewContext(metricStore: stepStore))
 		.task {
 			try! await stepStore.fetchMetrics()
 		}
