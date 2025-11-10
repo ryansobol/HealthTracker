@@ -8,7 +8,6 @@ protocol MetricStore: AnyObject {
 	var healthKitService: HealthKitService { get }
 
 	var discreteMetricByDate: OrderedDictionary<Date, DiscreteMetric> { get set }
-
 	var averageMetricByWeekday: OrderedDictionary<Weekday, AverageMetric> { get set }
 }
 

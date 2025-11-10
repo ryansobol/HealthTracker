@@ -1,12 +1,12 @@
 import HealthKit
 
 struct HealthKitService {
-	// MARK: - Properties
+	// MARK: - Stored Properties
 
 	let metricType: MetricType
 	let store: HKHealthStore
 
-	init(store: HKHealthStore, metricType: MetricType) {
+	init(metricType: MetricType, store: HKHealthStore) {
 		self.metricType = metricType
 		self.store = store
 	}

@@ -4,19 +4,14 @@ import OrderedCollections
 
 @Observable
 final class WeightStore: MetricStore {
-	// MARK: - Type aliases
-
 	typealias Context = WeightStoreContext
 
-	// MARK: - Stored Properties
+	var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
+	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
 
 	let healthKitService: HealthKitService
 
 	init(hkHealthStore: HKHealthStore = .init()) {
-		self.healthKitService = HealthKitService(store: hkHealthStore, metricType: Context.metricType)
+		self.healthKitService = HealthKitService(metricType: Context.metricType, store: hkHealthStore)
 	}
-
-	var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
-
-	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
 }
