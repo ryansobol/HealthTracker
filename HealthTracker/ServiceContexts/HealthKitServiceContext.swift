@@ -5,7 +5,7 @@ struct HealthKitServiceContext {
 	let quantityType: HKQuantityType
 	let unit: HKUnit
 	let statisticsOptions: HKStatisticsOptions
-	let fakeValueGenerator: (Int) -> Double
+	let fakeValueGenerator: @Sendable (Int) -> Double
 
 	static let steps = Self(
 		metricType: .steps,

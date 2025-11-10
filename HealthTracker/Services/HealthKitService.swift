@@ -88,7 +88,7 @@ struct HealthKitService {
 		try await self.store.save(sample)
 	}
 
-//	@concurrent
+	@concurrent
 	func createFakeSamples(daysAgo: Int) async throws -> Void {
 		guard self.isSharingAuthorized else {
 			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
