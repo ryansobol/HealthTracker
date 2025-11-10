@@ -63,7 +63,20 @@ extension MetricStore {
 	}
 
 	func createFakeMetrics(daysAgo: Int = 28) async throws -> Void {
-		try await self.healthKitService.createFakeSamples(daysAgo: daysAgo)
+		let today = Date.now
+
+		var emptySamples = [(date: Date, value: Double)]()
+
+		emptySamples.reserveCapacity(daysAgo)
+
+		let resultSamples = (0 ..< daysAgo).reduce(into: emptySamples) { samples, day in
+			let date = Calendar.current.date(byAdding: .day, value: -day, to: today)!
+			let value = Context.generateFakeValue(for: day)
+
+			samples.append((date: date, value: value))
+		}
+
+		try await self.healthKitService.createSamples(resultSamples)
 	}
 }
 

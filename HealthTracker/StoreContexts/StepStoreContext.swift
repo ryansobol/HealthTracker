@@ -10,4 +10,8 @@ enum StepStoreContext: StoreContext {
 	{
 		return discreteMetrics
 	}
+
+	static func generateFakeValue(for _: Int) -> Double {
+		return .random(in: 4000 ... 20000)
+	}
 }

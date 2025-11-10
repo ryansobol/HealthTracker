@@ -12,4 +12,8 @@ enum WeightStoreContext: StoreContext {
 			DiscreteMetric(date: current.date, value: current.value - previous.value)
 		}
 	}
+
+	static func generateFakeValue(for day: Int) -> Double {
+		return .random(in: 160 + Double(day / 3) ... 165 + Double(day / 3))
+	}
 }

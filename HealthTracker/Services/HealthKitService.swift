@@ -64,7 +64,7 @@ struct HealthKitService {
 
 	// MARK: - Building
 
-	private nonisolated func buildSample(date: Date, value: Double) -> HKQuantitySample {
+	private nonisolated func buildQuantitySample(date: Date, value: Double) -> HKQuantitySample {
 		let quantity = HKQuantity(unit: self.context.unit, doubleValue: value)
 
 		return HKQuantitySample(
@@ -83,31 +83,19 @@ struct HealthKitService {
 			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
 		}
 
-		let sample = self.buildSample(date: date, value: value)
+		let quantitySample = self.buildQuantitySample(date: date, value: value)
 
-		try await self.store.save(sample)
+		try await self.store.save(quantitySample)
 	}
 
 	@concurrent
-	func createFakeSamples(daysAgo: Int) async throws -> Void {
+	func createSamples(_ samples: [(date: Date, value: Double)]) async throws -> Void {
 		guard self.isSharingAuthorized else {
 			throw AppError.sharingNotAuthorized(metricType: self.context.metricType)
 		}
 
-		let today = Date.now
+		let quantitySamples = samples.map { self.buildQuantitySample(date: $0, value: $1) }
 
-		var quantitySamples = [HKQuantitySample]()
-
-		quantitySamples.reserveCapacity(daysAgo)
-
-		let fakeQuantitySamples = (0 ..< daysAgo).reduce(into: quantitySamples) { samples, day in
-			let date = Calendar.current.date(byAdding: .day, value: -day, to: today)!
-			let value = self.context.fakeValueGenerator(day)
-			let sample = self.buildSample(date: date, value: value)
-
-			samples.append(sample)
-		}
-
-		try await self.store.save(fakeQuantitySamples)
+		try await self.store.save(quantitySamples)
 	}
 }
