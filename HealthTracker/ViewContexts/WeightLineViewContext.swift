@@ -6,7 +6,7 @@ struct WeightLineViewContext: ChartViewContext {
 	let store: WeightStore
 
 	let metricType = MetricType.weight
-	let title = "Weight"
+	let title = MetricType.weight.title
 	let symbolTitle = "figure"
 	let symbolChart = "chart.xyaxis.line"
 	let hasNavigation = true

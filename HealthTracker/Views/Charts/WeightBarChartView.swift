@@ -66,10 +66,12 @@ struct WeightBarChartView<Context: ChartViewContext>: View {
 					)
 			}
 
+			let title = self.context.metricType.title
+
 			ForEach(self.context.store.averageMetricByWeekday.values) { averageDiffMetric in
 				BarMark(
 					x: .value("Weekday", averageDiffMetric.weekday),
-					y: .value("Average Weight Differece", self.isAnimated ? averageDiffMetric.value : 0),
+					y: .value("Average \(title) Differece", self.isAnimated ? averageDiffMetric.value : 0),
 				)
 				.foregroundStyle(
 					averageDiffMetric.value >= 0

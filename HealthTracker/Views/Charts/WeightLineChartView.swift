@@ -54,7 +54,9 @@ struct WeightLineChartView<Context: ChartViewContext>: View {
 					)
 			}
 
-			RuleMark(y: .value("Average Weight", self.context.store.discreteMetricAverage))
+			let title = self.context.metricType.title
+
+			RuleMark(y: .value("Average \(title)", self.context.store.discreteMetricAverage))
 				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 				.opacity(self.isAnimated ? 1 : 0)
@@ -63,10 +65,10 @@ struct WeightLineChartView<Context: ChartViewContext>: View {
 				AreaMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
 					yStart: .value(
-						"Weight",
+						title,
 						self.isAnimated ? discreteMetric.value : self.context.store.discreteMetricMinimum,
 					),
-					yEnd: .value("Minimum Weight", self.context.store.discreteMetricMinimum),
+					yEnd: .value("Minimum \(title)", self.context.store.discreteMetricMinimum),
 				)
 				.foregroundStyle(
 					Gradient(colors: [self.context.metricType.color.opacity(0.5), .clear]),
@@ -75,7 +77,7 @@ struct WeightLineChartView<Context: ChartViewContext>: View {
 				LineMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
 					y: .value(
-						"Weight",
+						title,
 						self.isAnimated ? discreteMetric.value : self.context.store.discreteMetricMinimum,
 					),
 				)
