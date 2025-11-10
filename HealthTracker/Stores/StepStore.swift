@@ -1,13 +1,7 @@
 import HealthKit
-import Observation
-import OrderedCollections
 
-@Observable
-final class StepStore: MetricStore {
+final class StepStore: BaseStore, MetricStore {
 	typealias Context = StepStoreContext
-
-	var discreteMetricByDate = OrderedDictionary<Date, DiscreteMetric>()
-	var averageMetricByWeekday = OrderedDictionary<Weekday, AverageMetric>()
 
 	let healthKitService: HealthKitService
 
