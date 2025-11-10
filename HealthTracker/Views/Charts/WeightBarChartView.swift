@@ -2,7 +2,7 @@ import Charts
 import OrderedCollections
 import SwiftUI
 
-struct WeightBarChartView<Context: ChartViewContext>: View {
+struct WeightBarChartView<Context: ChartViewContextual>: View {
 	@State private var isAnimated = false
 	@State private var selectedAverageMetric: AverageMetric? = nil
 

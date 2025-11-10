@@ -1,7 +1,7 @@
 import OrderedCollections
 import SwiftUI
 
-struct StepBarViewContext: ChartViewContext {
+struct StepBarViewContext: ChartViewContextual {
 	let store: StepStore
 	
 	var chartView: some View {

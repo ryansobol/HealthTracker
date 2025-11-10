@@ -1,6 +1,6 @@
 import HealthKit
 
-enum StepStoreContext: StoreContext {
+enum StepStoreContext: MetricStoreContextual {
 	static let metricType = MetricType.step
 
 	static func selectDiscreteMetricsForAveraging(from discreteMetrics: [DiscreteMetric])

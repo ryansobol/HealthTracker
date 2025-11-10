@@ -2,7 +2,7 @@ import Charts
 import OrderedCollections
 import SwiftUI
 
-struct StepPieChartView<Context: ChartViewContext>: View {
+struct StepPieChartView<Context: ChartViewContextual>: View {
 	@State private var isAnimated = false
 	@State private var selectedAverageMetric: AverageMetric? = nil
 

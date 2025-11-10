@@ -2,8 +2,8 @@ import Foundation
 import HealthKit
 import OrderedCollections
 
-protocol MetricStore: AnyObject {
-	associatedtype Context: StoreContext
+protocol MetricStorable: AnyObject {
+	associatedtype Context: MetricStoreContextual
 
 	var healthKitService: HealthKitService { get }
 
@@ -13,7 +13,7 @@ protocol MetricStore: AnyObject {
 
 // MARK: - MetricType
 
-extension MetricStore {
+extension MetricStorable {
 	var metricType: MetricType {
 		return Context.metricType
 	}
@@ -21,7 +21,7 @@ extension MetricStore {
 
 // MARK: - Fetching
 
-extension MetricStore {
+extension MetricStorable {
 	func fetchMetrics(daysAgo: Int = 28) async throws -> Void {
 		let statistics = try await self.healthKitService.fetchStatistics(daysAgo: daysAgo)
 
@@ -64,7 +64,7 @@ extension MetricStore {
 
 // MARK: - Creation
 
-extension MetricStore {
+extension MetricStorable {
 	func createMetric(date: Date, value: Double) async throws -> Void {
 		try await self.healthKitService.createSample(date: date, value: value)
 	}
@@ -89,7 +89,7 @@ extension MetricStore {
 
 // MARK: - Statistics
 
-extension MetricStore {
+extension MetricStorable {
 	var discreteMetricAverage: Double {
 		return self.discreteMetricByDate.averageValue
 	}

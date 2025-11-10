@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ChartContentCardView<Context: ChartViewContext, Content: View>: View {
+struct ChartContentCardView<Context: ChartViewContextual, Content: View>: View {
 	let context: Context
 
 	@ViewBuilder let content: () -> Content

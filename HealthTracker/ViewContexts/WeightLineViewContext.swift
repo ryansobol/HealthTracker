@@ -2,7 +2,7 @@ import HealthKit
 import OrderedCollections
 import SwiftUI
 
-struct WeightLineViewContext: ChartViewContext {
+struct WeightLineViewContext: ChartViewContextual {
 	let store: WeightStore
 	
 	var chartView: some View {

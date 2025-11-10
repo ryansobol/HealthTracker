@@ -2,7 +2,7 @@ import Charts
 import OrderedCollections
 import SwiftUI
 
-struct WeightLineChartView<Context: ChartViewContext>: View {
+struct WeightLineChartView<Context: ChartViewContextual>: View {
 	@State private var isAnimated = false
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 

@@ -1,6 +1,6 @@
 import HealthKit
 
-enum WeightStoreContext: StoreContext {
+enum WeightStoreContext: MetricStoreContextual {
 	static let metricType = MetricType.weight
 
 	static func selectDiscreteMetricsForAveraging(from discreteMetrics: [DiscreteMetric])

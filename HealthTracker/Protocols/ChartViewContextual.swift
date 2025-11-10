@@ -1,8 +1,8 @@
 import SwiftUI
 
-protocol ChartViewContext {
+protocol ChartViewContextual {
 	associatedtype ChartView: View
-	associatedtype Store: MetricStore
+	associatedtype Store: MetricStorable
 
 	var chartView: ChartView { get }
 	var hasData: Bool { get }
@@ -17,7 +17,7 @@ protocol ChartViewContext {
 
 // MARK: - MetricType
 
-extension ChartViewContext {
+extension ChartViewContextual {
 	var metricType: MetricType {
 		return self.store.metricType
 	}

@@ -1,6 +1,6 @@
 import HealthKit
 
-protocol StoreContext {
+protocol MetricStoreContextual {
 	static var metricType: MetricType { get }
 
 	static func selectDiscreteMetricsForAveraging(from discreteMetrics: [DiscreteMetric])

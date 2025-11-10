@@ -2,7 +2,7 @@ import Charts
 import OrderedCollections
 import SwiftUI
 
-struct StepBarChartView<Context: ChartViewContext>: View {
+struct StepBarChartView<Context: ChartViewContextual>: View {
 	@State private var isAnimated = false
 	@State private var selectedDiscreteMetric: DiscreteMetric? = nil
 

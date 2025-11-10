@@ -1,7 +1,7 @@
 import OrderedCollections
 import SwiftUI
 
-struct WeightBarViewContext: ChartViewContext {
+struct WeightBarViewContext: ChartViewContextual {
 	let store: WeightStore
 	
 	var chartView: some View {
