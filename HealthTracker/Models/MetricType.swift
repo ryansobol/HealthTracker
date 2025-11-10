@@ -1,6 +1,8 @@
 import HealthKit
 import SwiftUI
 
+// MARK: - CaseIterable, Identifiable
+
 enum MetricType: CaseIterable, Identifiable {
 	case steps
 	case weight
@@ -8,14 +10,9 @@ enum MetricType: CaseIterable, Identifiable {
 	var id: Self {
 		return self
 	}
-
-	var color: Color {
-		return switch self {
-		case .steps: .pink
-		case .weight: .indigo
-		}
-	}
 }
+
+// MARK: - CustomStringConvertible
 
 extension MetricType: CustomStringConvertible {
 	var description: String {
@@ -29,6 +26,8 @@ extension MetricType: CustomStringConvertible {
 		return String(describing: self)
 	}
 }
+
+// MARK: - HealthKit
 
 extension MetricType {
 	nonisolated var unit: HKUnit {
@@ -56,6 +55,17 @@ extension MetricType {
 		return switch self {
 		case .steps: statistics.sumQuantity()?.doubleValue(for: self.unit) ?? 0.0
 		case .weight: statistics.mostRecentQuantity()?.doubleValue(for: self.unit) ?? 0.0
+		}
+	}
+}
+
+// MARK: - SwiftUI
+
+extension MetricType {
+	var color: Color {
+		return switch self {
+		case .steps: .pink
+		case .weight: .indigo
 		}
 	}
 }
