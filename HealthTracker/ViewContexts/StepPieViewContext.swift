@@ -3,18 +3,24 @@ import SwiftUI
 
 struct StepPieViewContext: ChartViewContext {
 	let store: StepStore
-	let title = "Averages"
-	let symbolTitle = "calendar"
-	let symbolChart = "chart.pie"
-	let subtitle = "Last 28 Days"
+
+	var chartView: some View {
+		return StepPieChartView(context: self)
+	}
+
 	let hasNavigation = false
-	let height: CGFloat = 240
 
 	var hasData: Bool {
 		return !self.store.averageMetricByWeekday.isEmpty
 	}
 
-	var chartView: some View {
-		return StepPieChartView(context: self)
-	}
+	let height: CGFloat = 240
+
+	let subtitle = "Last 28 Days"
+
+	let symbolChart = "chart.pie"
+
+	let symbolTitle = "calendar"
+
+	let title = "Averages"
 }

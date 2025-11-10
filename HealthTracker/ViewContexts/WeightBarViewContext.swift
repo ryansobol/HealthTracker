@@ -3,18 +3,24 @@ import SwiftUI
 
 struct WeightBarViewContext: ChartViewContext {
 	let store: WeightStore
-	let title = "Average Change"
-	let symbolTitle = "figure"
-	let symbolChart = "chart.bar"
-	let subtitle = "Last 28 Days"
+	
+	var chartView: some View {
+		return WeightBarChartView(context: self)
+	}
+
 	let hasNavigation = false
-	let height: CGFloat = 150
 
 	var hasData: Bool {
 		return !self.store.averageMetricByWeekday.isEmpty
 	}
 
-	var chartView: some View {
-		return WeightBarChartView(context: self)
-	}
+	let height: CGFloat = 150
+
+	let subtitle = "Last 28 Days"
+
+	let symbolChart = "chart.bar"
+
+	let symbolTitle = "figure"
+
+	let title = "Average Change"
 }

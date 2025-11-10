@@ -4,14 +4,18 @@ import SwiftUI
 
 struct WeightLineViewContext: ChartViewContext {
 	let store: WeightStore
-	let symbolTitle = "figure"
-	let symbolChart = "chart.xyaxis.line"
-	let hasNavigation = true
-	let height: CGFloat = 150
-
-	var title: String {
-		return self.metricType.title
+	
+	var chartView: some View {
+		return WeightLineChartView(context: self)
 	}
+
+	var hasData: Bool {
+		return !self.store.discreteMetricByDate.isEmpty
+	}
+
+	let hasNavigation = true
+
+	let height: CGFloat = 150
 
 	var subtitle: String {
 		let value = self.store.discreteMetricAverage.formatted(.number.precision(.fractionLength(1)))
@@ -20,11 +24,11 @@ struct WeightLineViewContext: ChartViewContext {
 		return "Average \(value) \(unit)"
 	}
 
-	var hasData: Bool {
-		return !self.store.discreteMetricByDate.isEmpty
-	}
+	let symbolChart = "chart.xyaxis.line"
 
-	var chartView: some View {
-		return WeightLineChartView(context: self)
+	let symbolTitle = "figure"
+
+	var title: String {
+		return self.metricType.title
 	}
 }
