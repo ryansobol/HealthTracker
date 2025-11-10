@@ -4,7 +4,7 @@ import SwiftUI
 // MARK: - CaseIterable, Identifiable
 
 enum MetricType: CaseIterable, Identifiable {
-	case steps
+	case step
 	case weight
 
 	var id: Self {
@@ -17,7 +17,7 @@ enum MetricType: CaseIterable, Identifiable {
 extension MetricType: CustomStringConvertible {
 	var description: String {
 		return switch self {
-		case .steps: "Steps"
+		case .step: "Steps"
 		case .weight: "Weight"
 		}
 	}
@@ -32,28 +32,28 @@ extension MetricType: CustomStringConvertible {
 extension MetricType {
 	nonisolated var unit: HKUnit {
 		return switch self {
-		case .steps: .count()
+		case .step: .count()
 		case .weight: .pound()
 		}
 	}
 
 	nonisolated var quantityType: HKQuantityType {
 		return switch self {
-		case .steps: HKQuantityType(.stepCount)
+		case .step: HKQuantityType(.stepCount)
 		case .weight: HKQuantityType(.bodyMass)
 		}
 	}
 
 	nonisolated var statisticsOptions: HKStatisticsOptions {
 		return switch self {
-		case .steps: .cumulativeSum
+		case .step: .cumulativeSum
 		case .weight: .mostRecent
 		}
 	}
 
 	func quantity(for statistics: HKStatistics) -> Double {
 		return switch self {
-		case .steps: statistics.sumQuantity()?.doubleValue(for: self.unit) ?? 0.0
+		case .step: statistics.sumQuantity()?.doubleValue(for: self.unit) ?? 0.0
 		case .weight: statistics.mostRecentQuantity()?.doubleValue(for: self.unit) ?? 0.0
 		}
 	}
@@ -64,7 +64,7 @@ extension MetricType {
 extension MetricType {
 	var color: Color {
 		return switch self {
-		case .steps: .pink
+		case .step: .pink
 		case .weight: .indigo
 		}
 	}

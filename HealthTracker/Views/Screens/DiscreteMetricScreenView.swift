@@ -19,7 +19,7 @@ struct DiscreteMetricScreenView: View {
 
 	var discreteMetrics: OrderedDictionary<Date, DiscreteMetric>.Values {
 		return switch self.metricType {
-		case .steps: self.stepStore.discreteMetricByDate.values
+		case .step: self.stepStore.discreteMetricByDate.values
 		case .weight: self.weightStore.discreteMetricByDate.values
 		}
 	}
@@ -29,7 +29,7 @@ struct DiscreteMetricScreenView: View {
 			LabeledContent {
 				Text(
 					healthMetric.value,
-					format: .number.precision(.fractionLength(self.metricType == .steps ? 0 : 1)),
+					format: .number.precision(.fractionLength(self.metricType == .step ? 0 : 1)),
 				)
 			} label: {
 				Text(healthMetric.date, format: .dateTime.month().day().year())
@@ -56,7 +56,7 @@ struct DiscreteMetricScreenView: View {
 					TextField("Value", text: self.$newValue)
 						.multilineTextAlignment(.trailing)
 						.frame(width: 140)
-						.keyboardType(self.metricType == .steps ? .numberPad : .decimalPad)
+						.keyboardType(self.metricType == .step ? .numberPad : .decimalPad)
 				}
 			}
 			.navigationBarTitleDisplayMode(.inline)
@@ -80,7 +80,7 @@ struct DiscreteMetricScreenView: View {
 		Task {
 			do {
 				switch self.metricType {
-				case .steps:
+				case .step:
 					try await self.stepStore.createMetric(
 						date: self.newDate,
 						value: self.validateNewValue(),

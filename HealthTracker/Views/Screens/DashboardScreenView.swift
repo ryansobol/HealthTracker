@@ -10,7 +10,7 @@ struct DashboardScreenView: View {
 
 	@State private var appError: AppError? = nil
 	@State private var isHealthKitAuthorizationPresented = false
-	@State private var selectedMetricType = MetricType.steps
+	@State private var selectedMetricType = MetricType.step
 
 	var body: some View {
 		NavigationStack {
@@ -24,7 +24,7 @@ struct DashboardScreenView: View {
 					.pickerStyle(.segmented)
 
 					switch self.selectedMetricType {
-					case .steps:
+					case .step:
 						ChartCardView(context: StepBarViewContext(store: self.stepStore))
 
 						ChartCardView(context: StepPieViewContext(store: self.stepStore))

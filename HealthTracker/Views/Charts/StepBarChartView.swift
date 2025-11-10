@@ -70,7 +70,9 @@ struct StepBarChartView<Context: ChartViewContext>: View {
 					)
 			}
 
-			RuleMark(y: .value("Average Steps", self.context.store.discreteMetricAverage))
+			let title = self.context.metricType.title
+
+			RuleMark(y: .value("Average \(title)", self.context.store.discreteMetricAverage))
 				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 				.opacity(self.isAnimated ? 1 : 0)
@@ -78,7 +80,7 @@ struct StepBarChartView<Context: ChartViewContext>: View {
 			ForEach(self.context.store.discreteMetricByDate.values) { discreteMetric in
 				BarMark(
 					x: .value("Date", discreteMetric.date, unit: .day),
-					y: .value("Steps", self.isAnimated ? discreteMetric.value : 0),
+					y: .value(title, self.isAnimated ? discreteMetric.value : 0),
 				)
 				.foregroundStyle(self.context.metricType.color.gradient)
 				.opacity(self.opacityBarMark(for: discreteMetric))

@@ -4,8 +4,8 @@ import SwiftUI
 struct StepBarViewContext: ChartViewContext {
 	let store: StepStore
 
-	let metricType = MetricType.steps
-	let title = "Steps"
+	let metricType = MetricType.step
+	let title = MetricType.step.title
 	let symbolTitle = "figure.walk"
 	let symbolChart = "chart.bar"
 	let hasNavigation = true

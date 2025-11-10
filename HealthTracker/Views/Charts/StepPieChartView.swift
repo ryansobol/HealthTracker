@@ -50,9 +50,11 @@ struct StepPieChartView<Context: ChartViewContext>: View {
 
 	var body: some View {
 		Chart {
+			let title = self.context.metricType.title
+
 			ForEach(self.context.store.averageMetricByWeekday.values) { averageMetric in
 				SectorMark(
-					angle: .value("Average Steps", self.isAnimated ? averageMetric.value : 0),
+					angle: .value("Average \(title)", self.isAnimated ? averageMetric.value : 0),
 					innerRadius: .ratio(0.618),
 					outerRadius: self.selectedAverageMetric?.weekday == averageMetric.weekday ? 140 : 110,
 					angularInset: 1,
