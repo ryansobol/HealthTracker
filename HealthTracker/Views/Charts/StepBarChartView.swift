@@ -106,17 +106,7 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 		.chartYScale(domain: self.chartYScaleDomain)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date.weekday)
-		.onChange(of: self.context.metricStore.discreteMetricByDate, initial: true) { _, newValue in
-			guard !self.isAnimated else {
-				return
-			}
-
-			if newValue.isEmpty {
-				return
-			}
-
-			self.isAnimated = true
-		}
+		.setTrue(self.$isAnimated, when: !self.context.metricStore.averageMetricByWeekday.isEmpty)
 	}
 }
 

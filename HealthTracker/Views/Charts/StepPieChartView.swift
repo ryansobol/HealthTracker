@@ -74,17 +74,7 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 		.animation(.smooth(duration: 0.1), value: self.selectedAverageMetric?.weekday)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
-		.onChange(of: self.context.metricStore.averageMetricByWeekday, initial: true) { _, newValue in
-			guard !self.isAnimated else {
-				return
-			}
-
-			if newValue.isEmpty {
-				return
-			}
-
-			self.isAnimated = true
-		}
+		.setTrue(self.$isAnimated, when: !self.context.metricStore.averageMetricByWeekday.isEmpty)
 	}
 
 	private func chartAverage(title: String, value: Double) -> some View {

@@ -107,17 +107,7 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 		.animation(.smooth(duration: 0.05), value: self.selectedAverageMetric?.weekday)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)
-		.onChange(of: self.context.metricStore.averageMetricByWeekday, initial: true) { _, newValue in
-			guard !self.isAnimated else {
-				return
-			}
-
-			if newValue.isEmpty {
-				return
-			}
-
-			self.isAnimated = true
-		}
+		.setTrue(self.$isAnimated, when: !self.context.metricStore.averageMetricByWeekday.isEmpty)
 	}
 }
 
