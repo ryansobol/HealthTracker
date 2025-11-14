@@ -8,19 +8,6 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 
 	let context: Context
 
-	private var selectedDateBinding: Binding<Date?> {
-		return Binding(
-			get: { self.selectedDiscreteMetric?.date },
-			set: { newValue in
-				self.selectedDiscreteMetric = newValue.flatMap { date in
-					let normalizedDate = Calendar.current.startOfDay(for: date)
-
-					return self.context.metricStore.discreteMetricByDate[normalizedDate]
-				}
-			},
-		)
-	}
-
 	private func opacityBarMark(for discreteMetric: DiscreteMetric) -> Double {
 		guard self.isAnimated else {
 			return 0.0
@@ -70,7 +57,9 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 				.opacity(self.opacityBarMark(for: discreteMetric))
 			}
 		}
-		.chartXSelection(value: self.selectedDateBinding)
+		.chartXSelection(
+			value: .selectingDate(from: self.$selectedDiscreteMetric, in: self.context.metricStore),
+		)
 		.chartXAxis {
 			AxisMarks { _ in
 				AxisValueLabel(format: .dateTime.month(.defaultDigits).day())

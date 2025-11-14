@@ -8,19 +8,6 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 
 	let context: Context
 
-	private var selectedDateBinding: Binding<Date?> {
-		return Binding(
-			get: { self.selectedDiscreteMetric?.date },
-			set: { newValue in
-				self.selectedDiscreteMetric = newValue.flatMap { date in
-					let normalizedDate = Calendar.current.startOfDay(for: date)
-
-					return self.context.metricStore.discreteMetricByDate[normalizedDate]
-				}
-			},
-		)
-	}
-
 	var body: some View {
 		Chart {
 			if let selectedDiscreteMetric = self.selectedDiscreteMetric {
@@ -70,7 +57,9 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 			}
 			.interpolationMethod(.catmullRom)
 		}
-		.chartXSelection(value: self.selectedDateBinding)
+		.chartXSelection(
+			value: .selectingDate(from: self.$selectedDiscreteMetric, in: self.context.metricStore),
+		)
 		.chartXAxis {
 			AxisMarks { _ in
 				AxisValueLabel(format: .dateTime.month(.defaultDigits).day())

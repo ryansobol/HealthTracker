@@ -8,17 +8,6 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 
 	let context: Context
 
-	private var selectedWeekdayBinding: Binding<Weekday?> {
-		return Binding(
-			get: { self.selectedAverageMetric?.weekday },
-			set: { newValue in
-				self.selectedAverageMetric = newValue.flatMap { weekday in
-					return self.context.metricStore.averageMetricByWeekday[weekday]
-				}
-			},
-		)
-	}
-
 	private func opacityBarkMark(for averageMetric: AverageMetric) -> Double {
 		guard self.isAnimated else {
 			return 0.0
@@ -65,7 +54,9 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 				.opacity(self.opacityBarkMark(for: averageDiffMetric))
 			}
 		}
-		.chartXSelection(value: self.selectedWeekdayBinding)
+		.chartXSelection(
+			value: .selectingWeekday(from: self.$selectedAverageMetric, in: self.context.metricStore),
+		)
 		.chartXAxis {
 			AxisMarks { value in
 				if let weekday = value.as(Weekday.self) {

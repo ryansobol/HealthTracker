@@ -9,7 +9,7 @@ struct StepPieViewContext: ChartViewContextual {
 	}
 
 	var chartYScale: ClosedRange<Double> {
-		return 0...0
+		return 0 ... 0
 	}
 
 	let hasNavigation = false

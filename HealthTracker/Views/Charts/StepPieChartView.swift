@@ -8,22 +8,6 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 
 	let context: Context
 
-	private var selectedValueBinding: Binding<Double?> {
-		return Binding(
-			get: { self.selectedAverageMetric?.value },
-			set: { newValue in
-				self.selectedAverageMetric = newValue.flatMap { value in
-					self.context.metricStore.averageMetricByWeekday.values
-						.first(into: 0.0) { cummulativeValue, averageMetric in
-							cummulativeValue += averageMetric.value
-
-							return value <= cummulativeValue
-						}
-				}
-			},
-		)
-	}
-
 	private func isSectorMarkOpaque(for averageMetric: AverageMetric) -> Bool {
 		guard let selectedAverageMetric = self.selectedAverageMetric else {
 			return false
@@ -64,7 +48,12 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 				.opacity(self.opacitySectorMark(for: averageMetric))
 			}
 		}
-		.chartAngleSelection(value: self.selectedValueBinding)
+		.chartAngleSelection(
+			value: .selectingCumulativeValue(
+				from: self.$selectedAverageMetric,
+				in: self.context.metricStore,
+			),
+		)
 		.chartBackground { _ in
 			self.chartAverage(
 				title: self.selectedAverageMetric?.weekday.symbol ?? "Daily",
