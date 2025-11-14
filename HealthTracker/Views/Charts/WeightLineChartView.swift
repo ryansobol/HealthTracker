@@ -87,13 +87,6 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 							.frame(width: 4)
 					}
 				}
-				.opacity(
-					.when(
-						discreteMetric,
-						selected: self.selectedDiscreteMetric,
-						isAnimated: self.isAnimated,
-					),
-				)
 			}
 			.interpolationMethod(.catmullRom)
 		}
