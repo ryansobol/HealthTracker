@@ -15,7 +15,7 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 					.selection(
 						label: Text(
 							selectedDiscreteMetric.date,
-							format: .monthDayDigits,
+							format: .monthDayAbbrievated,
 						),
 						value: Text(selectedDiscreteMetric.value, format: .step)
 							.foregroundStyle(self.context.metricType.color),

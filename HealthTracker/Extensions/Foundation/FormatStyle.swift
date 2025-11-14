@@ -19,6 +19,10 @@ extension FormatStyle where Self == Date.FormatStyle {
 		return .dateTime.month(.wide).day()
 	}
 
+	static var monthDayAbbrievated: Self {
+		return .dateTime.month(.abbreviated).day()
+	}
+
 	static var monthDayDigits: Self {
 		return .dateTime.month(.defaultDigits).day()
 	}

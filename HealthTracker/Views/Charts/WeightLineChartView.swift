@@ -15,7 +15,7 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 					.selection(
 						label: Text(
 							selectedDiscreteMetric.date,
-							format: .monthDayDigits,
+							format: .monthDayAbbrievated,
 						),
 						value: Text(selectedDiscreteMetric.value, format: .weight)
 							.foregroundStyle(self.context.metricType.color),
