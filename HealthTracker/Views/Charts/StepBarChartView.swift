@@ -38,7 +38,11 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 					y: .value(title, self.isAnimated ? discreteMetric.value : 0),
 				)
 				.foregroundStyle(self.context.metricType.color.gradient)
-				.opacity(for: discreteMetric, selected: self.selectedDiscreteMetric, isAnimated: isAnimated)
+				.opacity(
+					for: discreteMetric,
+					selected: self.selectedDiscreteMetric,
+					isAnimated: self.isAnimated,
+				)
 			}
 		}
 		.chartXSelection(
