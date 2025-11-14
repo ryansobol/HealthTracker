@@ -3,7 +3,6 @@ import SwiftUI
 
 struct HealthKitAuthorizationScreenView: View {
 	@Environment(\.dismiss) private var dismiss
-	@Environment(\.hkHealthStore) private var hkHealthStore
 
 	@State private var areHealthKitPermissionsPresented = false
 
@@ -38,7 +37,7 @@ struct HealthKitAuthorizationScreenView: View {
 		}
 		.padding(30)
 		.healthDataAccessRequest(
-			store: self.hkHealthStore,
+			store: HKHealthStore(),
 			shareTypes: [
 				StepStore.Context.metricType.quantityType,
 				WeightStore.Context.metricType.quantityType,

@@ -1,14 +1,23 @@
+import HealthKit
 import SwiftUI
 
 @main
 struct HealthTrackerApp: App {
-	@Environment(\.hkHealthStore) private var hkHealthStore
+	let stepStore: StepStore
+	let weightStore: WeightStore
+
+	init() {
+		let hkHealthStore = HKHealthStore()
+
+		self.stepStore = StepStore(hkHealthStore: hkHealthStore)
+		self.weightStore = WeightStore(hkHealthStore: hkHealthStore)
+	}
 
 	var body: some Scene {
 		WindowGroup {
 			DashboardScreenView()
-				.environment(StepStore(hkHealthStore: self.hkHealthStore))
-				.environment(WeightStore(hkHealthStore: self.hkHealthStore))
+				.environment(self.stepStore)
+				.environment(self.weightStore)
 		}
 	}
 }
