@@ -53,13 +53,7 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 					),
 				)
 				.foregroundStyle(self.context.metricType.color)
-				.opacity(
-					.when(
-						discreteMetric,
-						selected: self.selectedDiscreteMetric,
-						isAnimated: self.isAnimated,
-					),
-				)
+				.opacity(self.isAnimated ? (self.selectedDiscreteMetric == nil ? 1.0 : 0.3) : 0)
 
 				PointMark(
 					x: .value("Day", discreteMetric.date, unit: .day),
