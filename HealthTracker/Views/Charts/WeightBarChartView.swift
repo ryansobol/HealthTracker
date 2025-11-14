@@ -8,22 +8,6 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 
 	let context: Context
 
-	private func opacityBarkMark(for averageMetric: AverageMetric) -> Double {
-		guard self.isAnimated else {
-			return 0.0
-		}
-
-		guard let selectedAverageMetric = self.selectedAverageMetric else {
-			return 1.0
-		}
-
-		if selectedAverageMetric.weekday == averageMetric.weekday {
-			return 1.0
-		}
-
-		return 0.3
-	}
-
 	var body: some View {
 		Chart {
 			if let selectedAverageMetric = self.selectedAverageMetric {
@@ -51,7 +35,8 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 						? self.context.metricType.color.gradient
 						: Color.mint.gradient,
 				)
-				.opacity(self.opacityBarkMark(for: averageDiffMetric))
+				.opacity(for: averageDiffMetric, selected: self.selectedAverageMetric, isAnimated: isAnimated)
+
 			}
 		}
 		.chartXSelection(

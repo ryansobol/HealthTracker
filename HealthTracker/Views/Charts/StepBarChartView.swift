@@ -8,22 +8,6 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 
 	let context: Context
 
-	private func opacityBarMark(for discreteMetric: DiscreteMetric) -> Double {
-		guard self.isAnimated else {
-			return 0.0
-		}
-
-		guard let selectedDiscreteMetric = self.selectedDiscreteMetric else {
-			return 1.0
-		}
-
-		if selectedDiscreteMetric.date == discreteMetric.date {
-			return 1.0
-		}
-
-		return 0.3
-	}
-
 	var body: some View {
 		Chart {
 			if let selectedDiscreteMetric = self.selectedDiscreteMetric {
@@ -54,7 +38,7 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 					y: .value(title, self.isAnimated ? discreteMetric.value : 0),
 				)
 				.foregroundStyle(self.context.metricType.color.gradient)
-				.opacity(self.opacityBarMark(for: discreteMetric))
+				.opacity(for: discreteMetric, selected: self.selectedDiscreteMetric, isAnimated: isAnimated)
 			}
 		}
 		.chartXSelection(

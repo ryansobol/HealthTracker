@@ -16,22 +16,6 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 		return selectedAverageMetric.weekday != averageMetric.weekday
 	}
 
-	private func opacitySectorMark(for averageMetric: AverageMetric) -> Double {
-		guard self.isAnimated else {
-			return 0.0
-		}
-
-		guard let selectedAverageMetric = self.selectedAverageMetric else {
-			return 1.0
-		}
-
-		if selectedAverageMetric.weekday == averageMetric.weekday {
-			return 1.0
-		}
-
-		return 0.3
-	}
-
 	var body: some View {
 		Chart {
 			let title = self.context.metricType.title
@@ -45,7 +29,7 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 				)
 				.foregroundStyle(self.context.metricType.color.gradient)
 				.cornerRadius(6)
-				.opacity(self.opacitySectorMark(for: averageMetric))
+				.opacity(for: averageMetric, selected: self.selectedAverageMetric, isAnimated: isAnimated)
 			}
 		}
 		.chartAngleSelection(
