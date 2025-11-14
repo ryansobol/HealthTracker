@@ -8,14 +8,6 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 
 	let context: Context
 
-	private func isSectorMarkOpaque(for averageMetric: AverageMetric) -> Bool {
-		guard let selectedAverageMetric = self.selectedAverageMetric else {
-			return false
-		}
-
-		return selectedAverageMetric.weekday != averageMetric.weekday
-	}
-
 	var body: some View {
 		Chart {
 			let title = self.context.metricType.title
