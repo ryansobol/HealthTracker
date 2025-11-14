@@ -8,6 +8,13 @@ struct WeightBarViewContext: ChartViewContextual {
 		return WeightBarChartView(context: self)
 	}
 
+	var chartYScale: ClosedRange<Double> {
+		return ClosedRange.forChartAxis(
+			min: self.metricStore.averageMetricMinimum,
+			max: self.metricStore.averageMetricMaximum,
+		)
+	}
+
 	let hasNavigation = false
 
 	var hasMetrics: Bool {

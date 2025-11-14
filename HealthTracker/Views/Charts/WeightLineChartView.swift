@@ -21,22 +21,6 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 		)
 	}
 
-	private var chartYScaleDomain: ClosedRange<Double> {
-		let minValue = self.context.metricStore.discreteMetricMinimum
-		let maxValue = self.context.metricStore.discreteMetricMaximum
-
-		let range = maxValue - minValue
-		let padding = range * 0.2
-
-		let paddedMin = minValue - padding
-		let paddedMax = maxValue + padding
-
-		let niceMin = floor(paddedMin)
-		let niceMax = ceil(paddedMax)
-
-		return niceMin ... niceMax
-	}
-
 	var body: some View {
 		Chart {
 			if let selectedDiscreteMetric = self.selectedDiscreteMetric {
@@ -66,9 +50,9 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 					x: .value("Day", discreteMetric.date, unit: .day),
 					yStart: .value(
 						title,
-						self.isAnimated ? discreteMetric.value : self.chartYScaleDomain.lowerBound,
+						self.isAnimated ? discreteMetric.value : self.context.chartYScale.lowerBound,
 					),
-					yEnd: .value("Minimum \(title)", self.chartYScaleDomain.lowerBound),
+					yEnd: .value("Minimum \(title)", self.context.chartYScale.lowerBound),
 				)
 				.foregroundStyle(
 					Gradient(colors: [self.context.metricType.color.opacity(0.5), .clear]),
@@ -100,7 +84,7 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 				AxisValueLabel()
 			}
 		}
-		.chartYScale(domain: self.chartYScaleDomain)
+		.chartYScale(domain: self.context.chartYScale)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedDiscreteMetric?.date)
 		.setTrue(self.$isAnimated, when: !self.context.metricStore.averageMetricByWeekday.isEmpty)

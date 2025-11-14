@@ -8,6 +8,10 @@ struct StepPieViewContext: ChartViewContextual {
 		return StepPieChartView(context: self)
 	}
 
+	var chartYScale: ClosedRange<Double> {
+		return 0...0
+	}
+
 	let hasNavigation = false
 
 	var hasMetrics: Bool {

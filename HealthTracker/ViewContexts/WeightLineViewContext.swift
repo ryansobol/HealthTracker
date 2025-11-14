@@ -9,6 +9,13 @@ struct WeightLineViewContext: ChartViewContextual {
 		return WeightLineChartView(context: self)
 	}
 
+	var chartYScale: ClosedRange<Double> {
+		return ClosedRange.forChartAxis(
+			min: self.metricStore.discreteMetricMinimum,
+			max: self.metricStore.discreteMetricMaximum,
+		)
+	}
+
 	var hasMetrics: Bool {
 		return !self.metricStore.discreteMetricByDate.isEmpty
 	}

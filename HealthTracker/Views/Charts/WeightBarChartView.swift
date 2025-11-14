@@ -35,22 +35,6 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 		return 0.3
 	}
 
-	private var chartYScaleDomain: ClosedRange<Double> {
-		let minValue = self.context.metricStore.averageMetricMinimum
-		let maxValue = self.context.metricStore.averageMetricMaximum
-
-		let range = maxValue - minValue
-		let padding = range * 0.5
-
-		let paddedMin = minValue - padding
-		let paddedMax = maxValue + padding
-
-		let niceMin = floor(paddedMin)
-		let niceMax = ceil(paddedMax)
-
-		return niceMin ... niceMax
-	}
-
 	var body: some View {
 		Chart {
 			if let selectedAverageMetric = self.selectedAverageMetric {
@@ -103,7 +87,7 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 				)
 			}
 		}
-		.chartYScale(domain: self.chartYScaleDomain)
+		.chartYScale(domain: self.context.chartYScale)
 		.animation(.smooth(duration: 0.05), value: self.selectedAverageMetric?.weekday)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
 		.sensoryFeedback(.selection, trigger: self.selectedAverageMetric?.weekday)

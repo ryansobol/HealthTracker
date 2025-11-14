@@ -8,6 +8,13 @@ struct StepBarViewContext: ChartViewContextual {
 		return StepBarChartView(context: self)
 	}
 
+	var chartYScale: ClosedRange<Double> {
+		return ClosedRange.forChartAxis(
+			min: self.metricStore.discreteMetricMinimum,
+			max: self.metricStore.discreteMetricMaximum,
+		)
+	}
+
 	let hasNavigation = true
 
 	var hasMetrics: Bool {

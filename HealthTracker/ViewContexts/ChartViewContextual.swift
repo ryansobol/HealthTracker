@@ -5,6 +5,7 @@ protocol ChartViewContextual {
 	associatedtype MetricStore: MetricStorable
 
 	var chartView: ChartView { get }
+	var chartYScale: ClosedRange<Double> { get }
 	var hasMetrics: Bool { get }
 	var hasNavigation: Bool { get }
 	var height: CGFloat { get }
