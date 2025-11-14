@@ -58,15 +58,7 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 		}
 		.chartXScale(domain: Weekday.allCases.map { $0.symbol }, type: .category)
 		.chartYAxis {
-			AxisMarks { value in
-				AxisGridLine()
-					.foregroundStyle(.gray.opacity(0.3))
-
-				AxisValueLabel(
-					(value.as(Double.self) ?? 0)
-						.formatted(.number.notation(.compactName)),
-				)
-			}
+			self.context.chartYAxisContent
 		}
 		.chartYScale(domain: self.context.chartYScale)
 		.animation(.smooth(duration: 0.05), value: self.selectedAverageMetric?.weekday)

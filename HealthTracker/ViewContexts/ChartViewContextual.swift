@@ -1,3 +1,4 @@
+import Charts
 import SwiftUI
 
 protocol ChartViewContextual {
@@ -19,6 +20,24 @@ protocol ChartViewContextual {
 // MARK: - MetricType
 
 extension ChartViewContextual {
+	var chartXAxisContent: some AxisContent {
+		AxisMarks { _ in
+			AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
+		}
+	}
+
+	var chartYAxisContent: some AxisContent {
+		AxisMarks { value in
+			AxisGridLine()
+				.foregroundStyle(.gray.opacity(0.3))
+
+			AxisValueLabel(
+				(value.as(Double.self) ?? 0)
+					.formatted(.number.notation(.compactName)),
+			)
+		}
+	}
+
 	var metricType: MetricType {
 		return self.metricStore.metricType
 	}

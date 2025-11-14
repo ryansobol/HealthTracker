@@ -51,20 +51,10 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 			value: .selectingDate(from: self.$selectedDiscreteMetric, in: self.context.metricStore),
 		)
 		.chartXAxis {
-			AxisMarks { _ in
-				AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
-			}
+			self.context.chartXAxisContent
 		}
 		.chartYAxis {
-			AxisMarks { value in
-				AxisGridLine()
-					.foregroundStyle(.gray.opacity(0.3))
-
-				AxisValueLabel(
-					(value.as(Double.self) ?? 0)
-						.formatted(.number.notation(.compactName)),
-				)
-			}
+			self.context.chartYAxisContent
 		}
 		.chartYScale(domain: self.context.chartYScale)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)

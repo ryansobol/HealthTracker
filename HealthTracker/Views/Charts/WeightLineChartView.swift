@@ -90,17 +90,10 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 			value: .selectingDate(from: self.$selectedDiscreteMetric, in: self.context.metricStore),
 		)
 		.chartXAxis {
-			AxisMarks { _ in
-				AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
-			}
+			self.context.chartXAxisContent
 		}
 		.chartYAxis {
-			AxisMarks { _ in
-				AxisGridLine()
-					.foregroundStyle(.gray.opacity(0.3))
-
-				AxisValueLabel()
-			}
+			self.context.chartYAxisContent
 		}
 		.chartYScale(domain: self.context.chartYScale)
 		.animation(.smooth(duration: 0.25), value: self.isAnimated)
