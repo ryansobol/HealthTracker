@@ -71,20 +71,22 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 				.symbol {
 					ZStack {
 						Circle()
+							.foregroundStyle(Color(.secondarySystemBackground))
+							.frame(width: 8)
+
+						Circle()
+							.strokeBorder(lineWidth: 2.0)
 							.foregroundStyle(
 								self.context.metricType.color.opacity(
 									.when(
 										discreteMetric,
 										selected: self.selectedDiscreteMetric,
 										isAnimated: self.isAnimated,
+										dimmed: 0.6,
 									),
 								),
 							)
 							.frame(width: 8)
-
-						Circle()
-							.foregroundStyle(Color(.secondarySystemBackground))
-							.frame(width: 4)
 					}
 				}
 			}

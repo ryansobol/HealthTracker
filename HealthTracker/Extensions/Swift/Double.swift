@@ -31,9 +31,10 @@ extension Double {
 		_ metric: Metric,
 		selected: Metric?,
 		isAnimated: Bool,
+		dimmed: Self = 0.3,
 	) -> Self {
 		guard isAnimated else { return 0.0 }
 		guard let selected else { return 1.0 }
-		return metric == selected ? 1.0 : 0.3
+		return metric == selected ? 1.0 : dimmed
 	}
 }
