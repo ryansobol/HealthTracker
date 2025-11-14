@@ -30,18 +30,4 @@ extension ChartContent {
 				}
 			}
 	}
-
-	func opacity<Metric: Equatable>(
-		for metric: Metric,
-		selected: Metric?,
-		isAnimated: Bool,
-	) -> some ChartContent {
-		let value = {
-			guard isAnimated else { return 0.0 }
-			guard let selected else { return 1.0 }
-			return metric == selected ? 1.0 : 0.3
-		}()
-
-		return self.opacity(value)
-	}
 }

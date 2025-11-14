@@ -36,9 +36,11 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 						: Color.mint.gradient,
 				)
 				.opacity(
-					for: averageDiffMetric,
-					selected: self.selectedAverageMetric,
-					isAnimated: self.isAnimated,
+					.when(
+						averageDiffMetric,
+						selected: self.selectedAverageMetric,
+						isAnimated: self.isAnimated,
+					),
 				)
 			}
 		}

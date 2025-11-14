@@ -21,7 +21,13 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 				)
 				.foregroundStyle(self.context.metricType.color.gradient)
 				.cornerRadius(6)
-				.opacity(for: averageMetric, selected: self.selectedAverageMetric, isAnimated: self.isAnimated)
+				.opacity(
+					.when(
+						averageMetric,
+						selected: self.selectedAverageMetric,
+						isAnimated: self.isAnimated,
+					),
+				)
 			}
 		}
 		.chartAngleSelection(
