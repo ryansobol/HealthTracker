@@ -33,7 +33,9 @@ struct DiscreteMetricScreenView: View {
 				)
 			} label: {
 				Text(healthMetric.date, format: .dateTime.month().day().year())
+					.accessibilityLabel(healthMetric.date.formatted(.monthDay))
 			}
+			.accessibilityElement(children: .combine)
 		}
 		.navigationTitle(self.metricType.title)
 		.alert(for: self.$appError)
