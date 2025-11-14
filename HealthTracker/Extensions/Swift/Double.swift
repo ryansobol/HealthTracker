@@ -25,3 +25,15 @@ extension Double {
 		return (exponent, mantissa)
 	}
 }
+
+extension Double {
+	static func when<Metric: Equatable>(
+		_ metric: Metric,
+		selected: Metric?,
+		isAnimated: Bool,
+	) -> Self {
+		guard isAnimated else { return 0.0 }
+		guard let selected else { return 1.0 }
+		return metric == selected ? 1.0 : 0.3
+	}
+}

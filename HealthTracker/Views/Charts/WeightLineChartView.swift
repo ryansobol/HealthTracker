@@ -53,7 +53,47 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 					),
 				)
 				.foregroundStyle(self.context.metricType.color)
-				.symbol(.circle)
+				.opacity(
+					.when(
+						discreteMetric,
+						selected: self.selectedDiscreteMetric,
+						isAnimated: self.isAnimated,
+					),
+				)
+
+				PointMark(
+					x: .value("Day", discreteMetric.date, unit: .day),
+					y: .value(
+						title,
+						self.isAnimated ? discreteMetric.value : self.context.metricStore.discreteMetricMinimum,
+					),
+				)
+				.symbol {
+					ZStack {
+						Circle()
+							.foregroundStyle(
+								self.context.metricType.color.opacity(
+									.when(
+										discreteMetric,
+										selected: self.selectedDiscreteMetric,
+										isAnimated: self.isAnimated,
+									),
+								),
+							)
+							.frame(width: 8)
+
+						Circle()
+							.foregroundStyle(Color(.secondarySystemBackground))
+							.frame(width: 4)
+					}
+				}
+				.opacity(
+					.when(
+						discreteMetric,
+						selected: self.selectedDiscreteMetric,
+						isAnimated: self.isAnimated,
+					),
+				)
 			}
 			.interpolationMethod(.catmullRom)
 		}
