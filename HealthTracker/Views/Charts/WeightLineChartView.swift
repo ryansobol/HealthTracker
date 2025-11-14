@@ -37,7 +37,7 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 					x: .value("Day", discreteMetric.date, unit: .day),
 					yStart: .value(
 						title,
-						self.isAnimated ? discreteMetric.value : self.context.chartYScale.lowerBound,
+						self.isAnimated ? discreteMetric.value : self.context.metricStore.discreteMetricMinimum,
 					),
 					yEnd: .value("Minimum \(title)", self.context.chartYScale.lowerBound),
 				)
