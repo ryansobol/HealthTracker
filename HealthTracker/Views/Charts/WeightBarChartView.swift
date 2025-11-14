@@ -14,7 +14,7 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 				RuleMark(x: .value("Selected Weekday", selectedAverageMetric.weekday))
 					.selection(
 						label: Text(selectedAverageMetric.weekday.symbol),
-						value: Text(selectedAverageMetric.value, format: .number.precision(.fractionLength(2)))
+						value: Text(selectedAverageMetric.value, format: .weightChange)
 							.foregroundStyle(
 								selectedAverageMetric.value >= 0
 									? self.context.metricType.color
@@ -25,23 +25,27 @@ struct WeightBarChartView<Context: ChartViewContextual>: View {
 
 			let title = self.context.metricType.title
 
-			ForEach(self.context.metricStore.averageMetricByWeekday.values) { averageDiffMetric in
-				BarMark(
-					x: .value("Weekday", averageDiffMetric.weekday),
-					y: .value("Average \(title) Differece", self.isAnimated ? averageDiffMetric.value : 0),
-				)
-				.foregroundStyle(
-					averageDiffMetric.value >= 0
-						? self.context.metricType.color.gradient
-						: Color.mint.gradient,
-				)
-				.opacity(
-					.when(
-						averageDiffMetric,
-						selected: self.selectedAverageMetric,
-						isAnimated: self.isAnimated,
-					),
-				)
+			ForEach(self.context.metricStore.averageMetricByWeekday.values) { averageMetric in
+				Plot {
+					BarMark(
+						x: .value("Weekday", averageMetric.weekday),
+						y: .value("Average \(title) Differece", self.isAnimated ? averageMetric.value : 0),
+					)
+					.foregroundStyle(
+						averageMetric.value >= 0
+							? self.context.metricType.color.gradient
+							: Color.mint.gradient,
+					)
+					.opacity(
+						.when(
+							averageMetric,
+							selected: self.selectedAverageMetric,
+							isAnimated: self.isAnimated,
+						),
+					)
+				}
+				.accessibilityLabel(averageMetric.weekday.symbol)
+				.accessibilityValue(averageMetric.accessibleValue(for: self.context.metricType))
 			}
 		}
 		.chartXSelection(

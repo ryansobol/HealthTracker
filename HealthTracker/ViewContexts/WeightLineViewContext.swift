@@ -1,4 +1,3 @@
-import HealthKit
 import OrderedCollections
 import SwiftUI
 
@@ -29,10 +28,8 @@ struct WeightLineViewContext: ChartViewContextual {
 	let height: CGFloat = 150
 
 	var subtitle: String {
-		let value = self.metricStore.discreteMetricAverage
-			.formatted(.number.precision(.fractionLength(1)))
-
-		let unit = self.metricType.unit.unitString
+		let value = self.metricStore.discreteMetricAverage.formatted(.weight)
+		let unit = self.metricType.unitName
 
 		return "Average \(value) \(unit)"
 	}

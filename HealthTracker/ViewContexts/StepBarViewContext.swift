@@ -28,9 +28,7 @@ struct StepBarViewContext: ChartViewContextual {
 	let height: CGFloat = 150
 
 	var subtitle: String {
-		let value = self.metricStore.discreteMetricAverage
-			.formatted(.number.precision(.fractionLength(0)))
-
+		let value = self.metricStore.discreteMetricAverage.formatted(.step)
 		let unit = self.metricType.title.lowercased()
 
 		return "Average \(value) \(unit)"

@@ -23,7 +23,7 @@ protocol ChartViewContextual {
 extension ChartViewContextual {
 	var chartXAxisContent: some AxisContent {
 		AxisMarks { _ in
-			AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
+			AxisValueLabel(format: .monthDayDigits)
 		}
 	}
 

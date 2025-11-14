@@ -28,6 +28,8 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 						isAnimated: self.isAnimated,
 					),
 				)
+				.accessibilityLabel(averageMetric.weekday.symbol)
+				.accessibilityValue(averageMetric.accessibleValue(for: self.context.metricType))
 			}
 		}
 		.chartAngleSelection(
@@ -54,11 +56,12 @@ struct StepPieChartView<Context: ChartViewContextual>: View {
 				.font(.title2.bold())
 				.animation(.none, value: title)
 
-			Text(value, format: .number.precision(.fractionLength(0)))
+			Text(value, format: .step)
 				.fontWeight(.medium)
 				.foregroundStyle(.secondary)
 				.contentTransition(.numericText())
 		}
+		.accessibilityHidden(true)
 	}
 }
 

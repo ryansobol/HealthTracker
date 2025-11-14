@@ -15,13 +15,10 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 					.selection(
 						label: Text(
 							selectedDiscreteMetric.date,
-							format: .dateTime.weekday(.abbreviated).month(.abbreviated).day(),
+							format: .monthDayDigits,
 						),
-						value: Text(
-							selectedDiscreteMetric.value,
-							format: .number.precision(.fractionLength(1)),
-						)
-						.foregroundStyle(self.context.metricType.color),
+						value: Text(selectedDiscreteMetric.value, format: .weight)
+							.foregroundStyle(self.context.metricType.color),
 					)
 			}
 
@@ -34,56 +31,60 @@ struct WeightLineChartView<Context: ChartViewContextual>: View {
 				.accessibilityHidden(true)
 
 			ForEach(self.context.metricStore.discreteMetricByDate.values) { discreteMetric in
-				AreaMark(
-					x: .value("Day", discreteMetric.date, unit: .day),
-					yStart: .value(
-						title,
-						self.isAnimated ? discreteMetric.value : self.context.metricStore.discreteMetricMinimum,
-					),
-					yEnd: .value("Minimum \(title)", self.context.chartYScale.lowerBound),
-				)
-				.foregroundStyle(
-					Gradient(colors: [self.context.metricType.color.opacity(0.5), .clear]),
-				)
+				Plot {
+					AreaMark(
+						x: .value("Day", discreteMetric.date, unit: .day),
+						yStart: .value(
+							title,
+							self.isAnimated ? discreteMetric.value : self.context.metricStore.discreteMetricMinimum,
+						),
+						yEnd: .value("Minimum \(title)", self.context.chartYScale.lowerBound),
+					)
+					.foregroundStyle(
+						Gradient(colors: [self.context.metricType.color.opacity(0.5), .clear]),
+					)
 
-				LineMark(
-					x: .value("Day", discreteMetric.date, unit: .day),
-					y: .value(
-						title,
-						self.isAnimated ? discreteMetric.value : self.context.metricStore.discreteMetricMinimum,
-					),
-				)
-				.foregroundStyle(self.context.metricType.color)
-				.opacity(self.isAnimated ? (self.selectedDiscreteMetric == nil ? 1.0 : 0.3) : 0)
+					LineMark(
+						x: .value("Day", discreteMetric.date, unit: .day),
+						y: .value(
+							title,
+							self.isAnimated ? discreteMetric.value : self.context.metricStore.discreteMetricMinimum,
+						),
+					)
+					.foregroundStyle(self.context.metricType.color)
+					.opacity(self.isAnimated ? (self.selectedDiscreteMetric == nil ? 1.0 : 0.3) : 0)
 
-				PointMark(
-					x: .value("Day", discreteMetric.date, unit: .day),
-					y: .value(
-						title,
-						self.isAnimated ? discreteMetric.value : self.context.metricStore.discreteMetricMinimum,
-					),
-				)
-				.symbol {
-					ZStack {
-						Circle()
-							.foregroundStyle(Color(.secondarySystemBackground))
-							.frame(width: 8)
+					PointMark(
+						x: .value("Day", discreteMetric.date, unit: .day),
+						y: .value(
+							title,
+							self.isAnimated ? discreteMetric.value : self.context.metricStore.discreteMetricMinimum,
+						),
+					)
+					.symbol {
+						ZStack {
+							Circle()
+								.foregroundStyle(Color(.secondarySystemBackground))
+								.frame(width: 8)
 
-						Circle()
-							.strokeBorder(lineWidth: 2.0)
-							.foregroundStyle(
-								self.context.metricType.color.opacity(
-									.when(
-										discreteMetric,
-										selected: self.selectedDiscreteMetric,
-										isAnimated: self.isAnimated,
-										dimmed: 0.6,
+							Circle()
+								.strokeBorder(lineWidth: 2.0)
+								.foregroundStyle(
+									self.context.metricType.color.opacity(
+										.when(
+											discreteMetric,
+											selected: self.selectedDiscreteMetric,
+											isAnimated: self.isAnimated,
+											dimmed: 0.6,
+										),
 									),
-								),
-							)
-							.frame(width: 8)
+								)
+								.frame(width: 8)
+						}
 					}
 				}
+				.accessibilityLabel(discreteMetric.date.formatted(.monthDay))
+				.accessibilityValue(discreteMetric.accessibleValue(for: self.context.metricType))
 			}
 			.interpolationMethod(.catmullRom)
 		}

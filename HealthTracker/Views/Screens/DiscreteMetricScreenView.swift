@@ -29,7 +29,7 @@ struct DiscreteMetricScreenView: View {
 			LabeledContent {
 				Text(
 					healthMetric.value,
-					format: .number.precision(.fractionLength(self.metricType == .step ? 0 : 1)),
+					format: self.metricType == .step ? .step : .weight,
 				)
 			} label: {
 				Text(healthMetric.date, format: .dateTime.month().day().year())

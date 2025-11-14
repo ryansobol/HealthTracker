@@ -15,13 +15,10 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 					.selection(
 						label: Text(
 							selectedDiscreteMetric.date,
-							format: .dateTime.weekday(.abbreviated).month(.abbreviated).day(),
+							format: .monthDayDigits,
 						),
-						value: Text(
-							selectedDiscreteMetric.value,
-							format: .number.precision(.fractionLength(0)),
-						)
-						.foregroundStyle(self.context.metricType.color),
+						value: Text(selectedDiscreteMetric.value, format: .step)
+							.foregroundStyle(self.context.metricType.color),
 					)
 			}
 
@@ -34,18 +31,22 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 				.accessibilityHidden(true)
 
 			ForEach(self.context.metricStore.discreteMetricByDate.values) { discreteMetric in
-				BarMark(
-					x: .value("Date", discreteMetric.date, unit: .day),
-					y: .value(title, self.isAnimated ? discreteMetric.value : 0),
-				)
-				.foregroundStyle(self.context.metricType.color.gradient)
-				.opacity(
-					.when(
-						discreteMetric,
-						selected: self.selectedDiscreteMetric,
-						isAnimated: self.isAnimated,
-					),
-				)
+				Plot {
+					BarMark(
+						x: .value("Date", discreteMetric.date, unit: .day),
+						y: .value(title, self.isAnimated ? discreteMetric.value : 0),
+					)
+					.foregroundStyle(self.context.metricType.color.gradient)
+					.opacity(
+						.when(
+							discreteMetric,
+							selected: self.selectedDiscreteMetric,
+							isAnimated: self.isAnimated,
+						),
+					)
+				}
+				.accessibilityLabel(discreteMetric.date.formatted(.monthDay))
+				.accessibilityValue(discreteMetric.accessibleValue(for: self.context.metricType))
 			}
 		}
 		.chartXSelection(

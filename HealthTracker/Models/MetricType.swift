@@ -37,6 +37,10 @@ extension MetricType {
 		}
 	}
 
+	var unitName: String {
+		return self.unit.unitString
+	}
+
 	nonisolated var quantityType: HKQuantityType {
 		return switch self {
 		case .step: HKQuantityType(.stepCount)
