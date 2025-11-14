@@ -5,6 +5,10 @@ import SwiftUI
 struct WeightLineViewContext: ChartViewContextual {
 	let metricStore: WeightStore
 
+	var accessibilityTitle: String {
+		return "\(self.title) by day chart"
+	}
+
 	var chartView: some View {
 		return WeightLineChartView(context: self)
 	}

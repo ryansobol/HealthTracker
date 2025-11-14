@@ -4,6 +4,10 @@ import SwiftUI
 struct WeightBarViewContext: ChartViewContextual {
 	let metricStore: WeightStore
 
+	var accessibilityTitle: String {
+		return "\(self.title) by weekday chart"
+	}
+
 	var chartView: some View {
 		return WeightBarChartView(context: self)
 	}
@@ -29,5 +33,5 @@ struct WeightBarViewContext: ChartViewContextual {
 
 	let symbolTitle = "figure"
 
-	let title = "Average Change"
+	let title = "Average Weight Change"
 }

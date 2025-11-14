@@ -5,6 +5,7 @@ protocol ChartViewContextual {
 	associatedtype ChartView: View
 	associatedtype MetricStore: MetricStorable
 
+	var accessibilityTitle: String { get }
 	var chartView: ChartView { get }
 	var chartYScale: ClosedRange<Double> { get }
 	var hasMetrics: Bool { get }

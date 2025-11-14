@@ -4,6 +4,10 @@ import SwiftUI
 struct StepPieViewContext: ChartViewContextual {
 	let metricStore: StepStore
 
+	var accessibilityTitle: String {
+		return "\(self.title) Per Weekday Chart"
+	}
+
 	var chartView: some View {
 		return StepPieChartView(context: self)
 	}
@@ -26,5 +30,5 @@ struct StepPieViewContext: ChartViewContextual {
 
 	let symbolTitle = "calendar"
 
-	let title = "Averages"
+	let title = "Average Steps"
 }

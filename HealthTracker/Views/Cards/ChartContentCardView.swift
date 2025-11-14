@@ -32,6 +32,7 @@ struct ChartContentCardView<Context: ChartViewContextual, Content: View>: View {
 					Image(systemName: "chevron.right")
 				}
 			}
+			.accessibilityHint("Tap for details")
 		}
 		else {
 			self.titles
@@ -43,10 +44,13 @@ struct ChartContentCardView<Context: ChartViewContextual, Content: View>: View {
 			Label(self.context.title, systemImage: self.context.symbolTitle)
 				.font(.title3.bold())
 				.foregroundStyle(self.context.metricType.color)
+				.accessibilityLabel(self.context.accessibilityTitle)
 
 			Text(self.context.subtitle)
 				.font(.caption)
 		}
+		.accessibilityAddTraits(.isHeader)
+		.accessibilityElement(children: .combine)
 	}
 }
 

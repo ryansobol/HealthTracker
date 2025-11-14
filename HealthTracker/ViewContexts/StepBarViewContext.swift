@@ -4,6 +4,10 @@ import SwiftUI
 struct StepBarViewContext: ChartViewContextual {
 	let metricStore: StepStore
 
+	var accessibilityTitle: String {
+		return "\(self.title) Per Day Chart"
+	}
+
 	var chartView: some View {
 		return StepBarChartView(context: self)
 	}
@@ -27,7 +31,7 @@ struct StepBarViewContext: ChartViewContextual {
 		let value = self.metricStore.discreteMetricAverage
 			.formatted(.number.precision(.fractionLength(0)))
 
-		let unit = self.title.lowercased()
+		let unit = self.metricType.title.lowercased()
 
 		return "Average \(value) \(unit)"
 	}
