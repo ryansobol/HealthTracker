@@ -31,6 +31,7 @@ struct StepBarChartView<Context: ChartViewContextual>: View {
 				.foregroundStyle(self.context.metricType.color)
 				.lineStyle(.init(lineWidth: 1, dash: [5]))
 				.opacity(self.isAnimated ? 1 : 0)
+				.accessibilityHidden(true)
 
 			ForEach(self.context.metricStore.discreteMetricByDate.values) { discreteMetric in
 				BarMark(
