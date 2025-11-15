@@ -31,7 +31,7 @@ struct WeightBarViewContext: ChartViewContextual {
 
 	let symbolChart = "chart.bar"
 
-	let symbolTitle = "figure"
+	let symbolTitle = "calendar"
 
 	let title = "Average Weight Change"
 }
