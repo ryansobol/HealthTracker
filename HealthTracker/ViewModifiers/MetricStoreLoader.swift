@@ -20,22 +20,12 @@ struct MetricStoreLoader: ViewModifier {
 
 	func body(content: Content) -> some View {
 		content
-			.fullScreenCover(isPresented: self.$isHealthKitAuthorizationPresented, onDismiss: {
-				Task {
-					do {
-						#if targetEnvironment(simulator)
-							try await self.createFakeMetrics()
-						#endif
-
-						try await self.fetchMetrics()
-					}
-					catch {
-						self.logger.error("\(error)")
-					}
-				}
-			}, content: {
+			.fullScreenCover(
+				isPresented: self.$isHealthKitAuthorizationPresented,
+				onDismiss: self.onDismiss,
+			) {
 				HealthKitAuthorizationScreenView()
-			})
+			}
 			.alert(for: self.$appError)
 			.task {
 				do {
@@ -77,6 +67,21 @@ struct MetricStoreLoader: ViewModifier {
 			group.addTask { try await self.weightStore.fetchMetrics() }
 
 			try await group.waitForAll()
+		}
+	}
+
+	private func onDismiss() -> Void {
+		Task {
+			do {
+				#if targetEnvironment(simulator)
+					try await self.createFakeMetrics()
+				#endif
+
+				try await self.fetchMetrics()
+			}
+			catch {
+				self.logger.error("\(error)")
+			}
 		}
 	}
 
