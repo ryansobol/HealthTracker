@@ -1,23 +1,17 @@
 import SwiftUI
 
-extension HealthKitService {
-	enum Error {
-		case caught(underlyingError: any Swift.Error)
-		case invalidMetricValue(metricType: MetricType, value: String)
-		case sharingNotAuthorized(metricType: MetricType)
-	}
+enum HealthKitError {
+	case caught(underlyingError: any Error)
+	case sharingNotAuthorized(metricType: MetricType)
 }
 
 // MARK: - ExplainedError
 
-extension HealthKitService.Error: ExplainedError {
+extension HealthKitError: ExplainedError {
 	var errorDescription: String {
 		return switch self {
 		case .caught:
 			"Error"
-
-		case let .invalidMetricValue(metricType, _):
-			"Invalid \(metricType)"
 
 		case let .sharingNotAuthorized(metricType):
 			"\(metricType) Sharing Not Authorized"
@@ -29,9 +23,6 @@ extension HealthKitService.Error: ExplainedError {
 		case .caught:
 			"The app encountered an unexpected error."
 
-		case let .invalidMetricValue(metricType, value):
-			"\(value) is not a valid \(metricType)."
-
 		case let .sharingNotAuthorized(metricType):
 			"The app has not been authorization to share \(metricType) data with HealthKit."
 		}
@@ -42,9 +33,6 @@ extension HealthKitService.Error: ExplainedError {
 		case .caught:
 			"Try performing the action again. If the error persists, try restarting the app."
 
-		case .invalidMetricValue:
-			"Try entering a number greater than zero."
-
 		case .sharingNotAuthorized:
 			"You can authorize sharing by going to Settings > Health > Data Access & Devices."
 		}
@@ -53,14 +41,14 @@ extension HealthKitService.Error: ExplainedError {
 
 // MARK: - Alertable
 
-extension HealthKitService.Error: Alertable {
+extension HealthKitError: Alertable {
 	var title: String {
 		return self.errorDescription
 	}
 
 	var actions: some View {
 		switch self {
-		case .caught, .invalidMetricValue:
+		case .caught:
 			EmptyView()
 
 		case .sharingNotAuthorized:

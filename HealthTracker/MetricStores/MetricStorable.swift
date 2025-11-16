@@ -62,10 +62,24 @@ extension MetricStorable {
 	}
 }
 
+// MARK: - Validation
+
+extension MetricStorable {
+	func validate(newValue: String) throws -> Double {
+		guard let value = Double(newValue), value > 0 else {
+			throw MetricStoreError.invalid(value: newValue, for: self.metricType)
+		}
+
+		return value
+	}
+}
+
 // MARK: - Creation
 
 extension MetricStorable {
-	func createMetric(date: Date, value: Double) async throws -> Void {
+	func createMetric(date: Date, newValue: String) async throws -> Void {
+		let value = try self.validate(newValue: newValue)
+
 		try await self.healthKitService.createSample(date: date, value: value)
 	}
 

@@ -10,7 +10,8 @@ struct DiscreteMetricScreenView: View {
 
 	@Environment(\.requestHealthKitAuthorization) private var requestHealthKitAuthorization
 
-	@State private var appError: HealthKitService.Error? = nil
+	@State private var errorHealthKit: HealthKitError? = nil
+	@State private var errorMetricStore: MetricStoreError? = nil
 	@State private var newDate = Date.now
 	@State private var newValue = ""
 	@State private var isAddDataFormPresented = false
@@ -38,7 +39,8 @@ struct DiscreteMetricScreenView: View {
 			.accessibilityElement(children: .combine)
 		}
 		.navigationTitle(self.metricType.title)
-		.alert(for: self.$appError)
+		.alert(for: self.$errorHealthKit)
+		.alert(for: self.$errorMetricStore)
 		.sheet(isPresented: self.$isAddDataFormPresented) {
 			self.addDataView
 		}
@@ -85,7 +87,7 @@ struct DiscreteMetricScreenView: View {
 				case .step:
 					try await self.stepStore.createMetric(
 						date: self.newDate,
-						value: self.validateNewValue(),
+						newValue: self.newValue,
 					)
 
 					try await self.stepStore.fetchMetrics()
@@ -93,7 +95,7 @@ struct DiscreteMetricScreenView: View {
 				case .weight:
 					try await self.weightStore.createMetric(
 						date: self.newDate,
-						value: self.validateNewValue(),
+						newValue: self.newValue,
 					)
 
 					try await self.weightStore.fetchMetrics()
@@ -102,17 +104,22 @@ struct DiscreteMetricScreenView: View {
 			catch is AuthorizationRequestNecessaryError {
 				self.requestHealthKitAuthorization()
 			}
-			catch let error as HealthKitService.Error {
+			catch let error as HealthKitError {
 				self.logger.error(for: error)
 
-				self.appError = error
+				self.errorHealthKit = error
+			}
+			catch let error as MetricStoreError {
+				self.logger.error(for: error)
+
+				self.errorMetricStore = error
 			}
 			catch {
-				let error = HealthKitService.Error.caught(underlyingError: error)
+				let error = HealthKitError.caught(underlyingError: error)
 
 				self.logger.error(for: error)
 
-				self.appError = error
+				self.errorHealthKit = error
 			}
 
 			self.isAddDataFormPresented = false
@@ -121,18 +128,13 @@ struct DiscreteMetricScreenView: View {
 	}
 
 	private var isAddDataButtonDisabled: Bool {
-		return (try? self.validateNewValue()) == nil
-	}
+		return switch self.metricType {
+		case .step:
+			(try? self.stepStore.validate(newValue: self.newValue)) == nil
 
-	private func validateNewValue() throws -> Double {
-		guard let value = Double(self.newValue), value > 0 else {
-			throw HealthKitService.Error.invalidMetricValue(
-				metricType: self.metricType,
-				value: self.newValue,
-			)
+		case .weight:
+			(try? self.weightStore.validate(newValue: self.newValue)) == nil
 		}
-
-		return value
 	}
 }
 
