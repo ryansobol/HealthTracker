@@ -29,12 +29,12 @@ struct MetricStoreLoader: ViewModifier {
 				HealthKitAuthorizationScreenView()
 			}
 			.alert(for: self.$appError)
-			.onChange(of: self.scenePhase, initial: true) { _, newValue in
-				guard newValue == .active else {
+			.onChange(of: self.scenePhase) { oldValue, newValue in
+				guard newValue == .active && oldValue != .active else {
 					return
 				}
 
-				self.onActive()
+				self.onActiveScene()
 			}
 			.environment(\.requestHealthKitAuthorization, self.requestHealthKitAuthorization)
 			.environment(self.stepStore)
@@ -59,7 +59,7 @@ struct MetricStoreLoader: ViewModifier {
 		}
 	}
 
-	private func onActive() -> Void {
+	private func onActiveScene() -> Void {
 		Task {
 			do {
 				try await self.fetchMetrics()
