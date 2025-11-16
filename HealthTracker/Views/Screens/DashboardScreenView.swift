@@ -11,7 +11,7 @@ struct DashboardScreenView: View {
 		NavigationStack {
 			ScrollView {
 				VStack(spacing: 20) {
-					Picker("Selected Metric Type", selection: self.$selectedMetricType) {
+					Picker("Selected Metric", selection: self.$selectedMetricType) {
 						ForEach(MetricType.allCases) { metric in
 							Text(metric.title)
 						}
