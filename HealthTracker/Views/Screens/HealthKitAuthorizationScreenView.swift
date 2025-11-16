@@ -63,9 +63,5 @@ struct HealthKitAuthorizationScreenView: View {
 }
 
 #Preview {
-	let hkHealthStore = HKHealthStore()
-
 	HealthKitAuthorizationScreenView()
-		.environment(StepStore(hkHealthStore: hkHealthStore))
-		.environment(WeightStore(hkHealthStore: hkHealthStore))
 }
