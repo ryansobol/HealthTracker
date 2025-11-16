@@ -8,14 +8,14 @@ struct DiscreteMetricScreenView: View {
 	@Environment(StepStore.self) private var stepStore
 	@Environment(WeightStore.self) private var weightStore
 
+	@Environment(\.requestHealthKitAuthorization) private var requestHealthKitAuthorization
+
 	@State private var appError: AppError? = nil
 	@State private var newDate = Date.now
 	@State private var newValue = ""
 	@State private var isAddDataFormPresented = false
 
 	let metricType: MetricType
-
-	@Binding var isHealthKitAuthorizationPresented: Bool
 
 	var discreteMetrics: OrderedDictionary<Date, DiscreteMetric>.Values {
 		return switch self.metricType {
@@ -100,7 +100,7 @@ struct DiscreteMetricScreenView: View {
 				}
 			}
 			catch is AuthorizationRequestNecessaryError {
-				self.isHealthKitAuthorizationPresented = true
+				self.requestHealthKitAuthorization()
 			}
 			catch let error as AppError {
 				self.logger.error(for: error)
@@ -138,15 +138,7 @@ struct DiscreteMetricScreenView: View {
 	@Previewable @State var weightStore = WeightStore()
 
 	NavigationStack {
-		DiscreteMetricScreenView(
-			metricType: .weight,
-			isHealthKitAuthorizationPresented: .constant(false),
-		)
+		DiscreteMetricScreenView(metricType: .weight)
 	}
-	.task {
-		try! await stepStore.fetchMetrics()
-		try! await weightStore.fetchMetrics()
-	}
-	.environment(stepStore)
-	.environment(weightStore)
+	.metricStoreLoader()
 }

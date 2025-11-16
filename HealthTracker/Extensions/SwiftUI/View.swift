@@ -16,6 +16,10 @@ extension View {
 		}
 	}
 
+	func metricStoreLoader() -> some View {
+		return self.modifier(MetricStoreLoader())
+	}
+
 	/// Sets a boolean binding to true once when a condition becomes true.
 	///
 	/// This modifier observes the condition and sets the binding to true the first time
