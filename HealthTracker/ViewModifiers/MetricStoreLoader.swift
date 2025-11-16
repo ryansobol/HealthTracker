@@ -7,7 +7,7 @@ struct MetricStoreLoader: ViewModifier {
 
 	@Environment(\.scenePhase) private var scenePhase
 
-	@State private var appError: AppError? = nil
+	@State private var appError: HealthKitService.Error? = nil
 	@State private var isPresentedHealthKitAuthorization = false
 
 	@State private var stepStore: StepStore
@@ -67,13 +67,13 @@ struct MetricStoreLoader: ViewModifier {
 			catch is AuthorizationRequestNecessaryError {
 				self.isPresentedHealthKitAuthorization = true
 			}
-			catch let error as AppError {
+			catch let error as HealthKitService.Error {
 				self.logger.error(for: error)
 
 				self.appError = error
 			}
 			catch {
-				let error = AppError.caught(underlyingError: error)
+				let error = HealthKitService.Error.caught(underlyingError: error)
 
 				self.logger.error(for: error)
 

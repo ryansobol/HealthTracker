@@ -80,7 +80,7 @@ struct HealthKitService {
 	@concurrent
 	func createSample(date: Date, value: Double) async throws -> Void {
 		guard self.isSharingAuthorized else {
-			throw AppError.sharingNotAuthorized(metricType: self.metricType)
+			throw Error.sharingNotAuthorized(metricType: self.metricType)
 		}
 
 		let quantitySample = self.buildQuantitySample(date: date, value: value)
@@ -91,7 +91,7 @@ struct HealthKitService {
 	@concurrent
 	func createSamples(_ samples: [(date: Date, value: Double)]) async throws -> Void {
 		guard self.isSharingAuthorized else {
-			throw AppError.sharingNotAuthorized(metricType: self.metricType)
+			throw Error.sharingNotAuthorized(metricType: self.metricType)
 		}
 
 		let quantitySamples = samples.map { self.buildQuantitySample(date: $0, value: $1) }

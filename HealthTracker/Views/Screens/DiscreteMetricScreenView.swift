@@ -10,7 +10,7 @@ struct DiscreteMetricScreenView: View {
 
 	@Environment(\.requestHealthKitAuthorization) private var requestHealthKitAuthorization
 
-	@State private var appError: AppError? = nil
+	@State private var appError: HealthKitService.Error? = nil
 	@State private var newDate = Date.now
 	@State private var newValue = ""
 	@State private var isAddDataFormPresented = false
@@ -102,13 +102,13 @@ struct DiscreteMetricScreenView: View {
 			catch is AuthorizationRequestNecessaryError {
 				self.requestHealthKitAuthorization()
 			}
-			catch let error as AppError {
+			catch let error as HealthKitService.Error {
 				self.logger.error(for: error)
 
 				self.appError = error
 			}
 			catch {
-				let error = AppError.caught(underlyingError: error)
+				let error = HealthKitService.Error.caught(underlyingError: error)
 
 				self.logger.error(for: error)
 
@@ -126,7 +126,10 @@ struct DiscreteMetricScreenView: View {
 
 	private func validateNewValue() throws -> Double {
 		guard let value = Double(self.newValue), value > 0 else {
-			throw AppError.invalidMetricValue(metricType: self.metricType, value: self.newValue)
+			throw HealthKitService.Error.invalidMetricValue(
+				metricType: self.metricType,
+				value: self.newValue,
+			)
 		}
 
 		return value

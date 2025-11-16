@@ -1,14 +1,16 @@
 import SwiftUI
 
-enum AppError {
-	case caught(underlyingError: any Error)
-	case invalidMetricValue(metricType: MetricType, value: String)
-	case sharingNotAuthorized(metricType: MetricType)
+extension HealthKitService {
+	enum Error {
+		case caught(underlyingError: any Swift.Error)
+		case invalidMetricValue(metricType: MetricType, value: String)
+		case sharingNotAuthorized(metricType: MetricType)
+	}
 }
 
 // MARK: - ExplainedError
 
-extension AppError: ExplainedError {
+extension HealthKitService.Error: ExplainedError {
 	var errorDescription: String {
 		return switch self {
 		case .caught:
@@ -51,7 +53,7 @@ extension AppError: ExplainedError {
 
 // MARK: - Alertable
 
-extension AppError: Alertable {
+extension HealthKitService.Error: Alertable {
 	var title: String {
 		return self.errorDescription
 	}
