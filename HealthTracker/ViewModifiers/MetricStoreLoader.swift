@@ -8,7 +8,7 @@ struct MetricStoreLoader: ViewModifier {
 	@Environment(\.scenePhase) private var scenePhase
 
 	@State private var appError: AppError? = nil
-	@State private var isHealthKitAuthorizationPresented = false
+	@State private var isPresentedHealthKitAuthorization = false
 
 	@State private var stepStore: StepStore
 	@State private var weightStore: WeightStore
@@ -23,8 +23,8 @@ struct MetricStoreLoader: ViewModifier {
 	func body(content: Content) -> some View {
 		content
 			.fullScreenCover(
-				isPresented: self.$isHealthKitAuthorizationPresented,
-				onDismiss: self.onDismiss,
+				isPresented: self.$isPresentedHealthKitAuthorization,
+				onDismiss: self.onDismissHealthKitAuthorization,
 			) {
 				HealthKitAuthorizationScreenView()
 			}
@@ -65,7 +65,7 @@ struct MetricStoreLoader: ViewModifier {
 				try await self.fetchMetrics()
 			}
 			catch is AuthorizationRequestNecessaryError {
-				self.isHealthKitAuthorizationPresented = true
+				self.isPresentedHealthKitAuthorization = true
 			}
 			catch let error as AppError {
 				self.logger.error(for: error)
@@ -82,7 +82,7 @@ struct MetricStoreLoader: ViewModifier {
 		}
 	}
 
-	private func onDismiss() -> Void {
+	private func onDismissHealthKitAuthorization() -> Void {
 		Task {
 			do {
 				#if targetEnvironment(simulator)
@@ -98,6 +98,6 @@ struct MetricStoreLoader: ViewModifier {
 	}
 
 	private func requestHealthKitAuthorization() -> Void {
-		self.isHealthKitAuthorizationPresented = true
+		self.isPresentedHealthKitAuthorization = true
 	}
 }
