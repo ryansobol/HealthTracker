@@ -6,7 +6,7 @@ struct DiscreteMetric: Identifiable, Equatable {
 	let date: Date
 	let value: Double
 
-	func accessibleValue(for metricType: MetricType) -> String{
+	func accessibleValue(for metricType: MetricType) -> String {
 		return switch metricType {
 		case .step:
 			"'\(self.value.formatted(.step))' \(metricType.title)"

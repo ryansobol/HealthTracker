@@ -12,7 +12,7 @@ struct AverageMetric: Identifiable, Equatable {
 		self.value = discreteMetrics.reduce(0) { $0 + $1.value } / Double(discreteMetrics.count)
 	}
 
-	func accessibleValue(for metricType: MetricType) -> String{
+	func accessibleValue(for metricType: MetricType) -> String {
 		return switch metricType {
 		case .step:
 			"'\(self.value.formatted(.step))' \(metricType.title)"
