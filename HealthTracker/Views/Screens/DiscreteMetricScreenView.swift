@@ -114,13 +114,6 @@ struct DiscreteMetricScreenView: View {
 
 				self.errorMetricStore = error
 			}
-			catch {
-				let error = HealthKitError.caught(underlyingError: error)
-
-				self.logger.error(for: error)
-
-				self.errorHealthKit = error
-			}
 
 			self.isAddDataFormPresented = false
 			self.newValue = ""

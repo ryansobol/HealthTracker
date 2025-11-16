@@ -72,13 +72,6 @@ struct MetricStoreLoader: ViewModifier {
 
 				self.errorHealthKit = error
 			}
-			catch {
-				let error = HealthKitError.caught(underlyingError: error)
-
-				self.logger.error(for: error)
-
-				self.errorHealthKit = error
-			}
 		}
 	}
 

@@ -16,9 +16,17 @@ struct HealthKitService {
 	private var isAuthorizationRequestUnnecessary: Bool {
 		get async throws {
 			let types = Set([self.metricType.quantityType])
-			let result = try await self.store.statusForAuthorizationRequest(toShare: types, read: types)
 
-			return result == .unnecessary
+			let status: HKAuthorizationRequestStatus
+
+			do {
+				status = try await self.store.statusForAuthorizationRequest(toShare: types, read: types)
+			}
+			catch {
+				throw HealthKitError.caught(underlyingError: error)
+			}
+
+			return status == .unnecessary
 		}
 	}
 
@@ -57,7 +65,14 @@ struct HealthKitService {
 			intervalComponents: .init(day: 1),
 		)
 
-		let statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
+		let statisticsCollection: HKStatisticsCollection
+
+		do {
+			statisticsCollection = try await statisticsCollectionQuery.result(for: self.store)
+		}
+		catch {
+			throw HealthKitError.caught(underlyingError: error)
+		}
 
 		return statisticsCollection.statistics()
 	}
@@ -85,7 +100,12 @@ struct HealthKitService {
 
 		let quantitySample = self.buildQuantitySample(date: date, value: value)
 
-		try await self.store.save(quantitySample)
+		do {
+			try await self.store.save(quantitySample)
+		}
+		catch {
+			throw HealthKitError.caught(underlyingError: error)
+		}
 	}
 
 	@concurrent
@@ -96,6 +116,11 @@ struct HealthKitService {
 
 		let quantitySamples = samples.map { self.buildQuantitySample(date: $0, value: $1) }
 
-		try await self.store.save(quantitySamples)
+		do {
+			try await self.store.save(quantitySamples)
+		}
+		catch {
+			throw HealthKitError.caught(underlyingError: error)
+		}
 	}
 }
