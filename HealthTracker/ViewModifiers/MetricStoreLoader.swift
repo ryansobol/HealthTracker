@@ -64,7 +64,7 @@ struct MetricStoreLoader: ViewModifier {
 			do {
 				try await self.fetchMetrics()
 			}
-			catch is AuthorizationRequestNecessaryError {
+			catch is HealthKitError.AuthorizationRequestNecessary {
 				self.isPresentedHealthKitAuthorization = true
 			}
 			catch let error as HealthKitError {

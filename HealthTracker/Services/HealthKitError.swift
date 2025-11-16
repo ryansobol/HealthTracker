@@ -64,3 +64,11 @@ extension HealthKitError: Alertable {
 		Text("\(self.failureReason)\n\n\(self.recoverySuggestion)")
 	}
 }
+
+// MARK: - AuthorizationRequestNecessary
+
+extension HealthKitError {
+	struct AuthorizationRequestNecessary: Error {
+		let metricType: MetricType
+	}
+}

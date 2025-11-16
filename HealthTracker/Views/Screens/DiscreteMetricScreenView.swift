@@ -101,7 +101,7 @@ struct DiscreteMetricScreenView: View {
 					try await self.weightStore.fetchMetrics()
 				}
 			}
-			catch is AuthorizationRequestNecessaryError {
+			catch is HealthKitError.AuthorizationRequestNecessary {
 				self.requestHealthKitAuthorization()
 			}
 			catch let error as HealthKitError {

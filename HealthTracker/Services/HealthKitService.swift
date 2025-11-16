@@ -39,7 +39,7 @@ struct HealthKitService {
 	@concurrent
 	func fetchStatistics(daysAgo: Int) async throws -> [HKStatistics] {
 		guard try await self.isAuthorizationRequestUnnecessary else {
-			throw AuthorizationRequestNecessaryError(metricType: self.metricType)
+			throw HealthKitError.AuthorizationRequestNecessary(metricType: self.metricType)
 		}
 
 		let today = Date.now
