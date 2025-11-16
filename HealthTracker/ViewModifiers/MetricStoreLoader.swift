@@ -5,6 +5,8 @@ import SwiftUI
 struct MetricStoreLoader: ViewModifier {
 	private let logger = Logger(category: Self.self)
 
+	@Environment(\.scenePhase) private var scenePhase
+
 	@State private var appError: AppError? = nil
 	@State private var isHealthKitAuthorizationPresented = false
 
@@ -27,25 +29,12 @@ struct MetricStoreLoader: ViewModifier {
 				HealthKitAuthorizationScreenView()
 			}
 			.alert(for: self.$appError)
-			.task {
-				do {
-					try await self.fetchMetrics()
+			.onChange(of: self.scenePhase, initial: true) { _, newValue in
+				guard newValue == .active else {
+					return
 				}
-				catch is AuthorizationRequestNecessaryError {
-					self.isHealthKitAuthorizationPresented = true
-				}
-				catch let error as AppError {
-					self.logger.error(for: error)
 
-					self.appError = error
-				}
-				catch {
-					let error = AppError.caught(underlyingError: error)
-
-					self.logger.error(for: error)
-
-					self.appError = error
-				}
+				self.onActive()
 			}
 			.environment(\.requestHealthKitAuthorization, self.requestHealthKitAuthorization)
 			.environment(self.stepStore)
@@ -67,6 +56,29 @@ struct MetricStoreLoader: ViewModifier {
 			group.addTask { try await self.weightStore.fetchMetrics() }
 
 			try await group.waitForAll()
+		}
+	}
+
+	private func onActive() -> Void {
+		Task {
+			do {
+				try await self.fetchMetrics()
+			}
+			catch is AuthorizationRequestNecessaryError {
+				self.isHealthKitAuthorizationPresented = true
+			}
+			catch let error as AppError {
+				self.logger.error(for: error)
+
+				self.appError = error
+			}
+			catch {
+				let error = AppError.caught(underlyingError: error)
+
+				self.logger.error(for: error)
+
+				self.appError = error
+			}
 		}
 	}
 
